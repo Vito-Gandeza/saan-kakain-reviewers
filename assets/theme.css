@@ -113,7 +113,7 @@ nav.rail, nav.toc { display: none !important; }
 /* Balance the measure. Each page sized its container for a sidebar that is
    now gone, which left a ~600px prose column pinned to the left of a
    1080–1180px box. Narrow every page to one centred column instead. */
-:root { --rv-page: 720px; }
+:root { --rv-page: 760px; --rv-side: 0px; }
 .shell,
 .wrap,
 .mast-inner,
@@ -122,6 +122,38 @@ main,
 section[id] {
   max-width: var(--rv-page) !important;
   margin-inline: auto !important;
+}
+
+/* ---------- persistent sidebar on wide screens ----------
+   The reading measure caps out around 70 characters, so on a wide display
+   the leftover space goes to the contents rather than to nothing. */
+.rv-side { display: none; }
+
+@media (min-width: 1180px) {
+  :root { --rv-side: 264px; }
+  body { padding-left: var(--rv-side); }
+
+  .rv-side {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 46px; left: 0; bottom: 0;
+    width: var(--rv-side);
+    border-right: 1px solid var(--rv-rule-2);
+    background: color-mix(in srgb, var(--rv-paper) 70%, var(--rv-surface));
+    z-index: 70;
+  }
+  .rv-side-head { padding: 14px 14px 10px; }
+  .rv-side .rv-list { padding: 4px 8px 26px; }
+  .rv-side .rv-list a { font-size: .86rem; padding: 7px 9px; }
+
+  .rv-bar-in { max-width: none; padding-left: calc(var(--rv-side) + 20px); }
+  .rv-open { display: none; }          /* the sidebar is always visible */
+  .rv-top { right: 22px; }
+}
+
+@media (min-width: 1600px) {
+  :root { --rv-page: 820px; }
 }
 
 /* ============================================================

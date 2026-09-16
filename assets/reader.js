@@ -67,23 +67,44 @@
       '<p class="rv-empty" hidden>No section matches.</p>';
     doc.body.appendChild(panel);
 
-    var list = panel.querySelector('.rv-list');
-    var find = panel.querySelector('.rv-find');
-    var empty = panel.querySelector('.rv-empty');
-    var links = [];
+    /* ---------- persistent sidebar (wide screens) ---------- */
+    var side = doc.createElement('nav');
+    side.className = 'rv-side';
+    side.setAttribute('aria-label', 'Sections');
+    side.innerHTML =
+      '<div class="rv-side-head">' +
+        '<input class="rv-find" type="search" placeholder="Filter sections…" ' +
+          'autocomplete="off" spellcheck="false">' +
+      '</div>' +
+      '<ul class="rv-list"></ul>' +
+      '<p class="rv-empty" hidden>No section matches.</p>';
+    doc.body.appendChild(side);
+
+    var groups = [panel, side].map(function (host) {
+      return {
+        list: host.querySelector('.rv-list'),
+        find: host.querySelector('.rv-find'),
+        empty: host.querySelector('.rv-empty'),
+        links: []
+      };
+    });
 
     secs.forEach(function (sec, i) {
       var n = String(i + 1).padStart(2, '0');
-      var li = doc.createElement('li');
-      var a = doc.createElement('a');
-      a.href = '#' + sec.id;
-      a.innerHTML = '<span class="n">' + n + '</span><span class="t"></span>';
-      a.querySelector('.t').textContent = label(sec);
-      li.appendChild(a);
-      list.appendChild(li);
-      links.push(a);
-      a.addEventListener('click', function () { close(); });
+      groups.forEach(function (g) {
+        var li = doc.createElement('li');
+        var a = doc.createElement('a');
+        a.href = '#' + sec.id;
+        a.innerHTML = '<span class="n">' + n + '</span><span class="t"></span>';
+        a.querySelector('.t').textContent = label(sec);
+        li.appendChild(a);
+        g.list.appendChild(li);
+        g.links.push(a);
+        a.addEventListener('click', function () { close(); });
+      });
     });
+
+    var find = groups[0].find;
 
     function open() {
       scrim.classList.add('on');
@@ -112,15 +133,17 @@
       if (e.key === '/') { e.preventDefault(); open(); }
     });
 
-    find.addEventListener('input', function () {
-      var q = find.value.trim().toLowerCase();
-      var hits = 0;
-      links.forEach(function (a) {
-        var match = !q || a.textContent.toLowerCase().indexOf(q) > -1;
-        a.parentNode.classList.toggle('hide', !match);
-        if (match) hits++;
+    groups.forEach(function (g) {
+      g.find.addEventListener('input', function () {
+        var q = g.find.value.trim().toLowerCase();
+        var hits = 0;
+        g.links.forEach(function (a) {
+          var match = !q || a.textContent.toLowerCase().indexOf(q) > -1;
+          a.parentNode.classList.toggle('hide', !match);
+          if (match) hits++;
+        });
+        g.empty.hidden = hits > 0;
       });
-      empty.hidden = hits > 0;
     });
 
     /* ---------- scroll state ---------- */
@@ -155,7 +178,16 @@
     function setCurrent(i) {
       if (i === current || i < 0) return;
       current = i;
-      links.forEach(function (a, k) { a.classList.toggle('on', k === i); });
+      groups.forEach(function (g) {
+        g.links.forEach(function (a, k) { a.classList.toggle('on', k === i); });
+        var act = g.links[i];
+        if (act && g.list.scrollHeight > g.list.clientHeight + 4) {
+          var lt = act.offsetTop, lh = act.offsetHeight, st = g.list.scrollTop, ch = g.list.clientHeight;
+          if (lt < st || lt + lh > st + ch) {
+            g.list.scrollTo({ top: lt - ch / 2 + lh / 2, behavior: reduced ? 'auto' : 'smooth' });
+          }
+        }
+      });
       hereNum.textContent = String(i + 1).padStart(2, '0');
       hereTxt.textContent = label(secs[i]);
       hereWrap.classList.add('on');
