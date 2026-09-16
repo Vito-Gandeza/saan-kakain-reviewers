@@ -113,7 +113,7 @@ nav.rail, nav.toc { display: none !important; }
 /* Balance the measure. Each page sized its container for a sidebar that is
    now gone, which left a ~600px prose column pinned to the left of a
    1080–1180px box. Narrow every page to one centred column instead. */
-:root { --rv-page: 880px; }
+:root { --rv-page: 720px; }
 .shell,
 .wrap,
 .mast-inner,
