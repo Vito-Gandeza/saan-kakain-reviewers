@@ -1,0 +1,1711 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DIGDACM Field Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-svg.js"></script>
+<style>
+:root{
+  --paper:#E9EDF1; --surface:#FFFFFF; --surface-2:#F2F6F8; --inset:#E3E9ED;
+  --ink:#111820; --ink-2:#44525F; --ink-3:#6E7D8A;
+  --rule:#CBD5DD; --rule-2:#DFE6EB;
+  --copper:#A9521F; --copper-ink:#8A4218; --copper-soft:#F5E3D6;
+  --teal:#0E6E78; --teal-soft:#D8EAEC;
+  --flag:#7A6208; --flag-soft:#F3EAC9;
+  --shadow:0 1px 2px rgba(17,24,32,.06), 0 8px 24px -16px rgba(17,24,32,.28);
+  --mono:"IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --disp:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1319; --surface:#151D25; --surface-2:#1B242D; --inset:#111921;
+    --ink:#E2E9EF; --ink-2:#A6B4C0; --ink-3:#7B8A97;
+    --rule:#2A3742; --rule-2:#222E38;
+    --copper:#E2924F; --copper-ink:#EFA96C; --copper-soft:#33241A;
+    --teal:#4CBBC4; --teal-soft:#102E33;
+    --flag:#D7B750; --flag-soft:#2C2612;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1319; --surface:#151D25; --surface-2:#1B242D; --inset:#111921;
+  --ink:#E2E9EF; --ink-2:#A6B4C0; --ink-3:#7B8A97;
+  --rule:#2A3742; --rule-2:#222E38;
+  --copper:#E2924F; --copper-ink:#EFA96C; --copper-soft:#33241A;
+  --teal:#4CBBC4; --teal-soft:#102E33;
+  --flag:#D7B750; --flag-soft:#2C2612;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--body); font-size:17px; line-height:1.62;
+  margin:0; padding:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:20px; padding-block:0}
+
+/* ---------- masthead ---------- */
+header.mast{
+  border-bottom:1px solid var(--rule);
+  background:linear-gradient(180deg, var(--surface), var(--surface-2));
+}
+.mast-inner{max-width:1180px; margin:0 auto; padding-inline:20px; padding-block:34px 28px}
+.eyebrow{
+  font-family:var(--mono); font-size:11.5px; font-weight:500;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3);
+  display:flex; flex-wrap:wrap; gap:8px 18px; margin:0 0 14px;
+}
+.eyebrow b{color:var(--copper); font-weight:600}
+h1{
+  font-family:var(--disp); font-weight:700; font-size:clamp(30px,5vw,50px);
+  line-height:1.04; letter-spacing:-.022em; margin:0 0 12px; text-wrap:balance;
+}
+.dek{font-size:18px; color:var(--ink-2); max-width:62ch; margin:0}
+.mast-meta{
+  display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.06em;
+}
+.chip{
+  border:1px solid var(--rule); border-radius:2px; padding:5px 9px;
+  color:var(--ink-2); background:var(--surface);
+}
+.chip.hot{border-color:var(--copper); color:var(--copper-ink); background:var(--copper-soft)}
+
+/* ---------- layout ---------- */
+.shell{display:grid; grid-template-columns:230px minmax(0,1fr); gap:44px; padding-block:40px 80px}
+nav.rail{position:sticky; top:16px; align-self:start; max-height:calc(100vh - 32px); overflow-y:auto}
+nav.rail h2{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 12px; font-weight:600;
+}
+nav.rail ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+nav.rail a{
+  display:grid; grid-template-columns:26px 1fr; gap:8px; align-items:baseline;
+  text-decoration:none; color:var(--ink-2); padding:6px 8px;
+  font-family:var(--disp); font-size:13.5px; line-height:1.3;
+  border-left:2px solid transparent; border-radius:0 2px 2px 0;
+}
+nav.rail a span{font-family:var(--mono); font-size:11px; color:var(--ink-3)}
+nav.rail a:hover{background:var(--surface-2); color:var(--ink)}
+nav.rail a.on{border-left-color:var(--copper); background:var(--surface); color:var(--ink); font-weight:600}
+nav.rail a.on span{color:var(--copper)}
+
+main{min-width:0}
+section.sec{scroll-margin-top:20px; margin-bottom:56px}
+.sec-head{display:flex; gap:14px; align-items:baseline; border-bottom:2px solid var(--ink); padding-bottom:8px; margin-bottom:22px}
+.sec-num{font-family:var(--mono); font-size:13px; font-weight:600; color:var(--copper); letter-spacing:.05em}
+h2.sec-title{font-family:var(--disp); font-weight:700; font-size:clamp(22px,3vw,29px); letter-spacing:-.018em; margin:0; text-wrap:balance}
+h3{font-family:var(--disp); font-weight:600; font-size:19px; letter-spacing:-.01em; margin:30px 0 8px; text-wrap:balance}
+h4{font-family:var(--disp); font-weight:600; font-size:15.5px; margin:20px 0 6px; color:var(--ink)}
+p{margin:0 0 14px; max-width:68ch}
+ul,ol.body{margin:0 0 14px; padding-left:22px; max-width:66ch}
+li{margin-bottom:5px}
+strong{font-weight:600}
+em.term{font-style:normal; font-weight:600; color:var(--copper-ink); font-family:var(--disp); font-size:.97em}
+code{font-family:var(--mono); font-size:.86em; background:var(--surface-2); border:1px solid var(--rule-2); padding:1px 5px; border-radius:2px}
+a{color:var(--teal)}
+:focus-visible{outline:2px solid var(--copper); outline-offset:2px}
+
+/* ---------- content devices ---------- */
+.lede{font-size:18.5px; color:var(--ink-2); max-width:64ch; margin-bottom:20px}
+
+.callout{
+  background:var(--surface); border:1px solid var(--rule); border-left:3px solid var(--teal);
+  padding:14px 18px; margin:18px 0; border-radius:0 3px 3px 0;
+}
+.callout .lbl{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--teal); font-weight:600; display:block; margin-bottom:6px;
+}
+.callout p:last-child{margin-bottom:0}
+.callout.warn{border-left-color:var(--flag)}
+.callout.warn .lbl{color:var(--flag)}
+.callout.beyond{border-left-color:var(--ink-3); background:var(--surface-2)}
+.callout.beyond .lbl{color:var(--ink-3)}
+
+/* method block — the solving spine */
+.method{
+  background:var(--surface); border:1px solid var(--rule); border-radius:3px;
+  margin:22px 0; box-shadow:var(--shadow); overflow:hidden;
+}
+.method > header{
+  background:var(--copper-soft); border-bottom:1px solid var(--rule);
+  padding:9px 18px; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;
+}
+.method > header .kind{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--copper-ink); font-weight:600;
+}
+.method > header .name{font-family:var(--disp); font-weight:600; font-size:15px; color:var(--ink)}
+.method .body{padding:16px 18px 6px}
+ol.steps{list-style:none; counter-reset:st; margin:0; padding:0}
+ol.steps > li{
+  counter-increment:st; position:relative; padding-left:34px; margin-bottom:12px; max-width:64ch;
+}
+ol.steps > li::before{
+  content:counter(st); position:absolute; left:0; top:1px;
+  font-family:var(--mono); font-size:11px; font-weight:600; color:var(--copper-ink);
+  background:var(--copper-soft); border:1px solid var(--copper); border-radius:50%;
+  width:22px; height:22px; display:grid; place-items:center; line-height:1;
+}
+
+/* worked solution — professor's ink */
+.worked{
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:3px;
+  margin:20px 0; overflow:hidden;
+}
+.worked > header{
+  padding:9px 18px; border-bottom:1px dashed var(--rule);
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:600; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+.worked > header .src{color:var(--teal); letter-spacing:.06em; text-transform:none; font-size:10.5px}
+.worked .body{padding:14px 18px 4px}
+.q{font-style:italic; color:var(--ink-2); border-left:2px solid var(--rule); padding-left:12px; margin:0 0 14px; max-width:64ch}
+.ans{
+  font-family:var(--mono); font-size:13.5px; font-weight:600; color:var(--copper-ink);
+  background:var(--copper-soft); border:1px solid var(--copper); border-radius:2px;
+  display:inline-block; padding:4px 10px; margin:2px 0 14px;
+}
+.mathline{overflow-x:auto; padding:2px 0; margin:0 0 6px}
+
+/* tables */
+.tbl-wrap{overflow-x:auto; margin:18px 0; border:1px solid var(--rule); border-radius:3px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:14px; font-variant-numeric:tabular-nums}
+th,td{padding:9px 13px; text-align:left; border-bottom:1px solid var(--rule-2); vertical-align:top}
+th{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-2); background:var(--surface-2); font-weight:600; white-space:nowrap;
+}
+td{font-family:var(--body)}
+td.num,td.mono{font-family:var(--mono); font-size:13px; white-space:nowrap}
+tr:last-child td{border-bottom:none}
+
+/* formula card */
+.fx{
+  border:1px solid var(--rule); border-left:3px solid var(--copper); background:var(--surface);
+  padding:12px 16px 4px; margin:16px 0; border-radius:0 3px 3px 0;
+}
+.fx .tag{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:600; margin-bottom:2px;
+}
+.fx .note{font-size:14.5px; color:var(--ink-2); margin:0 0 10px}
+
+/* ---------- instrument panels ---------- */
+.panel{
+  background:var(--surface); border:1px solid var(--rule); border-radius:4px;
+  margin:26px 0; box-shadow:var(--shadow); overflow:hidden;
+}
+.panel > header{
+  display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap;
+  padding:10px 16px; background:var(--surface-2); border-bottom:1px solid var(--rule);
+}
+.panel > header .ttl{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  font-weight:600; color:var(--ink);
+}
+.panel > header .sub{font-family:var(--mono); font-size:10.5px; color:var(--ink-3); letter-spacing:.06em}
+.panel .pad{padding:16px}
+.scope{
+  background:var(--inset); border:1px solid var(--rule-2); border-radius:3px;
+  width:100%; display:block;
+}
+.ctrls{display:grid; gap:12px 20px; margin-top:14px}
+.ctrls.two{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.ctrls.three{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.ctrl label{
+  display:flex; justify-content:space-between; gap:10px; align-items:baseline;
+  font-family:var(--mono); font-size:11px; letter-spacing:.07em; color:var(--ink-2);
+  text-transform:uppercase; margin-bottom:5px;
+}
+.ctrl label b{color:var(--copper-ink); font-weight:600; font-size:12px; letter-spacing:0; text-transform:none}
+input[type=range]{width:100%; accent-color:var(--copper); margin:0}
+input[type=number],select{
+  width:100%; font-family:var(--mono); font-size:13px; padding:6px 8px;
+  background:var(--surface-2); color:var(--ink); border:1px solid var(--rule); border-radius:2px;
+}
+.readout{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  font-family:var(--mono); font-size:12px;
+}
+.rd{
+  border:1px solid var(--rule); border-radius:2px; padding:6px 10px; background:var(--surface-2);
+  display:flex; gap:8px; align-items:baseline; font-variant-numeric:tabular-nums;
+}
+.rd i{font-style:normal; color:var(--ink-3); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase}
+.rd b{font-weight:600; color:var(--ink)}
+.rd.hot{border-color:var(--copper); background:var(--copper-soft)}
+.rd.hot b{color:var(--copper-ink)}
+.rd.cool{border-color:var(--teal); background:var(--teal-soft)}
+.rd.cool b{color:var(--teal)}
+.btnrow{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
+button.pb{
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  background:var(--surface-2); color:var(--ink-2); border:1px solid var(--rule);
+  padding:6px 11px; border-radius:2px; cursor:pointer;
+}
+button.pb:hover{border-color:var(--copper); color:var(--copper-ink)}
+button.pb[aria-pressed="true"]{background:var(--copper-soft); border-color:var(--copper); color:var(--copper-ink); font-weight:600}
+.scope-pair{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.scope-cap{
+  font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); margin:6px 0 0;
+}
+
+/* quiz */
+.qz{border:1px solid var(--rule); border-radius:3px; background:var(--surface); margin-bottom:10px}
+.qz summary{
+  cursor:pointer; padding:12px 16px; font-family:var(--disp); font-weight:600; font-size:15px;
+  list-style:none; display:flex; gap:12px; align-items:baseline;
+}
+.qz summary::-webkit-details-marker{display:none}
+.qz summary::before{
+  content:"?"; font-family:var(--mono); font-size:11px; font-weight:600; color:var(--teal);
+  border:1px solid var(--teal); background:var(--teal-soft); border-radius:50%;
+  width:20px; height:20px; display:grid; place-items:center; flex:none;
+}
+.qz[open] summary::before{content:"\2713"; color:var(--copper-ink); border-color:var(--copper); background:var(--copper-soft)}
+.qz .a{padding:0 16px 12px 48px; font-size:15.5px; color:var(--ink-2)}
+.qz .a p{margin-bottom:8px}
+
+.footer{border-top:1px solid var(--rule); padding-block:24px 60px; color:var(--ink-3); font-size:14px}
+.footer p{max-width:70ch}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr; gap:0; padding-block:26px 60px}
+  nav.rail{position:static; max-height:none; margin-bottom:28px; border:1px solid var(--rule); border-radius:3px; background:var(--surface); padding:14px}
+  nav.rail ol{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:2px}
+  .scope-pair{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="mast">
+  <div class="mast-inner">
+    <p class="eyebrow"><span><b>DIGDACM</b> &middot; Data &amp; Digital Communications</span><span>Section E32</span><span>Dr. Gerald P. Arada</span></p>
+    <h1>DIGDACM Field Manual</h1>
+    <p class="dek">Everything from your four lectures, rebuilt from the ground up &mdash; starting with the mixed-signals and logic-design facts the course assumes you still remember, then climbing to characteristic impedance and numerical aperture. Formulas are typeset, the instruments are live, and every problem type has a written attack plan.</p>
+    <div class="mast-meta">
+      <span class="chip hot">10 worked examples</span>
+      <span class="chip">7 live instruments</span>
+      <span class="chip">Prelim recap included</span>
+      <span class="chip">Source: 4 lecture files</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="shell">
+
+<nav class="rail" aria-label="Contents">
+  <h2>Build order</h2>
+  <ol id="toc">
+    <li><a href="#s0"><span>00</span>Prerequisites you forgot</a></li>
+    <li><a href="#s1"><span>01</span>What a signal is</a></li>
+    <li><a href="#s2"><span>02</span>Time &amp; frequency domains</a></li>
+    <li><a href="#s3"><span>03</span>Bandwidth</a></li>
+    <li><a href="#s4"><span>04</span>Digital signals &amp; bit rate</a></li>
+    <li><a href="#s5"><span>05</span>Filters</a></li>
+    <li><a href="#s6"><span>06</span>Media as filters &amp; impairments</a></li>
+    <li><a href="#s7"><span>07</span>Guided media</a></li>
+    <li><a href="#s8"><span>08</span>Fiber optics</a></li>
+    <li><a href="#s9"><span>09</span>Unguided media</a></li>
+    <li><a href="#s10"><span>10</span>Problem playbook</a></li>
+    <li><a href="#s11"><span>11</span>Self-check</a></li>
+  </ol>
+</nav>
+
+<main>
+<section class="sec" id="s0">
+  <div class="sec-head"><span class="sec-num">00</span><h2 class="sec-title">The prerequisites, rebuilt</h2></div>
+  <p class="lede">This course leans on two earlier subjects without ever re-teaching them. Here is the minimum set of facts from each that the DIGDACM lectures silently assume. Nothing here is optional &mdash; every later section calls back to it.</p>
+
+  <h3>From Logic Design: counting in powers of two</h3>
+  <p>A <em class="term">bit</em> is one of two discrete states. With \(n\) bits you can name \(2^n\) distinct things; turned around, to name \(L\) distinct things you need \(\log_2 L\) bits. That single inversion is the whole reason the "bits per level" formula in Section 4 looks the way it does.</p>
+
+  <div class="fx">
+    <div class="tag">Base-2 logarithm, by hand</div>
+    <p class="note">Your calculator may only have \(\log_{10}\) and \(\ln\). Convert with the change-of-base rule:</p>
+    <div class="mathline">$$\log_2 L=\frac{\log_{10}L}{\log_{10}2}=\frac{\ln L}{\ln 2}\approx 3.3219\,\log_{10}L$$</div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Bits \(n\)</th><th>Levels \(2^n\)</th><th>Read it as</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td class="num">2</td><td>binary on/off &mdash; the ordinary digital signal</td></tr>
+        <tr><td class="num">2</td><td class="num">4</td><td>four voltage levels, 2 bits ride on each symbol</td></tr>
+        <tr><td class="num">3</td><td class="num">8</td><td>Example 4 in the lecture</td></tr>
+        <tr><td class="num">4</td><td class="num">16</td><td>smallest integer that covers 9 levels (Example 5)</td></tr>
+        <tr><td class="num">8</td><td class="num">256</td><td>one byte &mdash; one character of text, one voice sample</td></tr>
+        <tr><td class="num">10</td><td class="num">1024</td><td>why "kilo" means 1024 in memory but <strong>1000</strong> in data rates</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <span class="lbl">Unit trap &mdash; this one costs marks</span>
+    <p>In communications, prefixes are decimal: 1 kbps = 1000 bps, 1 Mbps = 10<sup>6</sup> bps, 1 Gbps = 10<sup>9</sup> bps. Do <strong>not</strong> divide by 1024. Also: <strong>b</strong> is bits, <strong>B</strong> is bytes. 8 bits = 1 byte = 1 character in every lecture example.</p>
+  </div>
+
+  <h3>From Mixed Signals: the anatomy of a sine wave</h3>
+  <p>Every analog signal in this course is written as a sinusoid or a sum of them. There are exactly three knobs.</p>
+
+  <div class="fx">
+    <div class="tag">The canonical sinusoid</div>
+    <div class="mathline">$$x(t)=A\cos(2\pi f t+\varphi)=A\cos(\omega t+\varphi)$$</div>
+    <ul>
+      <li><strong>\(A\)</strong> &mdash; peak amplitude, in volts. Half the peak-to-peak height.</li>
+      <li><strong>\(f\)</strong> &mdash; frequency in hertz = cycles per second. <strong>\(\omega=2\pi f\)</strong> is angular frequency in rad/s.</li>
+      <li><strong>\(\varphi\)</strong> &mdash; phase, the horizontal shift. It never changes the spectrum's line positions, only their relative timing.</li>
+    </ul>
+  </div>
+
+  <div class="fx">
+    <div class="tag">The three conversions you will use constantly</div>
+    <div class="mathline">$$T=\frac{1}{f}\qquad f=\frac{1}{T}\qquad \lambda=\frac{v}{f}$$</div>
+    <p class="note">\(T\) is the period in seconds, \(\lambda\) the wavelength in metres, \(v\) the propagation speed in the medium (\(\approx 3\times10^{8}\) m/s in free space, roughly \(2\times10^{8}\) m/s in copper or glass).</p>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">Why \(\omega=2\pi f\) keeps appearing</span>
+    <p>One full cycle is \(2\pi\) radians. If the wave completes \(f\) cycles each second, the angle advances \(2\pi f\) radians each second. So whenever a lecture writes \(\cos(120\pi t)\), read off \(\omega = 120\pi\), then divide by \(2\pi\) to get \(f = 60\) Hz. This is step one of Example 1 and you will do it in almost every problem.</p>
+  </div>
+
+  <h3>From Mixed Signals: decibels</h3>
+  <p>Communications never quotes a raw ratio &mdash; it quotes a logarithm of one, because gains and losses along a link then simply add. Fiber attenuation, filter slopes, and signal-to-noise ratio are all in dB.</p>
+
+  <div class="fx">
+    <div class="tag">Power and voltage decibels</div>
+    <div class="mathline">$$\mathrm{dB}=10\log_{10}\!\frac{P_2}{P_1}\qquad\qquad \mathrm{dB}=20\log_{10}\!\frac{V_2}{V_1}$$</div>
+    <p class="note">Negative dB = loss (attenuation), positive dB = gain (amplification). The factor differs because power goes as voltage squared, and \(\log(V^2)=2\log V\).</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>dB</th><th>Power ratio</th><th>Meaning in a link</th></tr></thead>
+      <tbody>
+        <tr><td class="num">&minus;3 dB</td><td class="num">0.5&times;</td><td>half the power &mdash; this defines a filter's cutoff frequency</td></tr>
+        <tr><td class="num">&minus;10 dB</td><td class="num">0.1&times;</td><td>one tenth</td></tr>
+        <tr><td class="num">&minus;20 dB</td><td class="num">0.01&times;</td><td>100 km of 0.2 dB/km fiber</td></tr>
+        <tr><td class="num">+3 dB</td><td class="num">2&times;</td><td>double the power</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">The dB superpower</span>
+    <p>Cascaded stages multiply their ratios, but <strong>add</strong> their decibels. A link with &minus;12 dB of cable loss, +20 dB of amplifier gain and another &minus;6 dB of cable loss is simply \(-12+20-6=+2\) dB overall. Never multiply dB values.</p>
+  </div>
+
+  <h3>From Mixed Signals: the RC circuit, which is secretly a filter</h3>
+  <p>A resistor and capacitor in series is the simplest low-pass filter in existence, and its cutoff formula is the one piece of circuit theory Section 5 assumes. The capacitor's impedance \(X_C=1/(2\pi f C)\) falls as frequency rises, so high frequencies are shorted to ground.</p>
+
+  <div class="fx">
+    <div class="tag">RC cutoff frequency</div>
+    <div class="mathline">$$f_c=\frac{1}{2\pi RC}$$</div>
+    <p class="note">At \(f=f_c\) the output power is half the input &mdash; the &minus;3 dB point. Beyond it a single-stage RC rolls off at 20 dB per decade (6 dB per octave), which is exactly the "slope in dB per decade" the filter lecture mentions.</p>
+  </div>
+</section>
+
+<section class="sec" id="s1">
+  <div class="sec-head"><span class="sec-num">01</span><h2 class="sec-title">What a signal is</h2></div>
+  <p class="lede">Lecture 1 opens by splitting the world twice: data versus signals, and analog versus digital. Getting these four words straight is worth easy marks because the definitions are quotable.</p>
+
+  <h3>Analog and digital</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th></th><th>Analog</th><th>Digital</th></tr></thead>
+      <tbody>
+        <tr><th>Data</th><td>information that is <strong>continuous</strong></td><td>information that has <strong>discrete states</strong></td></tr>
+        <tr><th>Signal</th><td>can take an <strong>infinite number of values</strong> within a range</td><td>can take only a <strong>limited number of values</strong></td></tr>
+        <tr><th>Looks like</th><td>a smooth curve</td><td>a staircase / square wave</td></tr>
+        <tr><th>Example</th><td>a voice on a microphone</td><td>a byte stored in memory</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <span class="lbl">Keep data and signal separate</span>
+    <p>Data is the <em>information</em>; the signal is the <em>electrical or optical representation</em> carried on a medium. Analog data (your voice) can be sent as a digital signal, and digital data (a file) is routinely sent as an analog signal. All four combinations exist &mdash; that is the entire motivation for the modulation and encoding chapters that follow this unit.</p>
+  </div>
+
+  <h3>Periodic and aperiodic</h3>
+  <ul>
+    <li>A <em class="term">periodic signal</em> repeats its sequence of values exactly after a fixed length of time, the <strong>period</strong> \(T\). Purely periodic signals are a theoretical idea &mdash; real measured data always carries some noise.</li>
+    <li>An <em class="term">aperiodic (nonperiodic) signal</em> changes without any repeating pattern or cycle.</li>
+  </ul>
+  <p>Periodic examples from the slides: sine, triangular, square and "complex" (composite) waves. Aperiodic: speech from a microphone, since repeating it exactly would mean saying the same word with exactly the same tone forever.</p>
+
+  <div class="method">
+    <header><span class="kind">Method</span><span class="name">Is this signal periodic? If so, what is \(T\)?</span></header>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Reject the non-oscillators first.</strong> A real exponential like \(5e^{-2t}\) or a ramp never repeats &mdash; it is aperiodic, full stop. Only sines, cosines and sums of them can be periodic.</li>
+        <li><strong>Read \(\omega\) off each term,</strong> i.e. the whole coefficient of \(t\) inside the sine or cosine, then convert: \(f=\omega/2\pi\).</li>
+        <li><strong>Single term?</strong> Then it is periodic and \(T=1/f\). Done.</li>
+        <li><strong>Two or more terms?</strong> Compute each \(T_i=1/f_i\) and form the ratio \(T_1/T_2\). If that ratio is a <strong>rational number</strong> (a ratio of whole numbers), the sum is periodic. If it is irrational (e.g. involves \(\pi\) or \(\sqrt2\) on one side only), the sum is aperiodic.</li>
+        <li><strong>Find the fundamental period</strong> \(T=\operatorname{LCM}(T_1,T_2,\dots)\). Faster route: the fundamental frequency is \(f_0=\gcd(f_1,f_2,\dots)\) and then \(T=1/f_0\). Every component must be a whole-number multiple of \(f_0\).</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Example 1</span><span class="src">Signal &amp; Transmission Media Characterization, slide 6</span></header>
+    <div class="body">
+      <p class="q">Determine whether each signal is periodic. If it is, find its period.<br>(a) \(x(t)=4\cos(120\pi t)\)&nbsp;&nbsp;(b) \(x(t)=5e^{-2t}\)&nbsp;&nbsp;(c) \(x(t)=\cos(200\pi t)+5\sin(80\pi t)\)</p>
+
+      <h4>(a) Single cosine</h4>
+      <div class="mathline">$$\omega=120\pi \;\Rightarrow\; f=\frac{\omega}{2\pi}=\frac{120\pi}{2\pi}=60\ \text{Hz}\;\Rightarrow\; T=\frac{1}{60}$$</div>
+      <p class="ans">Periodic, \(T = 1/60\ \text{s} \approx 16.67\ \text{ms}\)</p>
+
+      <h4>(b) Decaying exponential</h4>
+      <p>No sine or cosine is present; the amplitude shrinks forever and never returns to a previous value.</p>
+      <p class="ans">Aperiodic &mdash; no period exists</p>
+
+      <h4>(c) Sum of two sinusoids</h4>
+      <div class="mathline">$$f_1=\frac{200\pi}{2\pi}=100\ \text{Hz},\quad T_1=0.01\ \text{s}\qquad f_2=\frac{80\pi}{2\pi}=40\ \text{Hz},\quad T_2=0.025\ \text{s}$$</div>
+      <div class="mathline">$$\frac{T_1}{T_2}=\frac{0.01}{0.025}=\frac{2}{5}\quad\text{(rational)}\;\Rightarrow\;\text{periodic}$$</div>
+      <div class="mathline">$$f_0=\gcd(100,40)=20\ \text{Hz}\;\Rightarrow\; T=\frac{1}{20}=0.05\ \text{s}$$</div>
+      <p class="ans">Periodic, \(T = 0.05\ \text{s}\)</p>
+      <p>Check it against the plotted waveform on the next slide: the pattern repeats at 0.05, 0.10 and 0.15 s, and the two components are the 5th and 2nd harmonics of 20 Hz. That is the definition of a fundamental.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <header><span class="ttl">Instrument 01 &mdash; Periodicity Checker</span><span class="sub">two-component composite</span></header>
+    <div class="pad">
+      <div class="ctrls two">
+        <div class="ctrl"><label for="p1f1">Component 1 frequency <b id="p1f1v">100 Hz</b></label><input type="number" id="p1f1" value="100" min="1" max="2000" step="1"></div>
+        <div class="ctrl"><label for="p1f2">Component 2 frequency <b id="p1f2v">40 Hz</b></label><input type="number" id="p1f2" value="40" min="1" max="2000" step="1"></div>
+      </div>
+      <div class="readout" id="p1out"></div>
+      <div class="btnrow">
+        <button class="pb" data-p1="100,40">Example 1c</button>
+        <button class="pb" data-p1="8,16">8 &amp; 16 Hz</button>
+        <button class="pb" data-p1="60,50">60 &amp; 50 Hz</button>
+        <button class="pb" data-p1="7,13">7 &amp; 13 Hz</button>
+      </div>
+      <p class="scope-cap">Fundamental \(f_0=\gcd(f_1,f_2)\); period \(T=1/f_0\); harmonic numbers show each component as a multiple of \(f_0\).</p>
+    </div>
+  </div>
+</section>
+<section class="sec" id="s2">
+  <div class="sec-head"><span class="sec-num">02</span><h2 class="sec-title">Time and frequency domains</h2></div>
+  <p class="lede">The same signal, two views. Learning to flip between them on demand is the single most useful skill in this unit &mdash; bandwidth, filters, media limits and distortion are all defined in the frequency view.</p>
+
+  <h3>The two plots</h3>
+  <ul>
+    <li>A <em class="term">time-domain plot</em> shows amplitude against time. It is what an oscilloscope draws. A sine wave is completely defined by its amplitude, frequency and phase.</li>
+    <li>A <em class="term">frequency-domain plot</em> (a spectrum) shows amplitude against frequency. It is concerned with <strong>only the peak value and the frequency</strong>. A single sine wave becomes a single vertical spike.</li>
+  </ul>
+  <p>A 5 V, 6 Hz sine wave that fills a whole oscilloscope screen collapses to one spike of height 5 standing at 6 Hz. That compactness is the point: three sine waves at 0, 8 and 16 Hz are a tangle of overlapping curves in time, but three clean spikes in frequency.</p>
+
+  <h3>Fourier analysis &mdash; why composite signals exist</h3>
+  <p>A single-frequency sine wave is useless in data communications: it carries no information. We must send a <em class="term">composite signal</em>, one made of many simple sine waves.</p>
+  <div class="callout">
+    <span class="lbl">The Fourier statement to memorise</span>
+    <p>Any composite signal is a combination of simple sine waves with different frequencies, amplitudes and phases.</p>
+    <p><strong>If the composite signal is periodic,</strong> the decomposition gives a series of signals with <strong>discrete frequencies</strong> &mdash; a spectrum of separated spikes.<br><strong>If the composite signal is nonperiodic,</strong> the decomposition gives a combination of sine waves with <strong>continuous frequencies</strong> &mdash; a smooth, filled-in spectrum.</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Signal</th><th>Time domain</th><th>Frequency domain</th></tr></thead>
+      <tbody>
+        <tr><td>Single sine</td><td>one smooth wave</td><td>one spike</td></tr>
+        <tr><td>Periodic composite (e.g. a square wave)</td><td>repeating complex shape</td><td>discrete spikes at \(f, 3f, 5f, 7f,\dots\) &mdash; harmonics</td></tr>
+        <tr><td>Nonperiodic composite (e.g. speech)</td><td>irregular, never repeats</td><td>a continuous band, e.g. 0 to 4 kHz</td></tr>
+        <tr><td>Nonperiodic digital (one pulse)</td><td>a single rectangle</td><td>a continuous \(\operatorname{sinc}\)-shaped curve starting at 0 Hz</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The square wave case is worth remembering with numbers: the lecture's decomposition figure shows a square wave built from \(f\), \(3f\), \(9f\)&hellip; with the amplitude of each harmonic falling as the frequency rises. A perfect square wave needs <em>infinitely many</em> harmonics &mdash; which is exactly why no real medium can carry one perfectly (Section 6).</p>
+
+  <div class="panel">
+    <header><span class="ttl">Instrument 02 &mdash; Composite Signal Studio</span><span class="sub">time view &#8596; frequency view</span></header>
+    <div class="pad">
+      <div class="scope-pair">
+        <div><canvas class="scope" id="cvT"></canvas><p class="scope-cap">Time domain &mdash; amplitude vs. time (s)</p></div>
+        <div><canvas class="scope" id="cvF"></canvas><p class="scope-cap">Frequency domain &mdash; peak amplitude vs. frequency (Hz)</p></div>
+      </div>
+      <div class="ctrls three">
+        <div class="ctrl"><label for="dc">DC (0 Hz) <b id="dcv">15</b></label><input type="range" id="dc" min="0" max="20" step="1" value="15"></div>
+        <div class="ctrl"><label for="a1">Amp 1 <b id="a1v">10</b></label><input type="range" id="a1" min="0" max="20" step="1" value="10"></div>
+        <div class="ctrl"><label for="f1">Freq 1 <b id="f1v">8 Hz</b></label><input type="range" id="f1" min="1" max="40" step="1" value="8"></div>
+        <div class="ctrl"><label for="a2">Amp 2 <b id="a2v">5</b></label><input type="range" id="a2" min="0" max="20" step="1" value="5"></div>
+        <div class="ctrl"><label for="f2">Freq 2 <b id="f2v">16 Hz</b></label><input type="range" id="f2" min="1" max="40" step="1" value="16"></div>
+        <div class="ctrl"><label for="a3">Amp 3 <b id="a3v">0</b></label><input type="range" id="a3" min="0" max="20" step="1" value="0"></div>
+        <div class="ctrl"><label for="f3">Freq 3 <b id="f3v">24 Hz</b></label><input type="range" id="f3" min="1" max="40" step="1" value="24"></div>
+      </div>
+      <div class="readout" id="cOut"></div>
+      <div class="btnrow">
+        <button class="pb" data-comp="15,10,8,5,16,0,24">Lecture figure</button>
+        <button class="pb" data-comp="0,10,5,3.33,15,2,25">Square-ish (f, 3f, 5f)</button>
+        <button class="pb" data-comp="0,12,3,0,16,0,24">Single sine</button>
+      </div>
+      <p class="scope-cap">The bandwidth readout is the highest frequency present minus the lowest &mdash; DC counts as 0 Hz when its amplitude is non-zero.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s3">
+  <div class="sec-head"><span class="sec-num">03</span><h2 class="sec-title">Bandwidth</h2></div>
+  <p class="lede">One definition, two very different uses of the same word. Confusing them is the most common error in this topic.</p>
+
+  <div class="fx">
+    <div class="tag">Definition</div>
+    <p class="note">The bandwidth of a composite signal is the range of frequencies it contains &mdash; the difference between its highest and lowest frequency.</p>
+    <div class="mathline">$$B = f_{\text{high}} - f_{\text{low}}\qquad\text{(in Hz)}$$</div>
+  </div>
+
+  <h3>Signal bandwidth vs. transmission-media bandwidth</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th></th><th>Signal bandwidth</th><th>Transmission-media bandwidth</th></tr></thead>
+      <tbody>
+        <tr><th>Means</th><td>the range of frequencies the signal <strong>occupies</strong></td><td>the range of frequencies the medium can <strong>carry effectively</strong>, with acceptable attenuation and distortion</td></tr>
+        <tr><th>Measured in</th><td>hertz</td><td>hertz &mdash; but often quoted loosely as a data rate in bits per second</td></tr>
+        <tr><th>Example</th><td>voice = about 4 kHz; audio = 20 Hz to 20 kHz</td><td>wired Ethernet &asymp; 100 Mbps; 802.11n &asymp; 150 Mbps</td></tr>
+        <tr><th>Set by</th><td>what you are sending</td><td>type of medium, distance, interference</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <span class="lbl">The key relationship &mdash; exam-quotable</span>
+    <p>The <strong>transmission-media bandwidth must be greater than the signal bandwidth</strong>. If the medium's bandwidth is too narrow for the signal, the signal is distorted, leading to errors or loss of information.</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Type of channel</th><th>Frequency range</th><th>Bandwidth</th><th>Application</th></tr></thead>
+      <tbody>
+        <tr><td>Speech</td><td class="num">300 &ndash; 3400 Hz</td><td class="num">3.1 kHz</td><td>commercial telephone</td></tr>
+        <tr><td>Audio</td><td class="num">20 Hz &ndash; 20 kHz</td><td class="num">19.980 kHz</td><td>musical instruments</td></tr>
+        <tr><td>Video</td><td class="num">0 &ndash; 4.2 MHz</td><td class="num">4.2 MHz</td><td>TV</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>And the media side of the same picture, which you should be able to rank from memory:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Medium</th><th>Usable frequency range</th></tr></thead>
+      <tbody>
+        <tr><td>Twisted pair</td><td class="num">1 &ndash; 100 MHz</td></tr>
+        <tr><td>Coaxial cable</td><td class="num">0 &ndash; 750 MHz</td></tr>
+        <tr><td>Microwave</td><td class="num">1 &ndash; 30 GHz</td></tr>
+        <tr><td>Fiber optics</td><td class="num">180 &ndash; 330 THz</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="method">
+    <header><span class="kind">Method</span><span class="name">Bandwidth &amp; spectrum problems</span></header>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Decide periodic or nonperiodic.</strong> Periodic &rarr; you will draw <em>discrete spikes</em>. Nonperiodic &rarr; you will draw a <em>continuous shape</em>. Getting this wrong loses the drawing marks even when the arithmetic is right.</li>
+        <li><strong>Identify \(f_{\text{low}}\) and \(f_{\text{high}}\)</strong> from the component list, then \(B=f_{\text{high}}-f_{\text{low}}\).</li>
+        <li><strong>If instead you are given \(B\) and a middle frequency,</strong> invert it: \(f_{\text{low}}=f_{\text{mid}}-B/2\) and \(f_{\text{high}}=f_{\text{mid}}+B/2\).</li>
+        <li><strong>Draw with labelled axes.</strong> Amplitude on \(y\), frequency on \(x\). Mark every component frequency and every stated amplitude. Write the bandwidth as a labelled span under the spectrum &mdash; the lecture figures always do.</li>
+        <li><strong>Sanity-check the units.</strong> Bandwidth is in hertz, not bits per second, unless the question is explicitly about a channel's data rate.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Example 2 (periodic)</span><span class="src">Signal &amp; Transmission Media Characterization, slide 20</span></header>
+    <div class="body">
+      <p class="q">A periodic signal is decomposed into five sine waves with frequencies of 100, 300, 500, 700 and 900 Hz. What is its bandwidth? Draw the spectrum, assuming all components have a maximum amplitude of 10 V.</p>
+      <div class="mathline">$$B=f_{\text{high}}-f_{\text{low}}=900-100=800\ \text{Hz}$$</div>
+      <p class="ans">\(B = 800\ \text{Hz}\)</p>
+      <p><strong>The drawing:</strong> because the signal is <em>periodic</em>, the spectrum is five discrete vertical spikes at 100, 300, 500, 700 and 900 Hz, each of height 10 V. Nothing in between. Note that these are the odd harmonics of a 100 Hz fundamental &mdash; the signature of a square-like wave.</p>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Example 3 (nonperiodic)</span><span class="src">Signal &amp; Transmission Media Characterization, slide 21</span></header>
+    <div class="body">
+      <p class="q">A nonperiodic composite signal has a bandwidth of 200 kHz, with a middle frequency of 140 kHz and peak amplitude of 20 V. The two extreme frequencies have an amplitude of 0. Draw the frequency domain of the signal.</p>
+      <div class="mathline">$$f_{\text{low}}=140-\frac{200}{2}=40\ \text{kHz}\qquad f_{\text{high}}=140+\frac{200}{2}=240\ \text{kHz}$$</div>
+      <p class="ans">Continuous spectrum from 40 kHz to 240 kHz, peaking at 20 V at 140 kHz</p>
+      <p><strong>The drawing:</strong> because the signal is <em>nonperiodic</em>, draw a continuous filled shape, not spikes. It starts at zero amplitude at 40 kHz, rises to 20 V at 140 kHz, and falls back to zero at 240 kHz &mdash; a triangle or smooth hump. Label the span underneath as "Bandwidth = 240 &minus; 40 = 200 kHz".</p>
+    </div>
+  </div>
+</section>
+<section class="sec" id="s4">
+  <div class="sec-head"><span class="sec-num">04</span><h2 class="sec-title">Digital signals and bit rate</h2></div>
+  <p class="lede">This section is where the logic-design prerequisite pays off, and where most of the course's numerical questions live. Every one of them is a unit-cancellation exercise.</p>
+
+  <h3>Levels and bits</h3>
+  <p>Information can be represented by a digital signal. A 1 might be a positive voltage and a 0 zero voltage &mdash; but a digital signal can have <strong>more than two levels</strong>, and then each level carries more than one bit.</p>
+
+  <div class="fx">
+    <div class="tag">Bits per level</div>
+    <div class="mathline">$$\text{bits per level}=\log_2 L\qquad\Longleftrightarrow\qquad L=2^{\,\text{bits}}$$</div>
+    <p class="note">2 levels &rarr; 1 bit each. 4 levels &rarr; 2 bits each. In general, \(L\) levels send \(\log_2 L\) bits per sample.</p>
+  </div>
+
+  <div class="fx">
+    <div class="tag">Bit rate vs. signal (baud) rate</div>
+    <div class="mathline">$$\text{bit rate}=\text{signal rate}\times\log_2 L$$</div>
+    <p class="note">The lecture's two-level figure sends 8 bits in 1 s = 8 bps. The four-level figure sends 16 bits in the same 8 symbol slots = 16 bps. Same symbol rate, double the bit rate &mdash; that is what extra levels buy you.</p>
+  </div>
+
+  <div class="callout warn">
+    <span class="lbl">Rounding rule &mdash; Examples 4 and 5 differ on purpose</span>
+    <p>If \(\log_2 L\) is a whole number, that is your answer. If it is not, you must <strong>round up</strong>, because you cannot transmit a fraction of a bit &mdash; the extra codewords are simply left unused. \(\log_2 9 = 3.17\), so nine levels need 4 bits per level, not 3.17.</p>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Examples 4 &amp; 5</span><span class="src">Signal &amp; Transmission Media Characterization, slides 31&ndash;32</span></header>
+    <div class="body">
+      <p class="q">(4) A digital signal has eight levels. How many bits are needed per level?<br>(5) A digital signal has nine levels. How many bits are needed per level?</p>
+      <div class="mathline">$$\log_2 8=\frac{\log_{10}8}{\log_{10}2}=\frac{0.9031}{0.3010}=3$$</div>
+      <p class="ans">Example 4: 3 bits per level</p>
+      <div class="mathline">$$\log_2 9=\frac{\log_{10}9}{\log_{10}2}=\frac{0.9542}{0.3010}=3.17\;\longrightarrow\;\lceil 3.17\rceil = 4$$</div>
+      <p class="ans">Example 5: 4 bits per level (3.17 rounded up)</p>
+      <p>Write the 3.17 down before rounding &mdash; the examiner wants to see that you know it is not exactly 3, and that the rounding is a physical constraint, not a sloppy approximation.</p>
+    </div>
+  </div>
+
+  <h3>Nyquist sampling &mdash; the bridge from analog to digital</h3>
+  <p>To turn an analog signal into a digital one you must sample it. The lecture states the rule inside Example 7: sample at <strong>twice the highest frequency</strong>, i.e. two samples per hertz of bandwidth.</p>
+  <div class="fx">
+    <div class="tag">Sampling theorem and the resulting bit rate</div>
+    <div class="mathline">$$f_s \ge 2 f_{\max}\qquad\qquad \text{bit rate}=f_s\times(\text{bits per sample})$$</div>
+  </div>
+
+  <div class="method">
+    <header><span class="kind">Method</span><span class="name">Any "what bit rate is required?" question</span></header>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Write the target unit first:</strong> bits per second. Everything else is a chain of conversion factors that must cancel down to it.</li>
+        <li><strong>List every layer of the source</strong> with its unit, from the largest chunk down to bits. Pages &rarr; lines &rarr; characters &rarr; bits. Frames &rarr; pixels &rarr; bits. Samples &rarr; bits.</li>
+        <li><strong>If the source is analog, insert the sampling step:</strong> \(f_s = 2f_{\max}\) samples per second, then bits per sample.</li>
+        <li><strong>Multiply straight across and cancel units visibly.</strong> Draw the strike-throughs the way the lecture does &mdash; pages cancels pages, lines cancels lines, and only bits/second survives.</li>
+        <li><strong>Convert the time base last</strong> (per minute &rarr; per second: divide by 60), then express in k/M/G using powers of 1000.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Example 6, text download</span><span class="src">slide 33, instructor's handwritten solution</span></header>
+    <div class="body">
+      <p class="q">Assume we need to download text documents at the rate of 100 pages per minute. What is the required bit rate of the channel? Standard textbook page: 24 lines per page, 80 characters per line, 8 bits per character.</p>
+      <div class="mathline">$$\text{Bit rate}=\left(100\,\frac{\text{pages}}{\text{min}}\right)\!\left(24\,\frac{\text{lines}}{\text{page}}\right)\!\left(80\,\frac{\text{char}}{\text{line}}\right)\!\left(8\,\frac{\text{bits}}{\text{char}}\right)$$</div>
+      <div class="mathline">$$=1\,536\,000\ \frac{\text{bits}}{\text{min}}\times\frac{1\ \text{min}}{60\ \text{s}}=25\,600\ \text{bps}$$</div>
+      <p class="ans">25 600 bps = 25.6 kbps</p>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Example 7, digitized voice</span><span class="src">slide 34, instructor's handwritten solution</span></header>
+    <div class="body">
+      <p class="q">A digitized voice channel is made by digitizing a 4 kHz bandwidth analog voice signal. We sample at twice the highest frequency (two samples per hertz) and each sample requires 8 bits. What is the required bit rate?</p>
+      <div class="mathline">$$f_s = 2(4000)=8000\ \frac{\text{samples}}{\text{s}}$$</div>
+      <div class="mathline">$$\text{Bit rate}=\left(8000\,\frac{\text{samples}}{\text{s}}\right)\!\left(8\,\frac{\text{bits}}{\text{sample}}\right)=64\,000\ \text{bps}$$</div>
+      <p class="ans">64 000 bps = 64 kbps</p>
+      <p>Worth memorising: <strong>64 kbps is one standard digital telephone channel</strong>. Nearly every telephony number in later chapters is a multiple of it.</p>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Example 8, HDTV</span><span class="src">slide 35, instructor's handwritten solution</span></header>
+    <div class="body">
+      <p class="q">What is the bit rate for high-definition TV (HDTV)? Aspect ratio 16:9, screen resolution 1920 &times; 1080 pixels, 24 bits per pixel, frame rate 30 frames per second.</p>
+      <div class="mathline">$$\text{Bit rate}=\left(1920\times1080\,\frac{\text{pixels}}{\text{frame}}\right)\!\left(24\,\frac{\text{bits}}{\text{pixel}}\right)\!\left(30\,\frac{\text{frames}}{\text{s}}\right)$$</div>
+      <div class="mathline">$$=1\,492\,992\,000\ \text{bps}\approx 1.5\ \text{Gbps}$$</div>
+      <p class="ans">&asymp; 1.5 Gbps raw &mdash; compressed to about 40 Mbps before transmission</p>
+      <p>The compression note is part of the answer. Raw HDTV would swallow the entire bandwidth of a coaxial system; the gap between 1.5 Gbps and 40 Mbps is why source coding exists.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <header><span class="ttl">Instrument 03 &mdash; Bit-Rate Bench</span><span class="sub">levels &rarr; bits &rarr; rate</span></header>
+    <div class="pad">
+      <div class="ctrls two">
+        <div class="ctrl"><label for="lv">Number of levels \(L\) <b id="lvv">8</b></label><input type="number" id="lv" value="8" min="2" max="1024" step="1"></div>
+        <div class="ctrl"><label for="bw">Signal bandwidth \(f_{\max}\) (Hz) <b id="bwv">4000</b></label><input type="number" id="bw" value="4000" min="1" step="100"></div>
+        <div class="ctrl"><label for="bps">Bits per sample <b id="bpsv">8</b></label><input type="number" id="bps" value="8" min="1" max="32" step="1"></div>
+      </div>
+      <div class="readout" id="brOut"></div>
+      <div class="btnrow">
+        <button class="pb" data-br="8,4000,8">Voice channel</button>
+        <button class="pb" data-br="9,4000,8">9 levels (Ex. 5)</button>
+        <button class="pb" data-br="4,20000,16">CD-quality audio</button>
+      </div>
+      <p class="scope-cap">Sampling rate is \(2f_{\max}\); bit rate is sampling rate &times; bits per sample.</p>
+    </div>
+  </div>
+
+  <div class="callout beyond">
+    <span class="lbl">Beyond these four lectures &mdash; where this heads next</span>
+    <p>The natural sequel, and the reason bandwidth and levels were introduced together, is channel capacity. <strong>Nyquist</strong> gives the maximum rate of a <em>noiseless</em> channel, \(C = 2B\log_2 L\); <strong>Shannon</strong> gives the maximum of a <em>noisy</em> one, \(C = B\log_2(1+\mathrm{SNR})\). Notice that Nyquist rewards adding levels while Shannon caps the benefit once noise is accounted for. These were not in the four files you have &mdash; treat them as preview, and confirm the scope before an exam.</p>
+  </div>
+</section>
+
+<section class="sec" id="s5">
+  <div class="sec-head"><span class="sec-num">05</span><h2 class="sec-title">Filters</h2></div>
+  <p class="lede">A filter is a device or process that removes some unwanted components or features from a signal. Four types, and each is defined purely by which part of the spectrum it lets through.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Filter</th><th>Passes</th><th>Attenuates</th><th>Typical job</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Low-pass</strong></td><td>low frequencies, below \(f_c\)</td><td>higher frequencies</td><td>remove high-frequency noise</td></tr>
+        <tr><td><strong>High-pass</strong></td><td>high frequencies, above \(f_c\)</td><td>lower frequencies</td><td>remove low-frequency noise / DC drift</td></tr>
+        <tr><td><strong>Band-pass</strong></td><td>a range between \(f_{c1}\) and \(f_{c2}\)</td><td>everything outside that range</td><td>isolate one channel from many</td></tr>
+        <tr><td><strong>Band-stop</strong> (band-reject, notch)</td><td>everything outside \(f_{c1}\)&ndash;\(f_{c2}\)</td><td>one specific range</td><td>kill one interfering band, e.g. 50/60 Hz hum</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>The two numbers that describe any filter</h3>
+  <ul>
+    <li><em class="term">Cutoff frequency</em> \(f_c\) &mdash; the frequency at which the filter begins to attenuate the signal. Conventionally the &minus;3 dB point, where output power has halved.</li>
+    <li><em class="term">Slope</em> &mdash; measured in <strong>dB per octave</strong> (per doubling of frequency) or <strong>dB per decade</strong> (per ten-fold increase). It determines how quickly the filter attenuates beyond \(f_c\).</li>
+  </ul>
+  <div class="callout">
+    <span class="lbl">Ideal vs. practical</span>
+    <p>Textbook diagrams show a vertical brick wall between passband and stopband. Real filters, as the lecture's annotated sketch shows, have a gentle roll-off: a passband, a transition region sloping at so many dB/decade, then the stopband. A single RC stage gives 20 dB/decade; steeper needs more stages. This gap between ideal and practical is precisely why a medium can never deliver a perfect square wave.</p>
+  </div>
+
+  <div class="panel">
+    <header><span class="ttl">Instrument 04 &mdash; Filter Bench</span><span class="sub">response curve + surviving components</span></header>
+    <div class="pad">
+      <canvas class="scope" id="cvFilt"></canvas>
+      <p class="scope-cap">Grey curve: filter gain (0 to 1). Bars: the five 10 V components of Example 2, scaled by the gain they actually receive.</p>
+      <div class="btnrow" id="ftype">
+        <button class="pb" data-ft="lp" aria-pressed="true">Low-pass</button>
+        <button class="pb" data-ft="hp" aria-pressed="false">High-pass</button>
+        <button class="pb" data-ft="bp" aria-pressed="false">Band-pass</button>
+        <button class="pb" data-ft="bs" aria-pressed="false">Band-stop</button>
+      </div>
+      <div class="ctrls two">
+        <div class="ctrl"><label for="fc1">Cutoff \(f_{c1}\) <b id="fc1v">400 Hz</b></label><input type="range" id="fc1" min="50" max="950" step="10" value="400"></div>
+        <div class="ctrl" id="fc2wrap"><label for="fc2">Cutoff \(f_{c2}\) <b id="fc2v">700 Hz</b></label><input type="range" id="fc2" min="50" max="950" step="10" value="700"></div>
+      </div>
+      <div class="readout" id="filtOut"></div>
+    </div>
+  </div>
+</section>
+<section class="sec" id="s6">
+  <div class="sec-head"><span class="sec-num">06</span><h2 class="sec-title">Media as filters, and the three impairments</h2></div>
+  <p class="lede">This is the hinge of the whole unit: the reason filters were taught immediately before transmission media is that <strong>every medium is already a filter</strong>, whether you wanted one or not.</p>
+
+  <div class="callout">
+    <span class="lbl">The central claim</span>
+    <p>No real transmission medium passes all frequencies equally. Every medium has: <strong>attenuation that increases with frequency and distance</strong>; a <strong>usable bandwidth</strong> beyond which the signal is impractically weak or distorted; and <strong>frequency-dependent delay (dispersion)</strong>, which smears pulses together over long distances.</p>
+    <p>Copper wire, optical fiber and free space all act like imperfect low-pass or band-pass filters. That is the key reason higher data rates require either wider-bandwidth media, shorter distances, or more sophisticated modulation and coding.</p>
+  </div>
+
+  <h3>The three impairments</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Impairment</th><th>What changes</th><th>Cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Attenuation</strong></td><td>the signal loses strength</td><td>energy converted to heat in the medium; grows with distance and frequency</td><td>amplifiers (analog) or repeaters (digital)</td></tr>
+        <tr><td><strong>Distortion</strong></td><td>the signal changes its form or shape</td><td>each frequency component of a composite signal travels at its own speed and so arrives with its own delay; they no longer recombine as they did at the transmitter</td><td>equalisation; keep within the medium's flat band</td></tr>
+        <tr><td><strong>Noise</strong></td><td>corrupting energy is added</td><td>energy that was not part of the originally transmitted signal</td><td>shielding, twisting, higher SNR, coding</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Distortion is specifically a <em>composite-signal</em> phenomenon &mdash; a single sine wave can be delayed but not reshaped. Tie this back to Section 2: it is the Fourier decomposition that makes distortion possible at all.</p>
+
+  <h4>Types of noise you should be able to name</h4>
+  <ul>
+    <li><strong>Thermal noise</strong> &mdash; random motion of electrons in a conductor; present in every medium at every frequency.</li>
+    <li><strong>Induced noise</strong> &mdash; from motors, appliances and other external sources acting as transmitting antennas.</li>
+    <li><strong>Crosstalk</strong> &mdash; one wire's signal coupling into the next. This is the impairment twisting and shielding exist to fight.</li>
+    <li><strong>Impulse noise</strong> &mdash; short, high-energy spikes, e.g. lightning or switching transients.</li>
+  </ul>
+
+  <div class="fx">
+    <div class="tag">Signal-to-noise ratio</div>
+    <div class="mathline">$$\mathrm{SNR}=\frac{P_{\text{signal}}}{P_{\text{noise}}}\qquad\qquad \mathrm{SNR}_{\mathrm{dB}}=10\log_{10}\mathrm{SNR}$$</div>
+    <p class="note">Wireless channels suffer far more errors than guided channels; interference can be fought with a high SNR, and the channel is further subject to fading and coverage holes.</p>
+  </div>
+
+  <div class="method">
+    <header><span class="kind">Method</span><span class="name">Attenuation problems in dB</span></header>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Identify whether you are given power or voltage.</strong> Power uses \(10\log\), voltage uses \(20\log\). Mixing them up is a factor-of-two error in the final dB figure.</li>
+        <li><strong>Multiply the per-kilometre figure by the length</strong> to get total loss in dB. For fiber: 0.2 dB/km at 1550 nm, roughly 0.3&ndash;0.5 dB/km at 1310 nm, a few dB/km at 850 nm.</li>
+        <li><strong>Add all gains and losses algebraically</strong> along the link &mdash; losses negative, amplifier gains positive.</li>
+        <li><strong>Convert back to a ratio only if asked:</strong> \(P_2/P_1 = 10^{\,\mathrm{dB}/10}\).</li>
+      </ol>
+      <p style="font-size:15px;color:var(--ink-2);max-width:64ch">Quick drill: 100 km of fiber at 0.2 dB/km gives \(-20\) dB total, so \(P_2/P_1 = 10^{-2} = 1/100\). One percent of the launched power survives &mdash; and that is the <em>good</em> wavelength.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="s7">
+  <div class="sec-head"><span class="sec-num">07</span><h2 class="sec-title">Guided media: copper</h2></div>
+  <p class="lede">Transmission medium is the way systems are linked together to transport data signals in a network. It splits in two &mdash; and for guided media, the medium itself is what limits transmission.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Class</th><th>Members</th><th>Defining property</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Guided</strong> (wired)</td><td>twisted-pair, coaxial, fiber-optic</td><td>sends signals along a solid physical path</td></tr>
+        <tr><td><strong>Unguided</strong> (wireless)</td><td>radio waves, microwaves, infrared</td><td>transmits through free space</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Twisted-pair cable</h3>
+  <p>Two separate insulated copper wires twisted together and run parallel. The most widely used medium: every local phone exchange is twisted-pair copper, those lines are reused as last-mile DSL links, and Ethernet LAN cables use them too.</p>
+  <div class="callout">
+    <span class="lbl">Why twist at all</span>
+    <p>Twisting reduces EMI and crosstalk: when the wires are twisted, the waves from different twists cancel out, so the wire radiates less effectively. <strong>More twists = better quality</strong> &mdash; and the category number corresponds to how tightly the wires are twisted.</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th></th><th>UTP &mdash; unshielded</th><th>STP &mdash; shielded</th></tr></thead>
+      <tbody>
+        <tr><th>Construction</th><td>twisted pairs only</td><td>a metallic foil shield around the pairs</td></tr>
+        <tr><th>EMI / crosstalk</th><td>higher</td><td>minimised by the shield</td></tr>
+        <tr><th>Data speed</th><td>slower</td><td>faster</td></tr>
+        <tr><th>Installation</th><td>easy &mdash; lighter, smaller, flexible</td><td>bulkier, harder</td></tr>
+        <tr><th>Used in</th><td>homes and offices, short distances</td><td>industrial settings</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4>Categories &mdash; rated bandwidth is the thing to remember</h4>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Shielding</th><th>Rated bandwidth</th><th>Ethernet rate</th><th>Max channel length</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">Cat 5e</td><td>U/UTP or F/UTP</td><td class="num">100 MHz</td><td class="num">1 Gb/s (1000BASE-T)</td><td class="num">100 m</td></tr>
+        <tr><td class="mono">Cat 6</td><td>UTP or shielded variants</td><td class="num">250 MHz</td><td class="num">1 Gb/s; 10 Gb/s on short runs</td><td class="num">100 m (1G), &le;55 m (10G)</td></tr>
+        <tr><td class="mono">Cat 6A</td><td>UTP or shielded variants</td><td class="num">500 MHz</td><td class="num">10 Gb/s</td><td class="num">100 m</td></tr>
+        <tr><td class="mono">Cat 7</td><td>S/FTP</td><td class="num">600 MHz</td><td class="num">10 Gb/s</td><td class="num">100 m</td></tr>
+        <tr><td class="mono">Cat 7A</td><td>S/FTP</td><td class="num">1000 MHz</td><td class="num">10 Gb/s</td><td class="num">100 m</td></tr>
+        <tr><td class="mono">Cat 8</td><td>S/FTP only</td><td class="num">2000 MHz</td><td class="num">25 / 40 Gb/s</td><td class="num">30 m &mdash; data centres</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Read the pattern rather than memorising rows: bandwidth climbs, and the moment it climbs steeply (Cat 8), the maximum length collapses to 30 m. That is Section 6's rule made concrete &mdash; higher rate buys you either bandwidth or distance, not both.</p>
+
+  <h4>Connectors and wiring schemes</h4>
+  <ul>
+    <li>The most common UTP connector is <strong>RJ45</strong> (RJ = Registered Jack).</li>
+    <li>Four pairs, each a primary colour with a white secondary: pair 1 blue, pair 2 orange, pair 3 green, pair 4 brown.</li>
+    <li>The EIA defines two wiring schemes, <strong>T568A</strong> and <strong>T568B</strong>.</li>
+    <li><strong>Straight-through cable</strong> &mdash; same standard on both ends (A&ndash;A or B&ndash;B). Connects <em>unlike</em> devices: computer to hub, switch or router.</li>
+    <li><strong>Crossover cable</strong> &mdash; T568A on one end, T568B on the other. It reverses the transmit and receive signals, so it connects <em>like</em> devices: two computers, or two switches.</li>
+  </ul>
+  <div class="callout warn">
+    <span class="lbl">One-line memory hook</span>
+    <p>Same standard both ends &rarr; straight-through &rarr; <strong>unlike</strong> devices. Different standards &rarr; crossover &rarr; <strong>like</strong> devices. The crossover swaps TX and RX because two identical devices would otherwise both talk on the same pins.</p>
+  </div>
+
+  <h3>Coaxial cable</h3>
+  <p>Coax is a transmission line for radio-frequency signals and, like twisted pair, carries data as electrical signals. Applications: feed lines from radio transmitters and receivers to their antennas, computer network connections, and cable television distribution.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Category</th><th>Impedance</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">RG-59</td><td class="num">75 &Omega;</td><td>cable TV</td></tr>
+        <tr><td class="mono">RG-58</td><td class="num">50 &Omega;</td><td>thin Ethernet (5 mm coax) &mdash; 10BASE2</td></tr>
+        <tr><td class="mono">RG-11</td><td class="num">50 &Omega;</td><td>thick Ethernet (10 mm coax) &mdash; 10BASE5</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul>
+    <li><strong>BNC connector</strong> (Bayonet-Neill-Concelman) &mdash; connects the cable end to a device such as a TV set.</li>
+    <li><strong>BNC T connector</strong> &mdash; branches out to a computer or other device in Ethernet networks.</li>
+    <li><strong>BNC terminator</strong> &mdash; placed at the end of the cable to <strong>prevent reflection of the signal</strong>.</li>
+  </ul>
+  <p><strong>Performance:</strong> higher bandwidth than twisted-pair, but attenuation is higher and repeaters are needed more often. Used for television and cable-TV distribution, long-distance telephone (10 000 simultaneous voice calls, now being replaced by fiber), short-distance computer links and LANs.</p>
+
+  <h3>Characteristic impedance &mdash; the calculation topic</h3>
+  <p>In a line of infinite length a stepped input surges forever because of the line's capacitance. The <em class="term">characteristic impedance</em> (or surge impedance) is the voltage-to-current ratio as seen by the source. For a lossless line it is a <strong>real number</strong>: a "50-ohm line" does not mean the wire has 50 &Omega; of resistance. A terminated line matched to its characteristic impedance is called a <strong>matched line</strong> &mdash; and that is exactly what the BNC terminator achieves.</p>
+
+  <div class="fx">
+    <div class="tag">General form, and its two limits</div>
+    <div class="mathline">$$Z_o=\sqrt{\frac{R+j\omega L}{G+j\omega C}}$$</div>
+    <div class="mathline">$$\text{Very high }f:\quad Z_o=\sqrt{\frac{j\omega L}{j\omega C}}=\sqrt{\frac{L}{C}}\qquad\qquad \text{Very low }f:\quad Z_o=\sqrt{\frac{R}{G}}$$</div>
+    <p class="note">At extremely high frequencies inductance and capacitance dominate; at very low frequencies resistance and conductance dominate. The \(j\omega\) terms cancel in the high-frequency limit, which is why the answer is real and frequency-independent there.</p>
+  </div>
+
+  <div class="fx">
+    <div class="tag">Physical-geometry forms</div>
+    <p class="note">Parallel two-wire line with air dielectric &mdash; \(D\) = distance between conductor centres, \(r\) = conductor radius:</p>
+    <div class="mathline">$$Z_o\approx 276\,\log_{10}\!\left(\frac{D}{r}\right)$$</div>
+    <p class="note">Coaxial cable &mdash; \(D\) = inside diameter of the outer conductor, \(d\) = outside diameter of the inner conductor, \(\epsilon_r\) = dielectric constant (relative permittivity, unitless):</p>
+    <div class="mathline">$$Z_o\approx \frac{138}{\sqrt{\epsilon_r}}\,\log_{10}\!\left(\frac{D}{d}\right)$$</div>
+  </div>
+
+  <div class="method">
+    <header><span class="kind">Method</span><span class="name">Choosing among the three \(Z_o\) formulas</span></header>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Look at what you were given, not at the cable's name.</strong> The given quantities alone decide the formula &mdash; Examples 2 and 3 are both RG-59A yet use different equations.</li>
+        <li><strong>Given \(L\) and \(C\) per unit length?</strong> Use \(Z_o=\sqrt{L/C}\). Convert &micro;H and pF to henries and farads first &mdash; this is where marks are lost.</li>
+        <li><strong>Given a parallel line and \(D/r\)?</strong> Use \(276\log_{10}(D/r)\). The 276 already assumes an air dielectric, so no \(\epsilon_r\) appears.</li>
+        <li><strong>Given a coax with \(D\), \(d\) and \(\epsilon_r\)?</strong> Use \(\frac{138}{\sqrt{\epsilon_r}}\log_{10}(D/d)\).</li>
+        <li><strong>Every log here is base 10</strong>, and the ratio inside it is dimensionless &mdash; so inches over inches is fine, no conversion needed. Answer in ohms.</li>
+        <li><strong>Sanity-check the magnitude.</strong> Real cables land between roughly 50 and 300 &Omega;. If you get 3 &Omega; or 3000 &Omega;, you used \(\ln\) instead of \(\log_{10}\), or dropped a unit prefix.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Examples 1&ndash;3, characteristic impedance</span><span class="src">Transmission Media, slides 30&ndash;32, instructor's solutions</span></header>
+    <div class="body">
+      <h4>Example 1 &mdash; parallel line, \(D/r = 12.22\)</h4>
+      <div class="mathline">$$Z_o = 276\log_{10}\!\left(\frac{D}{r}\right)=276\log_{10}(12.22)=276(1.08707)$$</div>
+      <p class="ans">\(Z_o = 300.03\ \Omega\)</p>
+
+      <h4>Example 2 &mdash; RG-59A coax, \(d=0.025\) in, \(D=0.15\) in, \(\epsilon_r=2.23\)</h4>
+      <div class="mathline">$$Z_o=\frac{138}{\sqrt{\epsilon_r}}\log_{10}\!\left(\frac{D}{d}\right)=\frac{138}{\sqrt{2.23}}\log_{10}\!\left(\frac{0.15}{0.025}\right)=\frac{138}{1.4933}\log_{10}(6)$$</div>
+      <p class="ans">\(Z_o = 71.91\ \Omega\)</p>
+      <p style="font-size:15px;color:var(--ink-2)">Note the inches cancel inside the log, and the answer sits near the 75 &Omega; nominal rating for RG-59. That agreement is your check.</p>
+
+      <h4>Example 3 &mdash; RG-59A from \(L\) and \(C\): \(L=0.118\) &micro;H/ft, \(C=21\) pF/ft</h4>
+      <div class="mathline">$$Z_o=\sqrt{\frac{L}{C}}=\sqrt{\frac{0.118\times10^{-6}}{21\times10^{-12}}}=\sqrt{5619.05}$$</div>
+      <p class="ans">\(Z_o = 74.96\ \Omega\)</p>
+      <p style="font-size:15px;color:var(--ink-2)">Same cable, two routes, two close answers &mdash; 71.91 &Omega; from geometry, 74.96 &Omega; from \(L\) and \(C\). Both approximate the 75 &Omega; spec.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <header><span class="ttl">Instrument 05 &mdash; \(Z_o\) Calculator</span><span class="sub">all three formulas</span></header>
+    <div class="pad">
+      <div class="btnrow" id="zmode">
+        <button class="pb" data-zm="par" aria-pressed="true">Parallel line \(D/r\)</button>
+        <button class="pb" data-zm="coax" aria-pressed="false">Coax \(D,d,\epsilon_r\)</button>
+        <button class="pb" data-zm="lc" aria-pressed="false">From \(L\) and \(C\)</button>
+      </div>
+      <div class="ctrls three" id="zfields"></div>
+      <div class="readout" id="zOut"></div>
+      <p class="scope-cap">Enter \(L\) in &micro;H per unit length and \(C\) in pF per unit length; the calculator handles the prefix conversion.</p>
+    </div>
+  </div>
+</section>
+<section class="sec" id="s8">
+  <div class="sec-head"><span class="sec-num">08</span><h2 class="sec-title">Fiber optics</h2></div>
+  <p class="lede">A fiber-optic cable is made of glass or plastic and transmits signals in the form of light. This section carries the course's hardest formula chain &mdash; Snell's law to critical angle to acceptance angle to numerical aperture &mdash; and they are all one idea seen from four angles.</p>
+
+  <h3>Why fiber wins</h3>
+  <p>The information-carrying capacity of any electronic communication system is directly proportional to bandwidth, and optical fiber carries far more than its metallic counterparts. Light frequencies used in optical fiber systems run from \(1\times10^{14}\) to \(4\times10^{14}\) Hz; even a 10% bandwidth utilisation ratio gives 10 000 to 40 000 GHz of bandwidth.</p>
+
+  <h3>The physics chain</h3>
+  <div class="fx">
+    <div class="tag">Step 1 &mdash; Snell's law</div>
+    <div class="mathline">$$n_1\sin\theta_1=n_2\sin\theta_2$$</div>
+    <p class="note">\(n_1, n_2\) are refractive indices (unitless), \(\theta_1\) the angle of incidence, \(\theta_2\) the angle of refraction, both measured <strong>from the normal</strong>, in degrees.</p>
+  </div>
+  <div class="fx">
+    <div class="tag">Step 2 &mdash; critical angle</div>
+    <div class="mathline">$$\theta_c=\sin^{-1}\!\left(\frac{n_2}{n_1}\right)$$</div>
+    <p class="note">The minimum angle of incidence at which a ray striking the interface produces an angle of refraction of 90&deg; or greater.</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Condition</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">\(\theta_1 &lt; \theta_c\)</td><td>the light is refracted as it passes from the first material into the second &mdash; it escapes the core</td></tr>
+        <tr><td class="mono">\(\theta_1 = \theta_c\)</td><td>angle of refraction is 90&deg;; no light passes through, all of it travels <em>along</em> the interface</td></tr>
+        <tr><td class="mono">\(\theta_1 &gt; \theta_c\)</td><td><strong>total internal reflection</strong> &mdash; no light passes through the interface. This is the principle optical fibers work on</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="fx">
+    <div class="tag">Step 3 &mdash; acceptance angle and numerical aperture</div>
+    <p class="note">The maximum angle at which external light rays may strike the air/glass interface and still enter the core and propagate down the fiber:</p>
+    <div class="mathline">$$\theta_{in(\max)}=\sin^{-1}\!\left(\frac{\sqrt{n_1^{2}-n_2^{2}}}{n_0}\right),\qquad n_0=1\ \text{(air)}$$</div>
+    <p class="note">The numerical aperture measures the fiber's ability to capture light, and is the same quantity without the inverse sine:</p>
+    <div class="mathline">$$\mathrm{NA}=\sqrt{n_1^{2}-n_2^{2}}=\sin\theta_{in(\max)}$$</div>
+  </div>
+  <div class="callout">
+    <span class="lbl">See the chain as one story</span>
+    <p>\(n_1\) and \(n_2\) fix \(\theta_c\), which fixes how steeply a ray may travel inside the core, which fixes how wide a cone of outside light can be funnelled in &mdash; the acceptance angle &mdash; whose sine is the numerical aperture. Every one of the four quantities in Example 4 comes from just the two refractive indices. A larger index difference means a bigger NA, more captured light, but also more modal dispersion.</p>
+  </div>
+
+  <div class="method">
+    <header><span class="kind">Method</span><span class="name">Fiber-optic geometry problems</span></header>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Label the indices before anything else.</strong> \(n_1\) is always the <em>core</em> (higher index), \(n_2\) the <em>cladding</em> (lower). If \(n_1 &lt; n_2\) you have swapped them &mdash; total internal reflection cannot happen.</li>
+        <li><strong>Set the calculator to degrees.</strong> Every angle in this topic is in degrees; a radians answer like 0.673 instead of 38.58 is the classic slip.</li>
+        <li><strong>Refraction angle:</strong> rearrange Snell to \(\sin\theta_2 = (n_1\sin\theta_1)/n_2\), evaluate, then take \(\sin^{-1}\). If the value exceeds 1, no refraction exists &mdash; the correct answer is "total internal reflection".</li>
+        <li><strong>Critical angle:</strong> \(\sin^{-1}(n_2/n_1)\). It depends only on the two indices, never on \(\theta_1\).</li>
+        <li><strong>NA first, then acceptance angle.</strong> Compute \(\sqrt{n_1^2-n_2^2}\), quote it as NA (unitless, typically 0.2 to 0.6), then \(\sin^{-1}(\mathrm{NA})\) is the acceptance angle. Doing NA first saves repeating the square root.</li>
+        <li><strong>Cross-check:</strong> is \(\theta_1\) bigger or smaller than \(\theta_c\)? State explicitly whether the ray refracts out or is totally internally reflected &mdash; that sentence is usually worth a mark on its own.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="worked">
+    <header><span>Worked &mdash; Example 4</span><span class="src">Transmission Media, slide 48</span></header>
+    <div class="body">
+      <p class="q">For a glass (\(n=1.5\)) / quartz (\(n=1.38\)) interface and an angle of incidence of 35&deg;, determine (a) the angle of refraction, (b) the critical angle, (c) the acceptance angle, (d) the numerical aperture.</p>
+
+      <h4>(a) Angle of refraction &mdash; Snell's law</h4>
+      <div class="mathline">$$\sin\theta_2=\frac{n_1\sin\theta_1}{n_2}=\frac{1.5\sin 35^\circ}{1.38}=\frac{1.5(0.57358)}{1.38}=0.62345$$</div>
+      <div class="mathline">$$\theta_2=\sin^{-1}(0.62345)$$</div>
+      <p class="ans">\(\theta_2 = 38.58^\circ\)</p>
+
+      <h4>(b) Critical angle</h4>
+      <div class="mathline">$$\theta_c=\sin^{-1}\!\left(\frac{n_2}{n_1}\right)=\sin^{-1}\!\left(\frac{1.38}{1.5}\right)=\sin^{-1}(0.92)$$</div>
+      <p class="ans">\(\theta_c = 66.93^\circ\)</p>
+      <p style="font-size:15px;color:var(--ink-2)">Since \(35^\circ &lt; 66.93^\circ\), this particular ray <strong>refracts out</strong> of the core rather than being totally internally reflected &mdash; consistent with part (a) returning a real angle.</p>
+
+      <h4>(d) Numerical aperture &mdash; compute this before (c)</h4>
+      <div class="mathline">$$\mathrm{NA}=\sqrt{n_1^{2}-n_2^{2}}=\sqrt{1.5^{2}-1.38^{2}}=\sqrt{2.25-1.9044}=\sqrt{0.3456}$$</div>
+      <p class="ans">\(\mathrm{NA} = 0.5879\) (unitless)</p>
+
+      <h4>(c) Acceptance angle</h4>
+      <div class="mathline">$$\theta_{in(\max)}=\sin^{-1}(\mathrm{NA})=\sin^{-1}(0.5879)$$</div>
+      <p class="ans">\(\theta_{in(\max)} = 36.01^\circ\)</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <header><span class="ttl">Instrument 06 &mdash; Refraction &amp; TIR Bench</span><span class="sub">drag \(\theta_1\) past \(\theta_c\)</span></header>
+    <div class="pad">
+      <canvas class="scope" id="cvRay"></canvas>
+      <div class="ctrls three">
+        <div class="ctrl"><label for="n1">Core \(n_1\) <b id="n1v">1.50</b></label><input type="range" id="n1" min="1.30" max="1.80" step="0.01" value="1.50"></div>
+        <div class="ctrl"><label for="n2">Cladding \(n_2\) <b id="n2v">1.38</b></label><input type="range" id="n2" min="1.00" max="1.79" step="0.01" value="1.38"></div>
+        <div class="ctrl"><label for="th1">Incidence \(\theta_1\) <b id="th1v">35&deg;</b></label><input type="range" id="th1" min="0" max="89" step="1" value="35"></div>
+      </div>
+      <div class="readout" id="rayOut"></div>
+      <div class="btnrow">
+        <button class="pb" data-ray="1.50,1.38,35">Example 4</button>
+        <button class="pb" data-ray="1.50,1.38,75">Push into TIR</button>
+        <button class="pb" data-ray="1.48,1.46,80">Single-mode-like</button>
+      </div>
+    </div>
+  </div>
+
+  <h3>Physical structure</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Made of</th><th>Job</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Core</strong></td><td>glass or plastic, <strong>higher</strong> index than cladding</td><td>carries the signal</td></tr>
+        <tr><td><strong>Cladding</strong></td><td>glass or plastic, <strong>lower</strong> index than core</td><td>makes total internal reflection possible</td></tr>
+        <tr><td><strong>Buffer</strong></td><td>plastic coating over the cladding</td><td>reinforces the fiber, absorbs shocks, protects against excessive bends</td></tr>
+        <tr><td><strong>Jacket</strong></td><td>outer sheath</td><td>protects from damage and moisture</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Propagation modes and fiber types</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Mode</th><th>Ray behaviour</th><th>Pulse at destination</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Multimode, step index</strong></td><td>many rays zig-zag at different angles, each taking a different path length</td><td>badly spread &mdash; worst dispersion</td></tr>
+        <tr><td><strong>Multimode, graded index</strong></td><td>index varies smoothly, curving the rays so path times even out</td><td>moderately spread</td></tr>
+        <tr><td><strong>Single mode</strong></td><td>one near-axial path through a very narrow core</td><td>nearly unchanged &mdash; best for long distance</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Type</th><th>Core (&micro;m)</th><th>Cladding (&micro;m)</th><th>Mode</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">50/125</td><td class="num">50.0</td><td class="num">125</td><td>multimode, graded index</td></tr>
+        <tr><td class="mono">62.5/125</td><td class="num">62.5</td><td class="num">125</td><td>multimode, graded index</td></tr>
+        <tr><td class="mono">100/125</td><td class="num">100.0</td><td class="num">125</td><td>multimode, graded index</td></tr>
+        <tr><td class="mono">7/125</td><td class="num">7.0</td><td class="num">125</td><td>single mode</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The naming is core/cladding in micrometres, and cladding is always 125 &micro;m. A 7 &micro;m core is so narrow that only one mode fits &mdash; that is literally why it is called single mode.</p>
+
+  <h3>Attenuation windows</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Wavelength</th><th>Attenuation</th><th>Window</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td class="num">850 nm</td><td class="num">a few dB/km</td><td>first</td><td>shorter-distance links</td></tr>
+        <tr><td class="num">1310 nm</td><td class="num">&asymp; 0.3&ndash;0.5 dB/km</td><td>second</td><td>attractive because chromatic dispersion is also low in standard single-mode fiber</td></tr>
+        <tr><td class="num">1400 nm</td><td class="num">large loss peak</td><td>&mdash;</td><td>the <strong>water peak</strong> &mdash; OH&#8315; absorption. Avoided</td></tr>
+        <tr><td class="num">1550 nm</td><td class="num">&asymp; 0.2 dB/km &mdash; the minimum</td><td>third</td><td>long-distance, high-capacity links</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Ranking to remember: fiber performs best near <strong>1550 nm</strong>, then 1310 nm, while 850 nm suffers the greatest loss.</p>
+
+  <h3>Copper vs. fiber, side by side</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th></th><th>Copper</th><th>Fiber optic</th></tr></thead>
+      <tbody>
+        <tr><th>Bandwidth</th><td>10 Mbps &ndash; 10 Gbps</td><td>10 Mbps &ndash; 100 Gbps</td></tr>
+        <tr><th>Range</th><td>relatively short, up to 100 m</td><td>relatively long, up to 100 000 m</td></tr>
+        <tr><th>Immunity to EMI / RFI</th><td>low</td><td>high</td></tr>
+        <tr><th>Immunity to electrical hazards</th><td>low</td><td>high</td></tr>
+        <tr><th>Media and connector cost</th><td>lowest</td><td>highest</td></tr>
+        <tr><th>Installation skill required</th><td>lowest</td><td>highest</td></tr>
+        <tr><th>Safety</th><td>lowest</td><td>highest</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" id="s9">
+  <div class="sec-head"><span class="sec-num">09</span><h2 class="sec-title">Unguided media</h2></div>
+  <p class="lede">Unguided media transport electromagnetic waves without a physical conductor &mdash; wireless communication. Signals are broadcast through free space and are therefore available to anyone with a capable receiver.</p>
+
+  <h3>Three propagation methods</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Frequency</th><th>Path</th><th>Range driver</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Ground wave</strong></td><td>low</td><td>travels through the lowest portion of the atmosphere, hugging the earth and following its curvature; emanates in all directions</td><td>transmit power &mdash; more power, more distance</td></tr>
+        <tr><td><strong>Sky wave</strong></td><td>higher</td><td>radiates upward into the ionosphere and is reflected back to earth</td><td>allows greater distances with <em>lower</em> output power</td></tr>
+        <tr><td><strong>Line-of-sight</strong></td><td>very high</td><td>straight lines from antenna to antenna; antennas must be directional, facing each other, tall enough or close enough not to be blocked by the earth's curvature</td><td>antenna height and alignment</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The ionosphere &mdash; the reflecting layer that makes sky-wave propagation possible &mdash; sits roughly 85 km to 600 km up.</p>
+
+  <h3>The three wireless bands</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th></th><th>Radio waves</th><th>Microwaves</th><th>Infrared</th></tr></thead>
+      <tbody>
+        <tr><th>Frequency</th><td class="num">3 kHz &ndash; 1 GHz</td><td class="num">1 &ndash; 300 GHz</td><td class="num">300 GHz &ndash; 400 THz</td></tr>
+        <tr><th>Directionality</th><td>omnidirectional</td><td>unidirectional, narrowly focused; antennas must be aligned</td><td>line-of-sight, short range</td></tr>
+        <tr><th>Antenna</th><td>omnidirectional</td><td>directional, point-to-point</td><td>emitter/detector pair</td></tr>
+        <tr><th>Walls</th><td>penetrates them</td><td>higher ranges cannot penetrate</td><td>cannot penetrate</td></tr>
+        <tr><th>Communication style</th><td>multicast &mdash; radio, TV, paging</td><td>unicast &mdash; cellular, satellite, wireless LAN</td><td>short-range in a closed area</td></tr>
+        <tr><th>Other</th><td>highly regulated</td><td>&mdash;</td><td>IrDA standards for keyboards, mice, PCs, printers; huge potential bandwidth (almost 400 THz)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <span class="lbl">Where the boundary actually is</span>
+    <p>There is no clear-cut demarcation between radio waves and microwaves. Waves from 3 kHz to 1 GHz are normally called radio waves; 1 to 300 GHz are called microwaves. Quote it with the hedge &mdash; the lecture does.</p>
+  </div>
+
+  <h3>Low frequency vs. high frequency &mdash; the trade-off table</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Low frequencies</th><th>High frequencies</th></tr></thead>
+      <tbody>
+        <tr><td>Low signal attenuation &mdash; suitable for long-distance communication</td><td>High signal attenuation &mdash; suitable for short-distance</td></tr>
+        <tr><td>Lower bandwidth, can't carry as much data</td><td>Higher bandwidth, carries more data</td></tr>
+        <tr><td>Penetrate obstructions easily</td><td>Can't penetrate obstructions</td></tr>
+        <tr><td>Less affected by the ionosphere and atmospheric absorption</td><td>Easily affected by weather</td></tr>
+        <tr><td>Tend to be omnidirectional</td><td>More directional</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout">
+    <span class="lbl">One sentence that explains the whole table</span>
+    <p>Higher frequency buys bandwidth and pays for it in reach and penetration. That is the same trade you saw in Cat 8 cable (2000 MHz but only 30 m) and in fiber windows (best loss at a specific wavelength). It is the governing trade-off of the entire subject.</p>
+  </div>
+</section>
+<section class="sec" id="s10">
+  <div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">Problem playbook</h2></div>
+  <p class="lede">Every numerical question in these four lectures is one of six shapes. Identify the shape from the given quantities, then run the recipe. This table is the thing to read on the way into the exam.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>If you are given&hellip;</th><th>The shape is</th><th>Run</th><th>Answer unit</th></tr></thead>
+      <tbody>
+        <tr><td>an expression \(A\cos(\omega t)\) or a sum of them</td><td>periodicity / period</td><td>\(f=\omega/2\pi\), then \(f_0=\gcd(f_i)\), \(T=1/f_0\)</td><td class="mono">s or Hz</td></tr>
+        <tr><td>a list of component frequencies</td><td>bandwidth &amp; spectrum</td><td>\(B=f_{\text{high}}-f_{\text{low}}\); spikes if periodic, continuous if not</td><td class="mono">Hz</td></tr>
+        <tr><td>a bandwidth and a middle frequency</td><td>inverse bandwidth</td><td>\(f_{\text{low,high}}=f_{\text{mid}}\mp B/2\)</td><td class="mono">Hz</td></tr>
+        <tr><td>a number of levels \(L\)</td><td>bits per level</td><td>\(\log_2 L\), rounded <strong>up</strong></td><td class="mono">bits</td></tr>
+        <tr><td>a source described in layers, or a bandwidth + bits/sample</td><td>bit rate</td><td>chain-multiply units; insert \(f_s=2f_{\max}\) if analog</td><td class="mono">bps</td></tr>
+        <tr><td>\(D/r\), or \(D,d,\epsilon_r\), or \(L\) and \(C\)</td><td>characteristic impedance</td><td>\(276\log\frac{D}{r}\) / \(\frac{138}{\sqrt{\epsilon_r}}\log\frac{D}{d}\) / \(\sqrt{L/C}\)</td><td class="mono">&Omega;</td></tr>
+        <tr><td>two refractive indices (and maybe \(\theta_1\))</td><td>fiber geometry</td><td>Snell &rarr; \(\theta_c\) &rarr; NA &rarr; acceptance angle</td><td class="mono">degrees / unitless</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="method">
+    <header><span class="kind">Exam technique</span><span class="name">Five habits that protect marks</span></header>
+    <div class="body">
+      <ol class="steps">
+        <li><strong>Write the symbolic formula first, before substituting.</strong> Every instructor solution in your slides does this &mdash; the formula alone usually carries partial credit even if the arithmetic slips.</li>
+        <li><strong>Carry units through the whole calculation</strong> and cancel them visibly. If the surviving unit is not the one the question asked for, you have made a structural error, not a rounding one.</li>
+        <li><strong>Check the mode on your calculator</strong> (degrees for fiber work) and check the log base (base 10 for every \(Z_o\) formula, base 2 only for levels).</li>
+        <li><strong>State the qualitative conclusion in words</strong> alongside the number: "so this ray is totally internally reflected", "so the medium's bandwidth exceeds the signal's". Definitions-plus-numbers questions are the house style here.</li>
+        <li><strong>Sanity-check magnitudes against real hardware:</strong> \(Z_o\) between 50 and 300 &Omega;, NA between 0.2 and 0.6, voice channel 64 kbps, fiber loss 0.2 dB/km. A wildly off answer is nearly always a prefix error.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h3>Complete example index</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Topic</th><th>Answer</th><th>Section</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">1a</td><td>Period of \(4\cos(120\pi t)\)</td><td class="num">\(T=1/60\) s, periodic</td><td><a href="#s1">01</a></td></tr>
+        <tr><td class="mono">1b</td><td>Period of \(5e^{-2t}\)</td><td class="num">aperiodic</td><td><a href="#s1">01</a></td></tr>
+        <tr><td class="mono">1c</td><td>Period of \(\cos(200\pi t)+5\sin(80\pi t)\)</td><td class="num">\(T=0.05\) s</td><td><a href="#s1">01</a></td></tr>
+        <tr><td class="mono">2</td><td>Bandwidth, five components 100&ndash;900 Hz</td><td class="num">800 Hz</td><td><a href="#s3">03</a></td></tr>
+        <tr><td class="mono">3</td><td>Spectrum from \(B\) and \(f_{\text{mid}}\)</td><td class="num">40 &ndash; 240 kHz</td><td><a href="#s3">03</a></td></tr>
+        <tr><td class="mono">4</td><td>Bits for 8 levels</td><td class="num">3 bits</td><td><a href="#s4">04</a></td></tr>
+        <tr><td class="mono">5</td><td>Bits for 9 levels</td><td class="num">4 bits (3.17 &rarr; up)</td><td><a href="#s4">04</a></td></tr>
+        <tr><td class="mono">6</td><td>Bit rate, 100 text pages/min</td><td class="num">25.6 kbps</td><td><a href="#s4">04</a></td></tr>
+        <tr><td class="mono">7</td><td>Bit rate, digitized 4 kHz voice</td><td class="num">64 kbps</td><td><a href="#s4">04</a></td></tr>
+        <tr><td class="mono">8</td><td>Bit rate, HDTV</td><td class="num">&asymp; 1.5 Gbps</td><td><a href="#s4">04</a></td></tr>
+        <tr><td class="mono">TM1</td><td>\(Z_o\), parallel line \(D/r=12.22\)</td><td class="num">300.03 &Omega;</td><td><a href="#s7">07</a></td></tr>
+        <tr><td class="mono">TM2</td><td>\(Z_o\), RG-59A from geometry</td><td class="num">71.91 &Omega;</td><td><a href="#s7">07</a></td></tr>
+        <tr><td class="mono">TM3</td><td>\(Z_o\), RG-59A from \(L,C\)</td><td class="num">74.96 &Omega;</td><td><a href="#s7">07</a></td></tr>
+        <tr><td class="mono">TM4</td><td>Fiber: refraction, \(\theta_c\), NA, acceptance</td><td class="num">38.58&deg;, 66.93&deg;, 0.5879, 36.01&deg;</td><td><a href="#s8">08</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" id="s11">
+  <div class="sec-head"><span class="sec-num">11</span><h2 class="sec-title">Self-check</h2></div>
+  <p class="lede">Answer out loud before opening each one. If you cannot state the definition in one sentence, go back to that section rather than re-reading the answer.</p>
+
+  <details class="qz"><summary>A signal is \(x(t)=3\cos(50\pi t)+\cos(75\pi t)\). Periodic? Period?</summary>
+  <div class="a"><p>\(f_1 = 50\pi/2\pi = 25\) Hz, \(f_2 = 75\pi/2\pi = 37.5\) Hz. Ratio \(25/37.5 = 2/3\), rational, so it is periodic. \(f_0 = \gcd(25, 37.5) = 12.5\) Hz, so \(T = 1/12.5 = 0.08\) s. Check: 25 Hz is the 2nd harmonic, 37.5 Hz the 3rd.</p></div></details>
+
+  <details class="qz"><summary>Why can a single sine wave never be distorted, only attenuated or delayed?</summary>
+  <div class="a"><p>Distortion means the signal changes shape, and shape comes from the relative timing of multiple frequency components. A single sine has one component, so a delay simply shifts its phase &mdash; it is still the same sine. Distortion needs a composite signal whose components travel at different speeds and arrive with different delays.</p></div></details>
+
+  <details class="qz"><summary>A digital signal must carry 5 bits per level. How many levels are needed?</summary>
+  <div class="a"><p>Invert the formula: \(L = 2^{\text{bits}} = 2^5 = 32\) levels. Going the other way is the more common exam direction, so practise both.</p></div></details>
+
+  <details class="qz"><summary>What is the required bit rate to digitize a 15 kHz audio signal with 12 bits per sample?</summary>
+  <div class="a"><p>\(f_s = 2(15\,000) = 30\,000\) samples/s. Bit rate \(= 30\,000 \times 12 = 360\,000\) bps \(= 360\) kbps.</p></div></details>
+
+  <details class="qz"><summary>Your signal occupies 0&ndash;4.2 MHz. Can you send it over twisted pair? Over coax?</summary>
+  <div class="a"><p>Yes to both. Twisted pair carries 1&ndash;100 MHz and coax 0&ndash;750 MHz, and the rule is that media bandwidth must exceed signal bandwidth. Coax has more headroom, but note twisted pair's range starts at 1 MHz, so a signal with real content down at DC is better matched to coax.</p></div></details>
+
+  <details class="qz"><summary>You need a cable between two switches. Straight-through or crossover?</summary>
+  <div class="a"><p>Crossover &mdash; two switches are <em>like</em> devices, so transmit and receive must be swapped. T568A on one end, T568B on the other.</p></div></details>
+
+  <details class="qz"><summary>A coax has \(D=0.20\) in, \(d=0.04\) in, \(\epsilon_r = 2.3\). Find \(Z_o\).</summary>
+  <div class="a"><p>\(Z_o = \frac{138}{\sqrt{2.3}}\log_{10}(0.20/0.04) = \frac{138}{1.5166}\log_{10}(5) = 90.99 \times 0.69897 = 63.6\ \Omega\). Magnitude check: between 50 and 75 &Omega;, so it is plausible.</p></div></details>
+
+  <details class="qz"><summary>Core \(n_1 = 1.46\), cladding \(n_2 = 1.44\). Find \(\theta_c\) and NA. Will a ray at 80&deg; be guided?</summary>
+  <div class="a"><p>\(\theta_c = \sin^{-1}(1.44/1.46) = \sin^{-1}(0.98630) = 80.53^\circ\). \(\mathrm{NA} = \sqrt{1.46^2 - 1.44^2} = \sqrt{2.1316 - 2.0736} = \sqrt{0.0580} = 0.2408\). A ray at 80&deg; is <em>below</em> \(\theta_c = 80.53^\circ\), so it refracts out &mdash; it is not guided. Note how a small index difference gives both a very high critical angle and a small NA: little light captured, but very pure propagation. That is single-mode fiber.</p></div></details>
+
+  <details class="qz"><summary>Why is 1550 nm preferred over 850 nm for long-haul fiber?</summary>
+  <div class="a"><p>Attenuation is at its minimum near 1550 nm, about 0.2 dB/km, versus a few dB/km at 850 nm. The third window therefore serves long-distance, high-capacity links while 850 nm is used for short runs. Avoid 1400 nm entirely &mdash; that is the OH&#8315; water-absorption peak.</p></div></details>
+
+  <details class="qz"><summary>Name the three propagation methods and match each to a frequency range.</summary>
+  <div class="a"><p><strong>Ground wave</strong> &mdash; low frequency, hugs the earth, range set by transmit power. <strong>Sky wave</strong> &mdash; higher frequency, bounces off the ionosphere (85&ndash;600 km up), long range at low power. <strong>Line-of-sight</strong> &mdash; very high frequency, straight antenna-to-antenna, needs directional aligned antennas clear of the earth's curvature.</p></div></details>
+
+  <details class="qz"><summary>In one sentence: why does a medium act as a filter?</summary>
+  <div class="a"><p>Because its attenuation increases with frequency and distance, so above some usable bandwidth the high-frequency components of a signal arrive impractically weak &mdash; copper, fiber and free space all behave as imperfect low-pass or band-pass filters, which is why higher data rates demand wider-bandwidth media, shorter distances, or better modulation and coding.</p></div></details>
+</section>
+
+<div class="footer">
+  <p><strong>Sources.</strong> Built from four files: <em>Signal and Transmission Media Characterization</em> (46 slides, with the instructor's handwritten solutions to Examples 6&ndash;8), <em>Transmission Media and Mode of Transmission</em> (75 slides, with red-ink solutions to the impedance examples), and two exported Canvas pages &mdash; <em>Signal Characterization: Time, Frequency &amp; Bandwidth</em> and <em>Digital Signal Transmission Basics</em>.</p>
+  <p style="margin-top:10px"><strong>One gap to be aware of:</strong> both Canvas PDFs exported almost entirely blank &mdash; only the headers, the distortion and noise paragraphs, and the filter-response captions survived the print. Sections 05 and 06 reconstruct that material from the surviving text plus the slide deck that covers the same ground. If those pages had figures or worked examples beyond what is here, re-export them from Canvas and they can be folded in.</p>
+</div>
+</main>
+</div>
+</div>
+
+<script>
+/* ============ theme-aware canvas helpers ============ */
+function tok(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function fit(cv, hRatio){
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth || 600;
+  const h = Math.round(w * (hRatio || 0.55));
+  cv.style.height = h + "px";
+  cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+  const c = cv.getContext("2d");
+  c.setTransform(dpr,0,0,dpr,0,0);
+  c.clearRect(0,0,w,h);
+  return {c, w, h};
+}
+function axes(c,w,h,pad,opt){
+  opt = opt||{};
+  c.strokeStyle = tok("--rule"); c.lineWidth = 1;
+  c.strokeRect(pad.l+.5, pad.t+.5, w-pad.l-pad.r-1, h-pad.t-pad.b-1);
+  if(opt.grid){
+    c.save(); c.strokeStyle = tok("--rule-2"); c.lineWidth=1;
+    for(let i=1;i<opt.grid;i++){
+      const x = pad.l + (w-pad.l-pad.r)*i/opt.grid;
+      c.beginPath(); c.moveTo(x+.5,pad.t); c.lineTo(x+.5,h-pad.b); c.stroke();
+    }
+    c.restore();
+  }
+}
+function lbl(c,txt,x,y,align,size,color){
+  c.fillStyle = color || tok("--ink-3");
+  c.font = (size||10) + "px " + "'IBM Plex Mono', monospace";
+  c.textAlign = align || "center"; c.textBaseline = "middle";
+  c.fillText(txt,x,y);
+}
+const REG = [];
+function reg(fn){ REG.push(fn); fn(); }
+function redrawAll(){ REG.forEach(f=>{ try{f();}catch(e){} }); }
+window.addEventListener("resize", redrawAll);
+if(window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", redrawAll);
+new MutationObserver(redrawAll).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+/* ============ scrollspy ============ */
+const links = [...document.querySelectorAll("#toc a")];
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(a=>a.classList.toggle("on", a.getAttribute("href") === "#"+e.target.id));
+    }
+  });
+},{rootMargin:"-10% 0px -75% 0px"});
+document.querySelectorAll("section.sec").forEach(s=>io.observe(s));
+
+/* ============ 01 periodicity checker ============ */
+(function(){
+  const f1=document.getElementById("p1f1"), f2=document.getElementById("p1f2"), out=document.getElementById("p1out");
+  function gcdF(a,b){ // gcd on values with up to 3 decimals
+    let x=Math.round(a*1000), y=Math.round(b*1000);
+    while(y){ [x,y]=[y,x%y]; }
+    return Math.abs(x)/1000;
+  }
+  function nice(v,d){ return Number(v.toFixed(d===undefined?4:d)).toString(); }
+  function upd(){
+    const a=parseFloat(f1.value)||1, b=parseFloat(f2.value)||1;
+    document.getElementById("p1f1v").textContent=a+" Hz";
+    document.getElementById("p1f2v").textContent=b+" Hz";
+    const T1=1/a, T2=1/b, f0=gcdF(a,b), T=1/f0;
+    const h1=Math.round(a/f0), h2=Math.round(b/f0);
+    out.innerHTML =
+      '<span class="rd"><i>T&#8321;</i><b>'+nice(T1,5)+' s</b></span>'+
+      '<span class="rd"><i>T&#8322;</i><b>'+nice(T2,5)+' s</b></span>'+
+      '<span class="rd"><i>T&#8321;/T&#8322;</i><b>'+nice(T1/T2,4)+'</b></span>'+
+      '<span class="rd cool"><i>fundamental f&#8320;</i><b>'+nice(f0,3)+' Hz</b></span>'+
+      '<span class="rd hot"><i>period T</i><b>'+nice(T,5)+' s</b></span>'+
+      '<span class="rd"><i>harmonics</i><b>'+h1+'&#215; and '+h2+'&#215; f&#8320;</b></span>';
+  }
+  f1.addEventListener("input",upd); f2.addEventListener("input",upd);
+  document.querySelectorAll("[data-p1]").forEach(b=>b.addEventListener("click",()=>{
+    const [x,y]=b.dataset.p1.split(","); f1.value=x; f2.value=y; upd();
+  }));
+  upd();
+})();
+
+/* ============ 02 composite signal studio ============ */
+(function(){
+  const ids=["dc","a1","f1","a2","f2","a3","f3"];
+  const el={}; ids.forEach(i=>el[i]=document.getElementById(i));
+  const cvT=document.getElementById("cvT"), cvF=document.getElementById("cvF"), out=document.getElementById("cOut");
+  function vals(){ const v={}; ids.forEach(i=>v[i]=parseFloat(el[i].value)); return v; }
+  function draw(){
+    const v=vals();
+    el.dc.nextElementSibling; // noop
+    document.getElementById("dcv").textContent=v.dc;
+    document.getElementById("a1v").textContent=v.a1;
+    document.getElementById("f1v").textContent=v.f1+" Hz";
+    document.getElementById("a2v").textContent=v.a2;
+    document.getElementById("f2v").textContent=v.f2+" Hz";
+    document.getElementById("a3v").textContent=v.a3;
+    document.getElementById("f3v").textContent=v.f3+" Hz";
+
+    const comps=[[0,v.dc],[v.f1,v.a1],[v.f2,v.a2],[v.f3,v.a3]].filter(c=>c[1]>0);
+    const span=0.25, maxA=v.dc+v.a1+v.a2+v.a3 || 1;
+
+    // --- time domain ---
+    let g=fit(cvT,0.62); let c=g.c,w=g.w,h=g.h;
+    const pad={l:34,r:10,t:12,b:26};
+    axes(c,w,h,pad,{grid:5});
+    const x0=pad.l, x1=w-pad.r, y0=pad.t, y1=h-pad.b;
+    const ymid=(y0+y1)/2, yscale=(y1-y0)/2/(maxA*1.1);
+    c.strokeStyle=tok("--rule-2"); c.beginPath(); c.moveTo(x0,ymid); c.lineTo(x1,ymid); c.stroke();
+    c.strokeStyle=tok("--copper"); c.lineWidth=1.8; c.beginPath();
+    for(let px=0;px<=x1-x0;px++){
+      const t=span*px/(x1-x0);
+      let y=v.dc;
+      y+=v.a1*Math.sin(2*Math.PI*v.f1*t);
+      y+=v.a2*Math.sin(2*Math.PI*v.f2*t);
+      y+=v.a3*Math.sin(2*Math.PI*v.f3*t);
+      const py=ymid-y*yscale;
+      px?c.lineTo(x0+px,py):c.moveTo(x0+px,py);
+    }
+    c.stroke();
+    lbl(c,"0",x0,y1+13,"center"); lbl(c,span.toFixed(2)+" s",x1,y1+13,"right");
+    lbl(c,"+"+Math.round(maxA*1.1),x0-6,y0+6,"right");
+    lbl(c,"0",x0-6,ymid,"right");
+    lbl(c,"-"+Math.round(maxA*1.1),x0-6,y1-6,"right");
+
+    // --- frequency domain ---
+    g=fit(cvF,0.62); c=g.c; w=g.w; h=g.h;
+    axes(c,w,h,pad,{grid:5});
+    const fx0=pad.l, fx1=w-pad.r, fy0=pad.t, fy1=h-pad.b;
+    const fmaxAx=45, aScale=(fy1-fy0-8)/(Math.max(v.dc,v.a1,v.a2,v.a3)||1);
+    c.strokeStyle=tok("--rule-2"); c.beginPath(); c.moveTo(fx0,fy1); c.lineTo(fx1,fy1); c.stroke();
+    comps.forEach(([f,a])=>{
+      const px=fx0+(fx1-fx0)*f/fmaxAx;
+      c.strokeStyle= f===0? tok("--teal") : tok("--copper");
+      c.lineWidth=4; c.beginPath(); c.moveTo(px,fy1); c.lineTo(px,fy1-a*aScale); c.stroke();
+      lbl(c,String(a),px,fy1-a*aScale-9,"center",10,f===0?tok("--teal"):tok("--copper"));
+      lbl(c,f===0?"DC":f+"",px,fy1+13,"center");
+    });
+    lbl(c,"Hz",fx1,fy1+13,"right");
+
+    const freqs=comps.map(k=>k[0]);
+    const lo=Math.min(...freqs), hi=Math.max(...freqs);
+    out.innerHTML =
+      '<span class="rd"><i>components</i><b>'+comps.length+'</b></span>'+
+      '<span class="rd"><i>f low</i><b>'+lo+' Hz</b></span>'+
+      '<span class="rd"><i>f high</i><b>'+hi+' Hz</b></span>'+
+      '<span class="rd hot"><i>bandwidth</i><b>'+(hi-lo)+' Hz</b></span>'+
+      '<span class="rd cool"><i>peak-to-peak</i><b>'+(2*(v.a1+v.a2+v.a3)).toFixed(1)+' V</b></span>';
+  }
+  ids.forEach(i=>el[i].addEventListener("input",draw));
+  document.querySelectorAll("[data-comp]").forEach(b=>b.addEventListener("click",()=>{
+    const p=b.dataset.comp.split(",");
+    ids.forEach((id,k)=>el[id].value=p[k]);
+    draw();
+  }));
+  reg(draw);
+})();
+
+/* ============ 03 bit-rate bench ============ */
+(function(){
+  const lv=document.getElementById("lv"), bw=document.getElementById("bw"), bps=document.getElementById("bps"), out=document.getElementById("brOut");
+  function fmt(r){
+    if(r>=1e9) return (r/1e9).toFixed(2)+" Gbps";
+    if(r>=1e6) return (r/1e6).toFixed(2)+" Mbps";
+    if(r>=1e3) return (r/1e3).toFixed(2)+" kbps";
+    return r+" bps";
+  }
+  function upd(){
+    const L=Math.max(2,parseFloat(lv.value)||2), B=Math.max(1,parseFloat(bw.value)||1), n=Math.max(1,parseFloat(bps.value)||1);
+    document.getElementById("lvv").textContent=L;
+    document.getElementById("bwv").textContent=B;
+    document.getElementById("bpsv").textContent=n;
+    const raw=Math.log2(L), up=Math.ceil(raw-1e-9);
+    const fs=2*B, rate=fs*n;
+    out.innerHTML=
+      '<span class="rd"><i>log&#8322; L</i><b>'+raw.toFixed(2)+'</b></span>'+
+      '<span class="rd hot"><i>bits per level</i><b>'+up+(Math.abs(raw-up)>1e-9?' (rounded up)':'')+'</b></span>'+
+      '<span class="rd"><i>sampling rate 2f</i><b>'+fs.toLocaleString()+' /s</b></span>'+
+      '<span class="rd cool"><i>bit rate</i><b>'+fmt(rate)+'</b></span>';
+  }
+  [lv,bw,bps].forEach(e=>e.addEventListener("input",upd));
+  document.querySelectorAll("[data-br]").forEach(b=>b.addEventListener("click",()=>{
+    const p=b.dataset.br.split(","); lv.value=p[0]; bw.value=p[1]; bps.value=p[2]; upd();
+  }));
+  upd();
+})();
+
+/* ============ 04 filter bench ============ */
+(function(){
+  const cv=document.getElementById("cvFilt"), out=document.getElementById("filtOut");
+  const fc1=document.getElementById("fc1"), fc2=document.getElementById("fc2"), wrap2=document.getElementById("fc2wrap");
+  const LINES=[100,300,500,700,900], AMP=10, FMAX=1000;
+  let type="lp";
+  function gain(f){
+    const a=parseFloat(fc1.value), b=parseFloat(fc2.value);
+    const lo=Math.min(a,b), hi=Math.max(a,b);
+    const lp=fc=>1/Math.sqrt(1+Math.pow(f/fc,2));
+    const hp=fc=>(f/fc)/Math.sqrt(1+Math.pow(f/fc,2));
+    if(type==="lp") return lp(a);
+    if(type==="hp") return hp(a);
+    if(type==="bp") return hp(lo)*lp(hi);
+    return Math.min(1, 1-hp(lo)*lp(hi));
+  }
+  function draw(){
+    document.getElementById("fc1v").textContent=fc1.value+" Hz";
+    document.getElementById("fc2v").textContent=fc2.value+" Hz";
+    wrap2.style.visibility=(type==="bp"||type==="bs")?"visible":"hidden";
+    const g=fit(cv,0.46), c=g.c, w=g.w, h=g.h;
+    const pad={l:36,r:12,t:14,b:26};
+    axes(c,w,h,pad,{grid:5});
+    const x0=pad.l,x1=w-pad.r,y0=pad.t,y1=h-pad.b;
+    const X=f=>x0+(x1-x0)*f/FMAX, Y=v=>y1-(y1-y0)*v;
+
+    // shade passband
+    c.fillStyle=tok("--teal-soft");
+    for(let px=x0;px<x1;px++){
+      const f=FMAX*(px-x0)/(x1-x0);
+      if(gain(f)>=0.7071){ c.fillRect(px,y0,1,y1-y0); }
+    }
+    // response curve
+    c.strokeStyle=tok("--ink-3"); c.lineWidth=1.6; c.beginPath();
+    for(let px=0;px<=x1-x0;px++){
+      const f=FMAX*px/(x1-x0);
+      const py=Y(gain(Math.max(f,0.5)));
+      px?c.lineTo(x0+px,py):c.moveTo(x0+px,py);
+    }
+    c.stroke();
+    // -3 dB line
+    c.save(); c.setLineDash([4,4]); c.strokeStyle=tok("--rule");
+    c.beginPath(); c.moveTo(x0,Y(0.7071)); c.lineTo(x1,Y(0.7071)); c.stroke(); c.restore();
+    lbl(c,"-3 dB",x1-4,Y(0.7071)-8,"right");
+
+    // spectral lines
+    let kept=0;
+    LINES.forEach(f=>{
+      const gv=gain(f), px=X(f);
+      if(gv>=0.7071) kept++;
+      c.strokeStyle=gv>=0.7071?tok("--copper"):tok("--rule");
+      c.lineWidth=5; c.beginPath(); c.moveTo(px,y1); c.lineTo(px,Y(gv)); c.stroke();
+      lbl(c,(AMP*gv).toFixed(1),px,Y(gv)-9,"center",10,gv>=0.7071?tok("--copper"):tok("--ink-3"));
+      lbl(c,f+"",px,y1+13,"center");
+    });
+    lbl(c,"1.0",x0-6,y0+4,"right"); lbl(c,"0",x0-6,y1,"right"); lbl(c,"Hz",x1,y1+13,"right");
+
+    const names={lp:"Low-pass",hp:"High-pass",bp:"Band-pass",bs:"Band-stop"};
+    out.innerHTML=
+      '<span class="rd"><i>filter</i><b>'+names[type]+'</b></span>'+
+      '<span class="rd hot"><i>components in passband</i><b>'+kept+' of 5</b></span>'+
+      '<span class="rd"><i>rolloff</i><b>20 dB/decade</b></span>';
+  }
+  document.querySelectorAll("#ftype .pb").forEach(b=>b.addEventListener("click",()=>{
+    type=b.dataset.ft;
+    document.querySelectorAll("#ftype .pb").forEach(o=>o.setAttribute("aria-pressed", o===b?"true":"false"));
+    draw();
+  }));
+  fc1.addEventListener("input",draw); fc2.addEventListener("input",draw);
+  reg(draw);
+})();
+
+/* ============ 05 Zo calculator ============ */
+(function(){
+  const fields=document.getElementById("zfields"), out=document.getElementById("zOut");
+  let mode="par";
+  const defs={
+    par:[["zdr","D / r ratio",12.22,0.01]],
+    coax:[["zD","D (outer, in)",0.15,0.001],["zd","d (inner, in)",0.025,0.001],["zer","εr",2.23,0.01]],
+    lc:[["zL","L (µH per unit)",0.118,0.001],["zC","C (pF per unit)",21,0.1]]
+  };
+  function build(){
+    fields.innerHTML = defs[mode].map(f=>
+      '<div class="ctrl"><label for="'+f[0]+'">'+f[1]+'</label><input type="number" id="'+f[0]+'" value="'+f[2]+'" step="'+f[3]+'" min="0"></div>'
+    ).join("");
+    fields.querySelectorAll("input").forEach(i=>i.addEventListener("input",calc));
+    calc();
+  }
+  function num(id){ const e=document.getElementById(id); return e?parseFloat(e.value):NaN; }
+  function calc(){
+    let z=NaN, form="";
+    if(mode==="par"){
+      const r=num("zdr"); z=276*Math.log10(r);
+      form="276 log₁₀("+r+")";
+    } else if(mode==="coax"){
+      const D=num("zD"), d=num("zd"), er=num("zer");
+      z=(138/Math.sqrt(er))*Math.log10(D/d);
+      form="138/√"+er+" × log₁₀("+(D/d).toFixed(3)+")";
+    } else {
+      const L=num("zL")*1e-6, C=num("zC")*1e-12;
+      z=Math.sqrt(L/C);
+      form="√(L/C)";
+    }
+    const ok = isFinite(z) && z>0;
+    out.innerHTML =
+      '<span class="rd"><i>formula</i><b>'+form+'</b></span>'+
+      '<span class="rd hot"><i>Z₀</i><b>'+(ok?z.toFixed(2)+" Ω":"check inputs")+'</b></span>'+
+      (ok?'<span class="rd '+((z>=45&&z<=310)?"cool":"")+'"><i>plausible?</i><b>'+((z>=45&&z<=310)?"yes, 45–310 Ω":"outside usual range")+'</b></span>':'');
+  }
+  document.querySelectorAll("#zmode .pb").forEach(b=>b.addEventListener("click",()=>{
+    mode=b.dataset.zm;
+    document.querySelectorAll("#zmode .pb").forEach(o=>o.setAttribute("aria-pressed", o===b?"true":"false"));
+    build();
+  }));
+  build();
+})();
+
+/* ============ 06 refraction / TIR bench ============ */
+(function(){
+  const cv=document.getElementById("cvRay"), out=document.getElementById("rayOut");
+  const n1=document.getElementById("n1"), n2=document.getElementById("n2"), th=document.getElementById("th1");
+  const D=180/Math.PI;
+  function draw(){
+    let N1=parseFloat(n1.value), N2=parseFloat(n2.value), T1=parseFloat(th.value);
+    if(N2>=N1){ N2=N1-0.01; n2.value=N2.toFixed(2); }
+    document.getElementById("n1v").textContent=N1.toFixed(2);
+    document.getElementById("n2v").textContent=N2.toFixed(2);
+    document.getElementById("th1v").textContent=T1+"°";
+
+    const sinT2=N1*Math.sin(T1/D)/N2;
+    const tir=sinT2>1;
+    const T2=tir?null:Math.asin(sinT2)*D;
+    const tc=Math.asin(N2/N1)*D;
+    const NA=Math.sqrt(N1*N1-N2*N2);
+    const acc=Math.asin(Math.min(1,NA))*D;
+
+    const g=fit(cv,0.5), c=g.c, w=g.w, h=g.h;
+    const ox=w*0.5, oy=h*0.52, R=Math.min(w*0.42,h*0.44);
+    // media
+    c.fillStyle=tok("--teal-soft"); c.fillRect(0,0,w,oy);
+    c.fillStyle=tok("--surface-2"); c.fillRect(0,oy,w,h-oy);
+    c.strokeStyle=tok("--ink-3"); c.lineWidth=1.4;
+    c.beginPath(); c.moveTo(0,oy+.5); c.lineTo(w,oy+.5); c.stroke();
+    lbl(c,"CORE  n₁ = "+N1.toFixed(2),10,16,"left",11,tok("--teal"));
+    lbl(c,"CLADDING  n₂ = "+N2.toFixed(2),10,h-14,"left",11,tok("--ink-3"));
+    // normal
+    c.save(); c.setLineDash([5,5]); c.strokeStyle=tok("--rule");
+    c.beginPath(); c.moveTo(ox,6); c.lineTo(ox,h-6); c.stroke(); c.restore();
+    lbl(c,"normal",ox+6,12,"left",10);
+
+    const a=T1/D;
+    // incident ray (from upper-left toward origin)
+    c.strokeStyle=tok("--copper"); c.lineWidth=2.4;
+    c.beginPath(); c.moveTo(ox-R*Math.sin(a), oy-R*Math.cos(a)); c.lineTo(ox,oy); c.stroke();
+    // arrowhead
+    c.fillStyle=tok("--copper");
+    const mx=ox-R*0.5*Math.sin(a), my=oy-R*0.5*Math.cos(a);
+    c.save(); c.translate(mx,my); c.rotate(Math.atan2(R*Math.cos(a),R*Math.sin(a)));
+    c.beginPath(); c.moveTo(6,0); c.lineTo(-4,4); c.lineTo(-4,-4); c.closePath(); c.fill(); c.restore();
+    lbl(c,"θ₁ = "+T1+"°", ox-R*0.55*Math.sin(a)-16, oy-R*0.55*Math.cos(a)+14,"right",11,tok("--copper"));
+
+    // reflected ray
+    c.strokeStyle= tir? tok("--copper") : tok("--rule");
+    c.lineWidth= tir? 2.4 : 1.4;
+    if(tir){} else { c.save(); c.setLineDash([4,4]); }
+    c.beginPath(); c.moveTo(ox,oy); c.lineTo(ox+R*Math.sin(a), oy-R*Math.cos(a)); c.stroke();
+    if(!tir) c.restore();
+
+    if(tir){
+      lbl(c,"TOTAL INTERNAL REFLECTION", w-10, oy+20, "right", 12, tok("--copper"));
+    } else {
+      const b=T2/D;
+      c.strokeStyle=tok("--teal"); c.lineWidth=2.4;
+      c.beginPath(); c.moveTo(ox,oy); c.lineTo(ox+R*Math.sin(b), oy+R*Math.cos(b)); c.stroke();
+      lbl(c,"θ₂ = "+T2.toFixed(2)+"°", ox+R*0.6*Math.sin(b)+12, oy+R*0.6*Math.cos(b)-10,"left",11,tok("--teal"));
+    }
+
+    out.innerHTML=
+      '<span class="rd '+(tir?'':'cool')+'"><i>angle of refraction θ₂</i><b>'+(tir?"none — TIR":T2.toFixed(2)+"°")+'</b></span>'+
+      '<span class="rd hot"><i>critical angle θc</i><b>'+tc.toFixed(2)+'°</b></span>'+
+      '<span class="rd"><i>numerical aperture</i><b>'+NA.toFixed(4)+'</b></span>'+
+      '<span class="rd"><i>acceptance angle</i><b>'+acc.toFixed(2)+'°</b></span>'+
+      '<span class="rd"><i>guided?</i><b>'+(T1>tc?"yes — θ₁ > θc":"no — θ₁ < θc, ray escapes")+'</b></span>';
+  }
+  [n1,n2,th].forEach(e=>e.addEventListener("input",draw));
+  document.querySelectorAll("[data-ray]").forEach(b=>b.addEventListener("click",()=>{
+    const p=b.dataset.ray.split(","); n1.value=p[0]; n2.value=p[1]; th.value=p[2]; draw();
+  }));
+  reg(draw);
+})();
+</script>
+
+</body>
+</html>

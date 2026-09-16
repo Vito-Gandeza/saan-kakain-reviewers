@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Bench Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-svg.js" id="MathJax-script" async></script>
+<style>
+  :root {
+    --ground: #F2F0EC;
+    --surface: #FFFFFF;
+    --sunk: #E8E4DD;
+    --ink: #1A1814;
+    --ink-soft: #55504A;
+    --ink-faint: #8A837A;
+    --rule: #D8D2C8;
+    --rule-hard: #B4ACA0;
+    --sig: #9A4A10;        /* signal / accent */
+    --sig-wash: #F7E9DC;
+    --wire: #1F5F52;       /* hardware green */
+    --wire-wash: #DDEDE8;
+    --warn: #8A1F2E;
+    --warn-wash: #F8E2E4;
+    --note: #3C4A8A;
+    --note-wash: #E3E7F6;
+    --shadow: 0 1px 2px rgba(26,24,20,.06), 0 10px 28px -20px rgba(26,24,20,.45);
+
+    --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+    --measure: 70ch;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #141310;
+      --surface: #1D1B17;
+      --sunk: #17150F;
+      --ink: #EDE8E0;
+      --ink-soft: #B3ABA0;
+      --ink-faint: #857E74;
+      --rule: #322E27;
+      --rule-hard: #4A443A;
+      --sig: #E39456;
+      --sig-wash: #2B1D12;
+      --wire: #66C9B2;
+      --wire-wash: #11291F;
+      --warn: #F0838F;
+      --warn-wash: #2E1518;
+      --note: #98A8EE;
+      --note-wash: #191D33;
+      --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 28px -20px rgba(0,0,0,.9);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #141310;
+    --surface: #1D1B17;
+    --sunk: #17150F;
+    --ink: #EDE8E0;
+    --ink-soft: #B3ABA0;
+    --ink-faint: #857E74;
+    --rule: #322E27;
+    --rule-hard: #4A443A;
+    --sig: #E39456;
+    --sig-wash: #2B1D12;
+    --wire: #66C9B2;
+    --wire-wash: #11291F;
+    --warn: #F0838F;
+    --warn-wash: #2E1518;
+    --note: #98A8EE;
+    --note-wash: #191D33;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 28px -20px rgba(0,0,0,.9);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: clamp(15px, 1.15vw, 16.5px);
+    line-height: 1.62;
+    padding-inline: 20px;
+    padding-block: 0 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  .col { max-width: var(--measure); }
+
+  /* ---------- masthead ---------- */
+  header.mast {
+    padding-block: clamp(44px, 8vh, 84px) 28px;
+    border-bottom: 2px solid var(--rule-hard);
+    margin-bottom: 0;
+  }
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: .7rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+  .eyebrow b { color: var(--sig); font-weight: 600; }
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 6vw, 3.4rem);
+    line-height: 1.04;
+    letter-spacing: -.022em;
+    margin: 0 0 18px;
+  }
+  h1 em { font-style: italic; color: var(--sig); }
+  .standfirst {
+    font-family: var(--f-display);
+    font-size: clamp(1.02rem, 1.7vw, 1.16rem);
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0 0 24px;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: var(--f-mono);
+    font-size: .7rem;
+    letter-spacing: .04em;
+    padding: 5px 10px;
+    border: 1px solid var(--rule-hard);
+    border-radius: 4px;
+    color: var(--ink-soft);
+    background: var(--surface);
+  }
+  .chip.on { border-color: var(--sig); color: var(--sig); background: var(--sig-wash); }
+
+  /* ---------- contents ---------- */
+  nav.toc {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--ground);
+    border-bottom: 1px solid var(--rule);
+    padding-block: 10px;
+    margin-bottom: 44px;
+  }
+  nav.toc .inner { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+  nav.toc a {
+    font-family: var(--f-mono);
+    font-size: .68rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-decoration: none;
+    padding: 3px 0;
+    border-bottom: 1px solid transparent;
+  }
+  nav.toc a:hover { color: var(--sig); border-bottom-color: var(--sig); }
+
+  /* ---------- sections ---------- */
+  section { margin-block: 0 60px; scroll-margin-top: 62px; }
+  .sec-num {
+    font-family: var(--f-mono);
+    font-size: .7rem;
+    letter-spacing: .14em;
+    color: var(--sig);
+    display: block;
+    margin-bottom: 8px;
+  }
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(1.5rem, 3.2vw, 2rem);
+    line-height: 1.16;
+    letter-spacing: -.015em;
+    margin: 0 0 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--rule-hard);
+  }
+  h3 {
+    font-family: var(--f-body);
+    font-weight: 600;
+    font-size: 1.06rem;
+    letter-spacing: -.005em;
+    margin: 30px 0 8px;
+  }
+  h4 {
+    font-family: var(--f-mono);
+    font-weight: 600;
+    font-size: .78rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 22px 0 6px;
+  }
+  p { margin: 0 0 14px; max-width: var(--measure); }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; max-width: var(--measure); }
+  li { margin-bottom: 5px; }
+  li::marker { color: var(--ink-faint); }
+  strong { font-weight: 600; }
+  code {
+    font-family: var(--f-mono);
+    font-size: .88em;
+    background: var(--sunk);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  a { color: var(--sig); }
+
+  /* ---------- code blocks ---------- */
+  pre {
+    font-family: var(--f-mono);
+    font-size: .8rem;
+    line-height: 1.55;
+    background: var(--sunk);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--rule-hard);
+    border-radius: 5px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin: 0 0 16px;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  pre .c { color: var(--ink-faint); }
+  pre .k { color: var(--sig); }
+
+  /* ---------- callouts ---------- */
+  .box {
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--rule-hard);
+    background: var(--surface);
+    border-radius: 5px;
+    padding: 14px 16px;
+    margin: 0 0 18px;
+    max-width: var(--measure);
+  }
+  .box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom: 0; }
+  .box .lbl {
+    font-family: var(--f-mono);
+    font-size: .66rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .box.key { border-left-color: var(--wire); background: var(--wire-wash); }
+  .box.key .lbl { color: var(--wire); }
+  .box.trap { border-left-color: var(--warn); background: var(--warn-wash); }
+  .box.trap .lbl { color: var(--warn); }
+  .box.note { border-left-color: var(--note); background: var(--note-wash); }
+  .box.note .lbl { color: var(--note); }
+  .box.log { border-left-color: var(--sig); background: var(--sig-wash); }
+  .box.log .lbl { color: var(--sig); }
+
+  /* ---------- tables ---------- */
+  .tw { overflow-x: auto; margin: 0 0 18px; }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: .86rem;
+    background: var(--surface);
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 11px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--f-mono);
+    font-size: .68rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--rule-hard);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td code { font-size: .84em; }
+  table.fixed td:first-child { font-family: var(--f-mono); font-size: .8rem; white-space: nowrap; }
+
+  /* ---------- notebook entry template ---------- */
+  .entry {
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 27px, var(--rule) 27px 28px),
+      var(--surface);
+    border: 1px solid var(--rule-hard);
+    border-radius: 3px;
+    padding: 18px 20px;
+    margin: 0 0 18px;
+    font-family: var(--f-mono);
+    font-size: .78rem;
+    line-height: 28px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+
+  /* ---------- checklist ---------- */
+  ul.check { list-style: none; padding-left: 0; }
+  ul.check li {
+    padding-left: 26px;
+    position: relative;
+    margin-bottom: 7px;
+  }
+  ul.check li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: .42em;
+    width: 13px; height: 13px;
+    border: 1.5px solid var(--rule-hard);
+    border-radius: 2px;
+  }
+
+  /* ---------- misc ---------- */
+  .lede {
+    font-family: var(--f-display);
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--sig);
+    padding-left: 16px;
+    margin: 0 0 22px;
+    max-width: 60ch;
+  }
+  .two {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+  .two .box { max-width: none; margin-bottom: 0; }
+  hr.soft { border: none; border-top: 1px solid var(--rule); margin: 26px 0; }
+
+  footer.end {
+    border-top: 2px solid var(--rule-hard);
+    padding-top: 20px;
+    margin-top: 40px;
+    font-size: .86rem;
+    color: var(--ink-faint);
+    max-width: var(--measure);
+  }
+  footer.end a { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">DLSU &middot; Gokongwei College of Engineering &middot; <b>LBYCPA3</b> Microprocessors Laboratory &middot; E27</p>
+  <h1>The <em>Bench</em> Notebook</h1>
+  <p class="standfirst">Six laboratory activities, two microcontrollers, one grading rubric that quietly rewards writing things down while you are still holding the probe. This is the register-level reference and the documentation discipline in one page.</p>
+  <div class="chips">
+    <span class="chip on">Unit 1 &mdash; ATmega328P</span>
+    <span class="chip on">Unit 2 &mdash; ESP32</span>
+    <span class="chip">Labs 1&ndash;6</span>
+    <span class="chip">Notebook 10% &middot; Reports 40%</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="inner">
+    <a href="#use">00 Read me</a>
+    <a href="#notebook">01 The notebook</a>
+    <a href="#registers">02 Register literacy</a>
+    <a href="#lab1">03 Lab 1</a>
+    <a href="#lab2">04 Lab 2</a>
+    <a href="#lab3">05 Lab 3</a>
+    <a href="#lab4">06 Lab 4</a>
+    <a href="#lab5">07 Lab 5</a>
+    <a href="#lab6">08 Lab 6</a>
+    <a href="#traps">09 Bug museum</a>
+    <a href="#stats">10 Data &amp; statistics</a>
+    <a href="#deliverables">11 Deliverables</a>
+    <a href="#formulas">12 Formula sheet</a>
+    <a href="#selfcheck">13 Self-check</a>
+  </div>
+</nav>
+
+<!-- ================= 00 ================= -->
+<section id="use">
+  <span class="sec-num">00</span>
+  <h2>Read me first</h2>
+
+  <p class="lede">Two failure modes end this course badly, and neither is &ldquo;the code did not compile.&rdquo; One is a floating input you never suspected. The other is a notebook you filled in the night before it was due.</p>
+
+  <p>The lab is a chain: read the register, write the bit, watch the pin, <em>record what actually happened</em>, then explain the gap between what you expected and what you measured. The rubrics grade every link. Grade weights for reference: laboratory reports 40%, project 30%, practical exam 20%, engineer&rsquo;s notebook 10% (individual, weekly from week 2).</p>
+
+  <h3>Build order</h3>
+  <ol>
+    <li><strong>Notebook habit first</strong> (&sect;01). It costs five minutes per session and is the only component you can lose purely through neglect.</li>
+    <li><strong>Register literacy</strong> (&sect;02). Every AVR activity is the same four idioms applied to different register names.</li>
+    <li><strong>Labs 1&ndash;3</strong> &mdash; ATmega328P: GPIO, interrupts and memory, then timers/PWM/ADC. Each builds on the last; Lab 3 assumes you can already multiplex a display from Lab 2.</li>
+    <li><strong>Labs 4&ndash;6</strong> &mdash; ESP32: architecture and Wokwi, peripherals under ESP-IDF, then actuators under FreeRTOS. Same peripherals, different abstraction level.</li>
+    <li><strong>&sect;09 Bug museum</strong> before your first long debugging session. Several traps are in the supplied course code itself.</li>
+    <li><strong>&sect;10 Statistics</strong> before Lab 1&rsquo;s pull-up trials and Lab 3&rsquo;s regressions &mdash; both are explicitly graded on data analysis (SO-PI B2).</li>
+  </ol>
+
+  <div class="box note">
+    <span class="lbl">Scope note</span>
+    <p>Unit 3 (PIC16F877) has no released activity pages yet. The ABET course document still describes an older assembly-language/PIC sequence; the Canvas modules are the current version and win where they disagree. Everything below is built from the six released activity pages.</p>
+  </div>
+</section>
+
+<!-- ================= 01 ================= -->
+<section id="notebook">
+  <span class="sec-num">01</span>
+  <h2>The engineer&rsquo;s notebook, decoded</h2>
+
+  <p>The rubric has exactly four criteria, and each one maps to a habit rather than an effort level. Read them as instructions, not as descriptions.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Rubric criterion</th><th>What it actually tests</th><th>How it is lost</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Completeness</strong><br>&ldquo;All activities/experiments have entries&rdquo;</td><td>One dated entry per activity, no gaps. Exemplary = every activity; one missing activity already drops you to satisfactory.</td><td>Skipping the session where nothing worked. That session is data.</td></tr>
+      <tr><td><strong>Relevance and appropriateness</strong></td><td>Entries contain lab content: pin assignments, register values, measurements, observations, decisions. Not a diary, not a re-copied manual.</td><td>Transcribing the activity sheet instead of recording your own build.</td></tr>
+      <tr><td><strong>Compliance with guidelines</strong></td><td>Format discipline: dated, ink, sequential pages, nothing erased, corrections struck through once and initialled, no loose sheets.</td><td>Erasing a wrong value. The wrong value is the evidence.</td></tr>
+      <tr><td><strong>Timeliness</strong></td><td>Entries written <em>during</em> the session, weekly from week 2 onward.</td><td>Backfilling three weeks the night before submission &mdash; visibly uniform ink, no mid-session corrections, no dead ends.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>The five-minute entry structure</h3>
+  <p>Write in this order every session. It matches the order a grader reads and the order your final report needs.</p>
+
+  <div class="entry">DATE  2026-__-__     ACTIVITY  Lab 3 / Part E Act.1     BOARD  Arduino UNO #__
+OBJECTIVE (1 line)
+  Characterize LDR response vs PWM duty for R, G, B.
+
+SETUP
+  ATmega328P @16 MHz. LDR + 1k divider -> PC0 (A0).
+  RGB LED: R=PB1/OC1A, G=PB2/OC1B, B=PD3. 4-digit 7seg via 74HC595 (PD5/6/7).
+  Timer1 Fast PWM mode 14, ICR1=39999 -> 50 Hz.   Timer0 OVF ISR -> digit mux.
+  Ambient: box closed, room lights off.
+
+PROCEDURE DEVIATIONS
+  Duty set in 10% steps, 10 ADC samples averaged per point (settle 500 ms).
+
+DATA                     (raw, as read - no cleanup)
+  duty%   R_adc   G_adc   B_adc
+   10      812     840     861
+   20      733     781     824
+  ...
+
+OBSERVATIONS
+  - Blue curve flattens above 70%: suspect LDR saturation, not PWM.
+  - ADC jitter +/-4 LSB with LED on; +/-1 LSB dark -> supply noise from LED current.
+
+DECISIONS / CHANGES
+  16:40  Added 100 nF across LDR divider. Jitter -> +/-1 LSB. Kept for all runs.
+  17:05  Discarded run 2 (box lid open). NOT deleted - see p.14, struck through.
+
+OPEN QUESTIONS
+  Is the flattening gamma saturation or ADC reference droop? Check with 2.5 dB atten... (ESP32 later)
+
+SIGNED  V.G.  17:20</div>
+
+  <div class="box log">
+    <span class="lbl">The one rule that carries the other three</span>
+    <p><strong>Record the wrong result before you fix it.</strong> A notebook whose every reading is correct reads as a fair copy, and a fair copy is not timely. The struck-through run, the abandoned pin assignment, the 30&nbsp;minutes lost to a swapped RCLK/SRCLK &mdash; those are the entries that make the rest credible, and they are also exactly the &ldquo;causes of error&rdquo; the final report rubric asks you to cite.</p>
+  </div>
+
+  <h3>What belongs in the notebook vs the report</h3>
+  <div class="two">
+    <div class="box">
+      <span class="lbl">Notebook (during)</span>
+      <ul>
+        <li>Raw readings, in the units the instrument showed</li>
+        <li>Pin assignments as built &mdash; including the one you changed</li>
+        <li>Register values you actually wrote, in hex or binary</li>
+        <li>Timestamps for each change</li>
+        <li>Photos/screenshot filenames, referenced by name</li>
+        <li>Dead ends and their symptoms</li>
+      </ul>
+    </div>
+    <div class="box">
+      <span class="lbl">Report (after)</span>
+      <ul>
+        <li>Cleaned tables with units and captions</li>
+        <li>Plots with fitted models and \(R^2\)</li>
+        <li>Flowcharts and schematics</li>
+        <li>Statistical analysis and interpretation</li>
+        <li>Conclusions citing specific data points</li>
+        <li>Causes of error &mdash; harvested from the notebook&rsquo;s dead ends</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="box note">
+    <span class="lbl">Preliminary report</span>
+    <p>The preliminary report is worth 30% of the final report grade and is accomplished <em>during</em> the activity. Its rubric wants an experimental plan <em>with a diagram or algorithm that is explained</em>, plus stated objectives and followable steps. Draft it in the notebook before you touch hardware; the notebook entry and the preliminary report are the same content at two levels of polish.</p>
+  </div>
+</section>
+
+<!-- ================= 02 ================= -->
+<section id="registers">
+  <span class="sec-num">02</span>
+  <h2>Register literacy: the four idioms</h2>
+
+  <p>Every AVR line in this course is one of four operations on one of three kinds of register. Learn them once and Labs 1&ndash;3 stop being memorization.</p>
+
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Idiom</th><th>Code</th><th>Reads as</th></tr></thead>
+    <tbody>
+      <tr><td>Set bit</td><td><code>PORTB |= (1&lt;&lt;PORTB5);</code></td><td>Turn bit 5 on, leave the rest alone.</td></tr>
+      <tr><td>Clear bit</td><td><code>PORTB &amp;= ~(1&lt;&lt;PORTB5);</code></td><td>Turn bit 5 off, leave the rest alone.</td></tr>
+      <tr><td>Toggle bit</td><td><code>PORTB ^= (1&lt;&lt;PORTB5);</code></td><td>Flip bit 5.</td></tr>
+      <tr><td>Test bit</td><td><code>if (!(PINC &amp; (1&lt;&lt;PINC0)))</code></td><td>Is bit 5 low? (Note: read <code>PINx</code>, never <code>PORTx</code>.)</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>The three port registers</h3>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Register</th><th>Direction bit = 0</th><th>Direction bit = 1</th></tr></thead>
+    <tbody>
+      <tr><td><code>DDRx</code></td><td>pin is an input</td><td>pin is an output</td></tr>
+      <tr><td><code>PORTx</code></td><td>input: 1 enables the internal pull-up, 0 leaves it floating (tri-state)</td><td>output: the driven logic level</td></tr>
+      <tr><td><code>PINx</code></td><td colspan="2">always reads the actual voltage on the pin, in either direction. This is the one you read.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box key">
+    <span class="lbl">The single most important consequence</span>
+    <p>An input pin with <code>DDRx</code>=0 and <code>PORTx</code>=0 is <strong>floating</strong>. It is not 0 and it is not 1 &mdash; it is an antenna, and <code>PINx</code> will return whatever charge happens to be sitting on it. Lab 1 Experiment 1 is engineered to make you observe exactly this, so do not &ldquo;fix&rdquo; it before you have measured it.</p>
+  </div>
+
+  <h3>Four habits that prevent most register bugs</h3>
+  <ul>
+    <li><strong>Use <code>|=</code> on shared registers, <code>=</code> only when you own every bit.</strong> <code>ADMUX |= channel</code> never <em>clears</em> the old channel &mdash; see &sect;09.</li>
+    <li><strong>Mask before you merge:</strong> <code>ADMUX = (ADMUX &amp; 0xF0) | (ch &amp; 0x0F);</code></li>
+    <li><strong>Anything an ISR writes and <code>main()</code> reads must be <code>volatile</code>.</strong> Without it the compiler may cache the value in a register and your main loop will never see the update.</li>
+    <li><strong>Reads of a multi-byte volatile (e.g. a 32-bit <code>tick</code>) are not atomic on an 8-bit core.</strong> An interrupt landing mid-read gives you a torn value. Wrap in <code>ATOMIC_BLOCK</code> (<code>&lt;util/atomic.h&gt;</code>) or read it twice and compare.</li>
+  </ul>
+
+  <h3>ATmega328P memory, in one line each</h3>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Space</th><th>Size</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>Flash</td><td>32 KB</td><td>program code; survives power loss; written by the bootloader</td></tr>
+      <tr><td>SRAM</td><td>2 KB</td><td>variables, stack; lost on reset</td></tr>
+      <tr><td>EEPROM</td><td>1 KB</td><td>non-volatile data written at run time &mdash; Lab 2&rsquo;s ANS memory</td></tr>
+      <tr><td>SFRs</td><td>&mdash;</td><td>the peripheral control registers; memory-mapped into the data space</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ================= 03 ================= -->
+<section id="lab1">
+  <span class="sec-num">03</span>
+  <h2>Lab 1 &mdash; GPIO, LEDs, and the floating pin</h2>
+
+  <p><strong>Deliverables:</strong> four LEDs at four different blink rates; a push-button counter on a seven-segment display; and a trials experiment comparing the counter with and without a pull-up.</p>
+
+  <h3>Part B &mdash; the guided blink, read properly</h3>
+  <p>The supplied program sets <code>DDRB</code> for PB5 (the onboard LED, Arduino pin D13) and toggles it with delays. Two details in it are worth a notebook line:</p>
+
+  <div class="box trap">
+    <span class="lbl">Two things in the supplied blink</span>
+    <p><code>DDRB = 0b000100000;</code> is written with nine binary digits. The value still evaluates to <code>0x20</code> = PB5, so it works &mdash; but count the bits before you trust a literal.</p>
+    <p><code>_delay_us(500000)</code> works only because the argument is a compile-time constant that avr-libc converts into a millisecond delay. The documented per-call range of <code>_delay_us()</code> is far smaller, and a <em>variable</em> argument of that size silently misbehaves. Write <code>_delay_ms(500)</code>.</p>
+  </div>
+
+  <h3>Activity 1 &mdash; four LEDs, four rates</h3>
+  <p>Two LEDs on PORTB, two on PORTD, within D2&ndash;D12. Base rate 1&nbsp;Hz; the others at 2&times;, 3&times;, 4&times;.</p>
+
+  <div class="box key">
+    <span class="lbl">Why the obvious approach fails</span>
+    <p>You cannot chain <code>_delay_ms()</code> calls for four independent rates &mdash; each delay blocks the other three. At 1&nbsp;Hz the LED <em>toggles</em> every 500&nbsp;ms; at 3&nbsp;Hz every 166.7&nbsp;ms, which is not a multiple of anything convenient.</p>
+    <p>Run one short tick (1&nbsp;ms) and compare counters, which is the same non-blocking pattern Lab 3 formalises with a Timer0 ISR:</p>
+  </div>
+
+<pre><code><span class="c">// one 1 ms heartbeat; every LED is a compare against its own deadline</span>
+<span class="k">const</span> uint16_t half_ms[4] = {500, 250, 167, 125};  <span class="c">// 1,2,3,4 Hz</span>
+uint16_t last[4] = {0,0,0,0};
+uint16_t now = 0;
+
+<span class="k">while</span> (1) {
+    _delay_ms(1);
+    now++;
+    <span class="k">for</span> (uint8_t i = 0; i &lt; 4; i++) {
+        <span class="k">if</span> ((uint16_t)(now - last[i]) &gt;= half_ms[i]) {
+            last[i] = now;
+            <span class="k">if</span> (i &lt; 2) PORTB ^= (1&lt;&lt;pinB[i]);
+            <span class="k">else</span>      PORTD ^= (1&lt;&lt;pinD[i-2]);
+        }
+    }
+}</code></pre>
+
+  <p>167&nbsp;ms gives 2.994&nbsp;Hz, not 3.000&nbsp;Hz &mdash; a 0.2% error. Note the quantisation in the notebook; it is a legitimate &ldquo;cause of error&rdquo; for the report, and it is the exact reason Lab 3 moves to hardware timers.</p>
+
+  <h3>Activity 2 &mdash; button counter, and the experiment that matters</h3>
+  <p>Seven-segment digit on PORTB or PORTD, tactile switch on any PORTC pin with its other terminal to ground, count 0&rarr;9&rarr;0.</p>
+
+  <p>Wiring the switch to ground means <strong>pressed = LOW</strong>. Your detection is therefore a falling transition on <code>PINC</code>, and the edge must be detected, not the level:</p>
+
+<pre><code>uint8_t prev = 1;
+<span class="k">while</span> (1) {
+    uint8_t now = (PINC &amp; (1&lt;&lt;PINC0)) ? 1 : 0;
+    <span class="k">if</span> (prev == 1 &amp;&amp; now == 0) {        <span class="c">// falling edge = a press</span>
+        count = (count + 1) % 10;
+        PORTD = seg7[count];
+    }
+    prev = now;
+    _delay_ms(5);
+}</code></pre>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Experiment</th><th>Configuration</th><th>What you should see</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>No pull-up: <code>DDRC</code> bit 0, <code>PORTC</code> bit 0</td><td>Final counts scattered &mdash; frequently far above 10, inconsistent between trials</td><td>The pin floats when the switch is open; stray coupling produces phantom transitions</td></tr>
+      <tr><td>2</td><td>Pull-up added (external resistor to VCC, or internal via <code>PORTC |= (1&lt;&lt;PORTC0)</code>)</td><td>Counts cluster near 10 but still overshoot occasionally</td><td>Idle state is now defined; residual error is mechanical contact bounce</td></tr>
+      <tr><td>3</td><td>Pull-up + software debounce (re-read after 20&ndash;50&nbsp;ms, require the level to hold)</td><td>Exactly 10, repeatably</td><td>Bounce transients are shorter than the confirmation window</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box log">
+    <span class="lbl">Notebook &mdash; Lab 1</span>
+    <p>Record all 10 trials for <em>each</em> configuration as raw final counts, one row per trial. Do not average in the notebook; averaging is report work. Note which PORTC pin, whether the pull-up was internal or external (and its value), and the debounce window in milliseconds. The analysis question &ldquo;is the count predictable and repeatable?&rdquo; is answered with the mean and standard deviation of those columns &mdash; see &sect;10.</p>
+  </div>
+</section>
+
+<!-- ================= 04 ================= -->
+<section id="lab2">
+  <span class="sec-num">04</span>
+  <h2>Lab 2 &mdash; Interrupts, EEPROM, and peripheral expansion</h2>
+
+  <p><strong>Deliverables:</strong> an 8-bit bidirectional counter driven by two external interrupts and a 4&times;4 keypad; and a calculator on a four-digit display with EEPROM-backed ANS.</p>
+
+  <h3>External interrupts in four steps</h3>
+  <ol>
+    <li><strong>Choose the trigger</strong> in <code>EICRA</code>.</li>
+    <li><strong>Unmask the pin</strong> in <code>EIMSK</code>: <code>EIMSK |= (1&lt;&lt;INT0);</code></li>
+    <li><strong>Write the ISR</strong>: <code>ISR(INT0_vect) { ... }</code></li>
+    <li><strong>Enable globally</strong>: <code>sei();</code> &mdash; last, after configuration.</li>
+  </ol>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>ISCx1</th><th>ISCx0</th><th>Trigger</th><th>Behaviour with a held button</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>0</td><td>Low level of INTx</td><td><strong>Re-fires continuously</strong> for as long as the pin stays low</td></tr>
+      <tr><td>0</td><td>1</td><td>Any logical change</td><td>Fires on press <em>and</em> release</td></tr>
+      <tr><td>1</td><td>0</td><td>Falling edge</td><td>Fires once per press &mdash; plus once per bounce</td></tr>
+      <tr><td>1</td><td>1</td><td>Rising edge</td><td>Fires once per release &mdash; plus bounce</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box key">
+    <span class="lbl">Part E, the investigation, answered in advance</span>
+    <p>In <strong>low-level</strong> mode the interrupt condition is a state, not an event. Hold PD3 for 200&nbsp;ms and the ISR runs thousands of times, so the direction flag toggles an unpredictable even-or-odd number of times &mdash; sometimes the direction appears not to change at all. Low-level interrupts also cannot be cleared by a pending flag; the condition simply persists.</p>
+    <p>In <strong>falling-edge</strong> mode the flag latches one event per transition, so one press produces one toggle &mdash; except that mechanical bounce generates several genuine falling edges within a few milliseconds. The residue is a debouncing problem, not an interrupt problem, and that is the distinction the report asks you to draw.</p>
+  </div>
+
+  <div class="box trap">
+    <span class="lbl">ISR discipline</span>
+    <ul>
+      <li>Every variable shared between an ISR and <code>main()</code> is <code>volatile</code>.</li>
+      <li>Keep ISRs short. No <code>_delay_ms()</code> inside an ISR &mdash; debounce by timestamp comparison instead.</li>
+      <li>Do not leave an interrupt pin floating. The activity says so explicitly: enable the pull-up (<code>PORTD |= (1&lt;&lt;PORTD2)</code>) or fit an external one.</li>
+      <li>An ISR with a misspelled vector name compiles silently and simply never runs. Check the exact spelling: <code>INT0_vect</code>, <code>TIMER0_OVF_vect</code>, <code>ADC_vect</code>.</li>
+    </ul>
+  </div>
+
+  <h3>EEPROM &mdash; the sequence is the point</h3>
+  <p>Read: wait for <code>EEPE</code> to clear &rarr; load <code>EEAR</code> &rarr; strobe <code>EERE</code> &rarr; take the byte from <code>EEDR</code>.<br>
+  Write: wait for <code>EEPE</code> &rarr; load <code>EEAR</code> and <code>EEDR</code> &rarr; set <code>EEMPE</code> &rarr; <strong>within four clock cycles</strong> set <code>EEPE</code>.</p>
+
+  <div class="box trap">
+    <span class="lbl">Three EEPROM facts that cost lab time</span>
+    <ul>
+      <li>A byte write takes on the order of milliseconds &mdash; roughly 3.4&nbsp;ms. Writing inside a tight loop or an ISR stalls everything.</li>
+      <li>The four-cycle window between <code>EEMPE</code> and <code>EEPE</code> means the two writes must not be separated by an interrupt. Disable interrupts around the pair (<code>cli()</code> / restore <code>SREG</code>) if ISRs are active.</li>
+      <li>EEPROM endurance is finite (~100k writes per cell). Save the calculator result on <code>=</code> only, never every display refresh.</li>
+    </ul>
+  </div>
+
+  <h3>SN74HC595 &mdash; three pins, eight outputs</h3>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Pin</th><th>Name</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>SER</td><td>Serial data</td><td>The bit being presented</td></tr>
+      <tr><td>SRCLK</td><td>Shift clock</td><td>Rising edge pushes SER into the shift register</td></tr>
+      <tr><td>RCLK</td><td>Latch clock</td><td>Rising edge copies the shift register to the output pins</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The loop is: hold RCLK low, shift eight bits MSB-first (set SER, pulse SRCLK), then raise RCLK once. Holding RCLK low during shifting is what prevents the outputs from flickering through intermediate patterns. Swapping SRCLK and RCLK produces a display that lights but shows garbage &mdash; a classic half-hour.</p>
+
+  <h3>Four-digit multiplexing</h3>
+  <p>Only one digit is lit at a time; persistence of vision does the rest. Drive the segment pattern, enable exactly one digit line, wait a short interval, blank, move to the next digit. Blank <em>before</em> changing the segment data (<code>PORTB |= 0x0F;</code> in the supplied code) or adjacent digits ghost.</p>
+  <p>The refresh arithmetic: with four digits, a per-digit interval \(t\) gives a full-frame rate of \(1/(4t)\). At \(t=25\ \mu s\) that is 10&nbsp;kHz &mdash; far above flicker, but each digit is only lit 25% of the time, so brightness drops accordingly.</p>
+
+  <h3>Keypad scanning</h3>
+  <p>Sixteen switches, eight pins. Drive one column low at a time, read the four rows (pulled up), and the intersection that reads low is the pressed key. Idle state: all columns high, all rows pulled up, all rows read high.</p>
+
+  <h3>Activity 1 &mdash; the nibble shift, stated precisely</h3>
+  <p>On each keypad press while <em>paused</em>: the current lower nibble moves into the upper nibble, and the new key&rsquo;s nibble becomes the lower nibble. S1&ndash;S15 map to 0001&ndash;1111; S16 maps to 0000.</p>
+<pre><code>count = (uint8_t)((count &lt;&lt; 4) | (nibble &amp; 0x0F));</code></pre>
+  <p>Trace the worked example to confirm: <code>1001 1111</code>, press S5 (0101) &rarr; <code>1111 0101</code>; press S16 (0000) &rarr; <code>0101 0000</code>. Note the constraint that PORTC is unavailable &mdash; that is why the eight LEDs go through the 74HC595.</p>
+
+  <div class="box log">
+    <span class="lbl">Notebook &mdash; Lab 2</span>
+    <p>Log both interrupt configurations as separate timed entries with the number of direction toggles observed per press &mdash; that count <em>is</em> the experimental result. For the calculator, record the five test calculations as entered, with the displayed result and the EEPROM address used, before you photograph them. Capture at least five binary counter states as images and write the filenames into the entry.</p>
+  </div>
+</section>
+
+<!-- ================= 05 ================= -->
+<section id="lab3">
+  <span class="sec-num">05</span>
+  <h2>Lab 3 &mdash; Timers, PWM, and the ADC</h2>
+
+  <p><strong>Deliverables:</strong> photoresistor characterisation against red, green, and blue at ten duty cycles each, with regression models; and a potentiometer-driven servo with a five-point calibration, a &ge;10-point verification, and a hysteresis test.</p>
+
+  <h3>Timer0 &mdash; the periodic heartbeat</h3>
+  <p>In Normal mode the counter overflows every 256 counts, so</p>
+  \[ f_i = \frac{f_{clk}}{N \times 256} \]
+  <p>With \(f_{clk}=16\) MHz and the supplied prescaler <code>CS01|CS00</code> (\(N=64\)):</p>
+  \[ f_i = \frac{16{\times}10^6}{64 \times 256} = 976.6\ \text{Hz} \qquad T_i = 1.024\ \text{ms} \]
+
+  <div class="box key">
+    <span class="lbl">Read the scheduler example correctly</span>
+    <p>In the supplied non-blocking example, <code>tick</code> increments once per overflow, so one tick is <strong>1.024&nbsp;ms, not 1&nbsp;ms</strong>. &ldquo;Toggle every 1000 ticks&rdquo; is therefore a 1.024&nbsp;s half-period &mdash; a 2.4% error you should state rather than ignore. The same ISR rate drives the display multiplexer at 976.6&nbsp;Hz, refreshing each of four digits 244 times per second.</p>
+  </div>
+
+  <p>The comparison <code>if (tick - last &gt;= interval)</code> is written that way deliberately: unsigned subtraction stays correct across counter rollover, where <code>if (tick &gt;= last + interval)</code> would not.</p>
+
+  <h3>Timer1 &mdash; Fast PWM for the servo</h3>
+  <p>Mode 14 uses <code>ICR1</code> as TOP, giving an exact period:</p>
+  \[ f_{PWM} = \frac{f_{clk}}{N \times (1 + TOP)} \qquad\Rightarrow\qquad ICR1 = \frac{f_{clk}}{N \cdot f_{PWM}} - 1 \]
+  <p>For 50&nbsp;Hz with \(N=8\): \(ICR1 = 16{\times}10^6/(8\cdot 50) - 1 = 39999\).</p>
+  <p>With \(N=8\) at 16&nbsp;MHz the timer counts <strong>2 ticks per microsecond</strong>, so pulse width in counts is \(2\times\) the width in &micro;s, and the resolution is 0.5&nbsp;&micro;s:</p>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Nominal angle</th><th>Pulse width</th><th>OCR1A</th></tr></thead>
+    <tbody>
+      <tr><td>0&deg;</td><td>~1000 &micro;s</td><td>~1999</td></tr>
+      <tr><td>90&deg;</td><td>1500 &micro;s</td><td>2999</td></tr>
+      <tr><td>180&deg;</td><td>~2000 &micro;s</td><td>~3999</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>&ldquo;Nominal&rdquo; is doing real work in that table &mdash; the 1&ndash;2&nbsp;ms convention is approximate and varies per servo. That is precisely why Part C asks for a measured five-point calibration instead of trusting the numbers.</p>
+
+  <h3>ADC configuration</h3>
+  <ul>
+    <li><code>ADMUX</code>: <code>REFS0</code> selects AVCC as reference; the low four bits select the channel.</li>
+    <li><code>ADCSRA</code>: <code>ADEN</code> enables, <code>ADSC</code> starts a conversion, <code>ADPS2:0</code> set the prescaler.</li>
+    <li>The ADC needs a clock of 50&ndash;200&nbsp;kHz for full 10-bit accuracy. At 16&nbsp;MHz, prescaler 128 gives 125&nbsp;kHz &mdash; which is why the supplied code sets all three ADPS bits.</li>
+    <li>A conversion takes 13 ADC clocks (~104&nbsp;&micro;s at 125&nbsp;kHz); the very first conversion after enabling takes 25.</li>
+  </ul>
+  <p>Conversion result:</p>
+  \[ ADC = \frac{V_{in}}{V_{ref}} \times 1024 \qquad\Rightarrow\qquad V_{in} = \frac{ADC \times V_{ref}}{1024} \]
+
+  <div class="box trap">
+    <span class="lbl">Free-running vs single conversion</span>
+    <p>Single-conversion mode: set <code>ADSC</code>, poll until it clears, read <code>ADC</code>. Free-running: set <code>ADATE</code> with <code>ADTS2:0 = 000</code> and start once &mdash; thereafter <code>ADC</code> always holds the latest result. The supplied free-running example mis-writes <code>ADCSRB</code>; see &sect;09 before you copy it.</p>
+  </div>
+
+  <h3>Activity 1 &mdash; photoresistor characterisation</h3>
+  <p>An LDR&rsquo;s resistance falls with illumination as a power law, \(R \approx A\,L^{-\gamma}\), and it sits in a divider with a 1&nbsp;k&Omega; resistor, so <strong>ADC against duty cycle will not be a straight line</strong>. Fit accordingly: try a power or logarithmic model, or linearise by plotting \(\log(ADC)\) against \(\log(\text{duty})\) and fitting a line. Report \(R^2\) for whichever model you choose, and say why you chose it.</p>
+
+  <div class="box key">
+    <span class="lbl">Confounds to control &mdash; and to write down</span>
+    <ul>
+      <li>Duty cycle is not luminous flux. LED output is roughly proportional to average current, but the eye&rsquo;s and the LDR&rsquo;s responses are not, and the three die in an RGB package have different efficiencies and forward voltages. A &ldquo;stronger blue response&rdquo; may be an LED brightness difference, not an LDR spectral one &mdash; say so.</li>
+      <li>LDRs are slow: response and recovery take tens to hundreds of milliseconds. Let each point settle before averaging, and record the settle time.</li>
+      <li>Geometry must not move between colours. Record the separation distance; if the LED is bumped mid-run, that run is void &mdash; strike it through, do not delete it.</li>
+      <li>Ambient light is the largest systematic error. Record a dark reading (0% duty) before and after each colour; drift between them tells you whether the room stayed dark.</li>
+    </ul>
+  </div>
+
+  <h3>Activity 2 &mdash; servo calibration and hysteresis</h3>
+  <p>Five-point calibration first (0&deg;, 45&deg;, 90&deg;, 135&deg;, 180&deg;), measured with a protractor against the horn, recorded in &micro;s. Then map the ADC range linearly onto the calibrated pulse range:</p>
+  \[ PW(\mu s) = PW_{0^\circ} + \frac{ADC}{1023}\,\bigl(PW_{180^\circ} - PW_{0^\circ}\bigr) \]
+  <p>Verification: &ge;10 points of (ADC reading, measured horn angle), regressed. Then the hysteresis test &mdash; sweep the pot min&rarr;max, then max&rarr;min, and compare the two curves at the same ADC values. Any systematic gap is hysteresis, and its usual causes are gear backlash and the servo&rsquo;s internal deadband, not your code.</p>
+
+  <div class="box log">
+    <span class="lbl">Notebook &mdash; Lab 3</span>
+    <p>This is the heaviest data session of the unit. Keep the raw table with all three colours in one grid so the dark readings line up. For the servo, record pulse width <em>and</em> the OCR1A value you wrote &mdash; the report needs the mapping, and reconstructing it later from memory is how transcription errors enter. Note the protractor&rsquo;s resolution; it bounds your angle uncertainty.</p>
+  </div>
+</section>
+
+<!-- ================= 06 ================= -->
+<section id="lab4">
+  <span class="sec-num">06</span>
+  <h2>Lab 4 &mdash; ESP32 architecture and Wokwi</h2>
+
+  <p><strong>Deliverable:</strong> a Wokwi ESP32 blink &mdash; schematic, code, screenshot, and a working share link. Light on build, heavy on the architecture you must be able to describe.</p>
+
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Subsystem</th><th>ESP32</th><th>ATmega328P, for contrast</th></tr></thead>
+    <tbody>
+      <tr><td>Core</td><td>Xtensa LX6, 32-bit, single or dual core, up to 240 MHz, 7-stage pipeline, FPU</td><td>AVR 8-bit, 16 MHz, single cycle per instruction</td></tr>
+      <tr><td>Memory</td><td>448 KB ROM, 520 KB SRAM, 16 KB RTC SRAM, external flash/PSRAM via cache</td><td>32 KB flash, 2 KB SRAM, 1 KB EEPROM</td></tr>
+      <tr><td>GPIO</td><td>up to 34, with a peripheral multiplexing matrix &mdash; most functions can be routed to most pins</td><td>23, with fixed alternate functions</td></tr>
+      <tr><td>Analog in</td><td>two 12-bit SAR ADCs (0&ndash;4095), configurable attenuation</td><td>one 10-bit ADC (0&ndash;1023)</td></tr>
+      <tr><td>Analog out</td><td>two 8-bit DACs</td><td>none (PWM only)</td></tr>
+      <tr><td>Wireless</td><td>2.4 GHz Wi-Fi, Bluetooth</td><td>none</td></tr>
+      <tr><td>Timers</td><td>two groups of 64-bit timers, watchdogs, RTC timer, PCNT, RMT, LED PWM, motor PWM</td><td>Timer0/2 (8-bit), Timer1 (16-bit)</td></tr>
+      <tr><td>Comms</td><td>SPI, I2C, I2S, UART, SDIO, TWAI, Ethernet MAC</td><td>SPI, I2C (TWI), USART</td></tr>
+      <tr><td>Power</td><td>active, modem-sleep, light-sleep, deep-sleep, hibernation, ULP coprocessor</td><td>sleep modes only</td></tr>
+      <tr><td>Security</td><td>secure boot, flash encryption, OTP, AES/SHA-2/RSA acceleration, RNG</td><td>lock bits</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box key">
+    <span class="lbl">The conceptual shift to write down</span>
+    <p>On the ATmega328P a peripheral is bolted to a fixed pin: OC1A <em>is</em> PB1. On the ESP32 a GPIO matrix routes most peripheral signals to most pins, so &ldquo;which pin is the PWM pin?&rdquo; becomes a configuration question rather than a datasheet lookup. That flexibility is why the ESP-IDF API is function calls (<code>gpio_set_direction()</code>) rather than direct register writes &mdash; and why pin assignment tables become mandatory documentation rather than a nicety.</p>
+  </div>
+
+  <div class="box trap">
+    <span class="lbl">Strapping pins</span>
+    <p>GPIO 0, 2, 5, 12, and 15 are sampled at reset to select boot mode. Driving them at power-up can prevent the chip from booting. Lab 5 tells you to avoid them for the keypad; the advice generalises to every ESP32 activity &mdash; and note that Lab 6&rsquo;s supplied diagram nonetheless uses GPIO 2, 15, and 12. In simulation that is harmless; on real hardware, expect boot trouble and record it if you see it.</p>
+  </div>
+
+  <p><strong>For the deliverable:</strong> schematic with explicit GPIO-to-LED mapping, complete source, at least one screenshot of the running simulation, and a share link you have actually opened in a logged-out window to confirm it works.</p>
+</section>
+
+<!-- ================= 07 ================= -->
+<section id="lab5">
+  <span class="sec-num">07</span>
+  <h2>Lab 5 &mdash; Keypad, I2C LCD, and sensors under ESP-IDF</h2>
+
+  <p><strong>Deliverables:</strong> the supplied Wokwi calculator translated to ESP-IDF, then extended with a DHT22 whose temperature/humidity appear on the LCD with a keypad-selected &deg;C/&deg;F toggle.</p>
+
+  <h3>Matrix scanning, formalised</h3>
+  <p>Idle: columns are outputs driven HIGH, rows are inputs with pull-ups, so every row reads HIGH. Strobe one column LOW, read the rows; a row reading LOW identifies the pressed key at that (row, column) intersection. Restore the column HIGH, advance, repeat.</p>
+
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Keypad</th><th>GPIO</th><th>Direction</th><th>Idle state</th></tr></thead>
+    <tbody>
+      <tr><td>R1&ndash;R4</td><td>32, 33, 25, 26</td><td>input</td><td>pull-up enabled, reads HIGH</td></tr>
+      <tr><td>C1&ndash;C4</td><td>27, 14, 12, 13</td><td>output</td><td>HIGH; driven LOW only while scanning</td></tr>
+      <tr><td>LCD SDA / SCL</td><td>21 / 22</td><td>I2C</td><td>PCF8574 backpack at 0x27 or 0x3F</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Two failure modes the activity names</h3>
+  <div class="two">
+    <div class="box trap">
+      <span class="lbl">Contact bounce</span>
+      <p>A mechanical press produces several milliseconds of transitions. Confirm with a 20&nbsp;ms re-read, then wait for release before returning the key &mdash; otherwise one press enters several digits. The supplied scanner does both; keep that structure.</p>
+    </div>
+    <div class="box trap">
+      <span class="lbl">Ghosting</span>
+      <p>Press three keys forming an L and current sneaks through the closed switches, making a fourth, unpressed key read as active. Unavoidable in a plain matrix; the fix is a series diode (1N4148) per switch. For single-key entry, standard scanning is sufficient &mdash; state that assumption rather than leaving it implicit.</p>
+    </div>
+  </div>
+
+  <h3>The I2C LCD, and why 4-bit mode exists</h3>
+  <p>An HD44780 wants 8 data lines plus RS/RW/E. The PCF8574 backpack reduces that to two wires by accepting an I2C byte and presenting it on eight expander pins, four of which carry data. So every LCD byte is sent as two nibbles, each followed by an Enable pulse: upper nibble, pulse, lower nibble, pulse.</p>
+
+  <div class="box key">
+    <span class="lbl">Deliverable answer &mdash; 4-bit vs 8-bit</span>
+    <p>4-bit mode halves the GPIO cost (roughly 6&ndash;7 pins instead of 10&ndash;11) at the price of two bus transactions per byte. For a character display updated a few times per second, the throughput loss is irrelevant and the pins are precious &mdash; which is the whole argument. Over the I2C backpack the saving is larger still: two pins total, at the cost of a bus transaction per nibble.</p>
+  </div>
+
+  <p>If the LCD shows a row of solid blocks, it has power but never completed initialisation &mdash; check the I2C address (0x27 vs 0x3F) and the startup nibble sequence. A blank screen with backlight usually means contrast, not code.</p>
+
+  <h3>ESP32 ADC &mdash; attenuation and its limits</h3>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Attenuation</th><th>Nominal multiplier</th><th>Nominal input range</th></tr></thead>
+    <tbody>
+      <tr><td>0 dB</td><td>1&times;</td><td>0 to 1.1 V</td></tr>
+      <tr><td>2.5 dB</td><td>1.33&times;</td><td>0 to 1.5 V</td></tr>
+      <tr><td>6 dB</td><td>2&times;</td><td>0 to 2.2 V</td></tr>
+      <tr><td>11 dB</td><td>3.6&times;</td><td>nominally up to 3.9 V</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box trap">
+    <span class="lbl">Three ESP32 ADC realities</span>
+    <ul>
+      <li>Attenuation changes the <em>measurable</em> range, not the absolute maximum voltage the pin will tolerate. Stay within the chip&rsquo;s electrical limits regardless of setting.</li>
+      <li>The transfer curve is not linear end to end: there is a dead zone at low voltages and compression near full scale. Characterise it rather than assuming \(V = ADC/4095 \times V_{max}\).</li>
+      <li>Wi-Fi and digital switching inject noise. Multisample (average 16&ndash;64 readings), add an RC filter, and use the ESP-IDF calibration API, which reads factory calibration data from eFuse.</li>
+    </ul>
+  </div>
+
+  <div class="box log">
+    <span class="lbl">Notebook &mdash; Lab 5</span>
+    <p>The deliverable is explicitly an <em>interfacing analysis</em>: three complete pin-mapping tables (keypad, LCD, DHT22). Build those tables in the notebook as you wire, not afterwards from the diagram &mdash; the two disagree more often than you would expect. Record the I2C address that actually worked and how you found it.</p>
+  </div>
+</section>
+
+<!-- ================= 08 ================= -->
+<section id="lab6">
+  <span class="sec-num">08</span>
+  <h2>Lab 6 &mdash; Stepper control under FreeRTOS</h2>
+
+  <p><strong>Deliverable:</strong> keypad-commanded bidirectional stepper with LCD status, three FreeRTOS tasks, a step-timing experiment, and three post-lab questions.</p>
+
+  <h3>STEP/DIR in one paragraph</h3>
+  <p>The driver, not the microcontroller, energises the coils. Your job is two signals: <strong>DIR</strong> selects rotation direction, and each pulse on <strong>STEP</strong> advances the motor one step. Direction is a level; speed is a frequency.</p>
+
+  \[ f_{step} = \frac{1}{t_{high} + t_{low}} \qquad \text{RPM} = \frac{60\,f_{step}}{\text{steps per revolution}} \]
+
+  <p>The supplied timing is 2000&nbsp;&micro;s high and 2000&nbsp;&micro;s low &mdash; a 4&nbsp;ms period, 250&nbsp;steps/s. On a typical 1.8&deg; motor (200 steps/rev) that is 1.25&nbsp;rev/s, or 75&nbsp;RPM. Halve both delays and you double the speed; that is the Task 4 experiment, and it has a ceiling &mdash; past a certain rate the rotor cannot follow, and the motor stalls or buzzes instead of turning faster. Record the rate where that happens.</p>
+
+  <h3>Pin map</h3>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Peripheral</th><th>Signal</th><th>GPIO</th></tr></thead>
+    <tbody>
+      <tr><td>Stepper driver</td><td>STEP / DIR</td><td>12 / 14</td></tr>
+      <tr><td>Keypad</td><td>R1&ndash;R4 (outputs)</td><td>18, 19, 21, 22</td></tr>
+      <tr><td>Keypad</td><td>C1&ndash;C4 (inputs, pull-up)</td><td>23, 25, 26, 27</td></tr>
+      <tr><td>LCD1602</td><td>RS / E</td><td>15 / 2</td></tr>
+      <tr><td>LCD1602</td><td>D4 / D5 / D6 / D7</td><td>4 / 5 / 16 / 17</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Note the inversion from Lab 5: here the <em>rows</em> are the driven outputs and the <em>columns</em> are the pulled-up inputs. The algorithm is identical, the roles are swapped &mdash; make sure your pin table says which is which.</p>
+
+  <h3>Keys and states</h3>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Key</th><th>Command</th><th>Resulting LCD</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>START</td><td><code>Motor: STARTED</code></td></tr>
+      <tr><td>2</td><td>STOP</td><td><code>Motor: STOPPED</code></td></tr>
+      <tr><td>3</td><td>Clockwise</td><td><code>Dir: CLOCKWISE</code></td></tr>
+      <tr><td>4</td><td>Counter-clockwise</td><td><code>Dir: COUNTER-CW</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>After reset: stopped, clockwise. Stopping preserves the last selected direction.</p>
+
+  <h3>Three tasks, three rates</h3>
+  <div class="tw">
+  <table class="fixed">
+    <thead><tr><th>Task</th><th>Priority</th><th>Why that priority</th></tr></thead>
+    <tbody>
+      <tr><td><code>stepper_task()</code></td><td>5</td><td>Hard timing. Jitter in the pulse train is audible and visible as rough motion.</td></tr>
+      <tr><td><code>keypad_task()</code></td><td>4</td><td>Must feel responsive, but a 30 ms scan period is imperceptible to a human.</td></tr>
+      <tr><td><code>lcd_display_task()</code></td><td>3</td><td>Only redraws on a state change; LCD updates are slow and nothing waits on them.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="box key">
+    <span class="lbl">Post-lab answers, with the reasoning you must supply</span>
+    <p><strong>Q1 &mdash; why <code>volatile</code>?</strong> <code>motor_running</code>, <code>motor_cw</code>, and <code>update_lcd</code> are written by one task and read by others. Without <code>volatile</code> the compiler may hoist the read out of the loop and keep the value in a CPU register, so a press would set the flag and the stepper task would never notice. <code>volatile</code> forces a fresh memory read each time. Worth adding: <code>volatile</code> guarantees visibility, not atomicity &mdash; it is sufficient for independent single-byte flags like these, and would not be sufficient for a multi-byte shared counter.</p>
+    <p><strong>Q2 &mdash; 4-bit vs 8-bit LCD?</strong> Halves the GPIO cost at the price of two transfers per byte; irrelevant for a display refreshed a few times per second. See &sect;07.</p>
+    <p><strong>Q3 &mdash; step timing and speed?</strong> The delay sets the half-period of the STEP pulse train, so step frequency is \(1/(t_{high}+t_{low})\) and rotation speed is proportional to it: halving both delays doubles RPM. It is a rate relationship, not a position one &mdash; the <em>number</em> of pulses sets how far the motor turns, the <em>frequency</em> sets how fast. The relationship breaks at high rates: torque falls with speed, and beyond the pull-out limit the rotor loses synchronism and the motor stalls.</p>
+  </div>
+
+  <div class="box trap">
+    <span class="lbl">Busy-wait note</span>
+    <p><code>esp_rom_delay_us()</code> is a blocking spin, so <code>stepper_task()</code> never yields while running. It works here because it is the highest-priority task and the others are slow, but it is the reason the LCD can lag a keypress. A hardware timer or the LEDC/MCPWM peripheral generating the pulse train would be the production answer &mdash; a good sentence for the interpretation deliverable.</p>
+  </div>
+
+  <div class="box log">
+    <span class="lbl">Notebook &mdash; Lab 6</span>
+    <p>Task 4 needs a filled table, not prose: HIGH delay, LOW delay, computed step frequency, observed behaviour (smooth / rough / stalled). Four rows minimum, and include the row where it stops working &mdash; that boundary is the finding. If you used generative AI anywhere in the design, the activity requires documenting how; log it at the time, with what you asked and what you changed after testing it.</p>
+  </div>
+</section>
+
+<!-- ================= 09 ================= -->
+<section id="traps">
+  <span class="sec-num">09</span>
+  <h2>Bug museum</h2>
+
+  <p>Several of these live in the code supplied on the activity pages. Copying them costs a debugging session; spotting them is worth a paragraph in your report.</p>
+
+  <div class="tw">
+  <table>
+    <thead><tr><th>Where</th><th>Code</th><th>Problem &amp; fix</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Lab 3, free-running ADC</td>
+        <td><code>ADCSRB = ~((1&lt;&lt;ADTS2)|(1&lt;&lt;ADTS1)|(1&lt;&lt;ADTS0));</code></td>
+        <td><strong>Assignment, not clear.</strong> <code>~0x07</code> is <code>0xF8</code>, which is written wholesale into <code>ADCSRB</code> &mdash; setting ACME and reserved bits. Intent was to zero the trigger-source bits: <code>ADCSRB &amp;= ~0x07;</code></td>
+      </tr>
+      <tr>
+        <td>Lab 3, <code>readADC()</code></td>
+        <td><code>ADMUX |= (channel &amp; 0x0F);</code></td>
+        <td><strong>Channel bits are sticky.</strong> OR-ing can only add bits, so after reading A1 you can never get back to A0. Use <code>ADMUX = (ADMUX &amp; 0xF0) | (channel &amp; 0x0F);</code></td>
+      </tr>
+      <tr>
+        <td>Lab 3, <code>digit_to_7seg()</code></td>
+        <td>values 10&ndash;15 all return <code>0b01101111</code></td>
+        <td><strong>Hex digits A&ndash;F all render as &ldquo;9&rdquo;.</strong> Harmless for decimal display; wrong the moment you show hex. Supply real patterns if you need them.</td>
+      </tr>
+      <tr>
+        <td>Lab 1, blink</td>
+        <td><code>_delay_us(500000);</code></td>
+        <td>Works only because the argument is a compile-time constant. Write <code>_delay_ms(500)</code>.</td>
+      </tr>
+      <tr>
+        <td>Lab 1, blink</td>
+        <td><code>DDRB = 0b000100000;</code></td>
+        <td>Nine binary digits in an 8-bit register. The value is still <code>0x20</code>, but count your bits &mdash; and prefer <code>(1&lt;&lt;DDB5)</code>.</td>
+      </tr>
+      <tr>
+        <td>Lab 2, EEPROM</td>
+        <td><code>EECR |= (1&lt;&lt;EEMPE);</code> then <code>EECR |= (1&lt;&lt;EEPE);</code></td>
+        <td>The two must land within four clock cycles. An interrupt between them aborts the write silently. Disable interrupts around the pair when ISRs are running.</td>
+      </tr>
+      <tr>
+        <td>Any ISR</td>
+        <td>shared flag without <code>volatile</code></td>
+        <td>Compiler caches the value; the update is never observed. Every ISR-to-main variable is <code>volatile</code>.</td>
+      </tr>
+      <tr>
+        <td>Any ISR</td>
+        <td>misspelled vector name</td>
+        <td>Compiles and links cleanly, never fires. Check the exact vector spelling against the header.</td>
+      </tr>
+      <tr>
+        <td>Lab 2, 74HC595</td>
+        <td>RCLK pulsed inside the shift loop</td>
+        <td>Outputs flicker through every intermediate pattern. Latch once, after all eight bits.</td>
+      </tr>
+      <tr>
+        <td>Lab 2/3, multiplexing</td>
+        <td>segments changed before blanking</td>
+        <td>Ghosting &mdash; a faint copy of one digit on its neighbour. Blank all digit lines, then set segments, then enable one digit.</td>
+      </tr>
+      <tr>
+        <td>Lab 1&ndash;2, inputs</td>
+        <td><code>DDRC</code> = 0, <code>PORTC</code> = 0</td>
+        <td>Floating input. Enable the pull-up or fit an external one &mdash; unless you are deliberately demonstrating the failure, which in Lab 1 you are.</td>
+      </tr>
+      <tr>
+        <td>Lab 5/6, ESP32</td>
+        <td>keypad or LCD on GPIO 0/2/5/12/15</td>
+        <td>Strapping pins sampled at reset; driving them can block boot. Fine in Wokwi, a real problem on hardware.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section id="stats">
+  <span class="sec-num">10</span>
+  <h2>Data and statistics</h2>
+
+  <p>Two rubric lines ride on this section: <em>Data</em> (20%) wants readable tables with units and labelled plots, and <em>Data Analysis</em> (10%, SO-PI B2) wants explicit evidence of probabilistic and statistical technique. &ldquo;The counts looked about right&rdquo; scores nothing; a mean, a standard deviation, and a sentence interpreting them scores full marks.</p>
+
+  <h3>For repeated trials (Lab 1 counter)</h3>
+  <p>With \(n\) trials of the final displayed count \(x_i\):</p>
+  \[ \bar{x}=\frac{1}{n}\sum_{i=1}^{n} x_i \qquad
+     s=\sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2} \qquad
+     SE=\frac{s}{\sqrt{n}} \]
+  <p>Report \(\bar{x} \pm s\), and a 95% confidence interval \(\bar{x} \pm t_{0.025,\,n-1}\,SE\) (for \(n=10\), \(t \approx 2.262\)). The true value is 10, so the questions the activity asks map directly onto statistics:</p>
+  <ul>
+    <li><em>Is there variation?</em> &rarr; \(s\). Zero means perfectly repeatable.</li>
+    <li><em>Is it predictable?</em> &rarr; does the CI contain 10, and is \(s\) small relative to the count?</li>
+    <li><em>Does the pull-up help?</em> &rarr; compare \(s\) between configurations; the drop in spread is the effect. A two-sample comparison of means makes it quantitative.</li>
+  </ul>
+
+  <h3>For calibration curves (Lab 3, both activities)</h3>
+  <p>Least-squares line \(y = mx + b\):</p>
+  \[ m=\frac{n\sum x_iy_i-\sum x_i\sum y_i}{n\sum x_i^2-\left(\sum x_i\right)^2} \qquad b=\bar{y}-m\bar{x} \]
+  \[ R^{2}=1-\frac{\sum (y_i-\hat{y}_i)^2}{\sum (y_i-\bar{y})^2} \]
+  <p>\(R^2\) near 1 means the model explains the variance &mdash; it does <em>not</em> mean the model is the right shape. Always plot the residuals: a clear curve in the residuals of a linear fit is the signal to switch models (exactly what you should expect from the LDR).</p>
+
+  <div class="box key">
+    <span class="lbl">Choosing the model honestly</span>
+    <p>Servo angle vs ADC: expect linear, so a straight line with high \(R^2\) is the result, and any systematic residual pattern is the interesting finding.</p>
+    <p>LDR ADC vs duty cycle: expect non-linear. Fit a power or logarithmic model, or linearise with logs. Compare two candidate models by \(R^2\) <em>and</em> residual structure, and state which you chose and why &mdash; that sentence is what &ldquo;analyze and interpret data&rdquo; means in the rubric.</p>
+  </div>
+
+  <h3>Table and plot hygiene</h3>
+  <ul>
+    <li>Units in the column header, not repeated in every cell.</li>
+    <li>Significant figures consistent with the instrument: an ADC count is an integer; a derived voltage gets 3 significant figures, not 8.</li>
+    <li>Every plot: axis labels with units, a caption, and the fitted equation with \(R^2\) printed on the figure.</li>
+    <li>Distinguish raw readings from computed values in your tables. The notebook holds raw; the report may hold both, labelled.</li>
+  </ul>
+</section>
+
+<!-- ================= 11 ================= -->
+<section id="deliverables">
+  <span class="sec-num">11</span>
+  <h2>Deliverables, per activity</h2>
+
+  <p>Condensed from each activity&rsquo;s own requirements table. Everything below is explicitly listed as required.</p>
+
+  <h3>Lab 1</h3>
+  <ul class="check">
+    <li>Circuit diagrams / hardware connections</li>
+    <li>Embedded C source code</li>
+    <li>Program flowcharts</li>
+    <li>Multi-blink implementation and explanation</li>
+    <li>Button-counter experimental observations (10 trials &times; 10 presses, both configurations)</li>
+    <li>Comparison with and without the pull-up, statistically supported</li>
+    <li>Proposed hardware/software improvement, implemented and evaluated</li>
+    <li>Conclusions tied to the observations</li>
+  </ul>
+
+  <h3>Lab 2</h3>
+  <ul class="check">
+    <li>Complete circuit diagrams and pin assignments</li>
+    <li>Source code and flowcharts</li>
+    <li>External interrupt configuration explained</li>
+    <li>Low-level vs falling-edge behaviour compared</li>
+    <li>At least five binary-counter output images</li>
+    <li>Keypad nibble-entry scheme explained</li>
+    <li>Seven-segment multiplexing explained</li>
+    <li>EEPROM storage and ANS retrieval explained</li>
+    <li>At least five calculator test cases with captured results</li>
+    <li>Discussion of problems encountered</li>
+  </ul>
+
+  <h3>Lab 3</h3>
+  <ul class="check">
+    <li>Circuit diagrams, pin assignments, source, flowcharts</li>
+    <li>Timer0, Timer1 PWM, and ADC configuration each explained</li>
+    <li>Photoresistor data table (10 duty cycles &times; 3 colours)</li>
+    <li>Three response plots with regression models</li>
+    <li>Which colour produces the strongest response, and why that may be an LED property</li>
+    <li>Five-point servo calibration table</li>
+    <li>Angle vs ADC plot with regression, forward and reverse</li>
+    <li>Hysteresis discussion</li>
+  </ul>
+
+  <h3>Lab 4</h3>
+  <ul class="check">
+    <li>Wokwi project link (verified openable)</li>
+    <li>Schematic with GPIO assignments</li>
+    <li>Complete source listing</li>
+    <li>Screenshot of the working simulation</li>
+    <li>Explanation of circuit operation</li>
+  </ul>
+
+  <h3>Lab 5</h3>
+  <ul class="check">
+    <li>Analysis of the original Wokwi calculator</li>
+    <li>ESP-IDF calculator implementation</li>
+    <li>Modified project with DHT22</li>
+    <li>Three pin-mapping tables: keypad, LCD, DHT22</li>
+    <li>GPIO / keypad / I2C / LCD / sensor initialisation explained</li>
+    <li>Debouncing and ghosting discussed</li>
+    <li>&deg;C / &deg;F keypad selection demonstrated</li>
+    <li>Wokwi links for each stage</li>
+  </ul>
+
+  <h3>Lab 6</h3>
+  <ul class="check">
+    <li>Three pin-mapping tables: stepper, keypad, LCD</li>
+    <li>ESP-IDF source and Wokwi link</li>
+    <li>FreeRTOS task organisation described</li>
+    <li>Start/stop and CW/CCW functional tests</li>
+    <li>LCD status verification</li>
+    <li>Step-timing table with observed behaviour</li>
+    <li>Three post-lab questions answered</li>
+    <li>Simulation screenshots (stopped, CW, CCW)</li>
+    <li>Documentation of AI assistance, if used</li>
+  </ul>
+
+  <div class="box note">
+    <span class="lbl">Submission arithmetic</span>
+    <p>Reports are due at the start of the class period one week after the activity, and the class policy states that late submissions of reports and projects are not accepted. Submission date is a scored criterion in both report rubrics. The deadline is a grade line, not a courtesy.</p>
+  </div>
+</section>
+
+<!-- ================= 12 ================= -->
+<section id="formulas">
+  <span class="sec-num">12</span>
+  <h2>One-page formula sheet</h2>
+
+  <h4>Timer0 &mdash; periodic interrupt (Normal mode)</h4>
+  \[ f_i=\frac{f_{clk}}{N\times 256} \qquad\text{at 16 MHz, } N{=}64:\ 976.6\ \text{Hz},\ T_i=1.024\ \text{ms} \]
+
+  <h4>Timer1 &mdash; Fast PWM, mode 14 (ICR1 = TOP)</h4>
+  \[ f_{PWM}=\frac{f_{clk}}{N(1+TOP)} \qquad ICR1=\frac{f_{clk}}{N f_{PWM}}-1 \qquad \text{duty}=\frac{OCR1A+1}{ICR1+1} \]
+  \[ \text{at 16 MHz, } N{=}8:\ 2\ \text{counts}/\mu s,\quad ICR1_{50\,Hz}=39999,\quad OCR1A_{1500\mu s}=2999 \]
+
+  <h4>ADC &mdash; ATmega328P (10-bit)</h4>
+  \[ ADC=\frac{V_{in}}{V_{ref}}\times 1024 \qquad V_{in}=\frac{ADC\cdot V_{ref}}{1024} \qquad f_{ADC}=\frac{f_{clk}}{N}\in[50,200]\ \text{kHz} \]
+  <p>13 ADC clocks per conversion (25 for the first). Prescaler 128 at 16 MHz &rarr; 125 kHz &rarr; ~104 &micro;s.</p>
+
+  <h4>ADC &mdash; ESP32 (12-bit)</h4>
+  \[ ADC \in [0,4095] \qquad \text{atten }0/2.5/6/11\ \text{dB} \rightarrow 1.1/1.5/2.2/3.9\ \text{V nominal} \]
+
+  <h4>Stepper</h4>
+  \[ f_{step}=\frac{1}{t_{high}+t_{low}} \qquad \text{RPM}=\frac{60 f_{step}}{\text{steps/rev}} \qquad \theta=\frac{360^\circ \times \text{pulses}}{\text{steps/rev}} \]
+
+  <h4>Display multiplexing</h4>
+  \[ f_{frame}=\frac{1}{D\,t_{digit}} \qquad \text{duty per digit}=\frac{1}{D} \]
+
+  <h4>Servo mapping</h4>
+  \[ PW=PW_{0^\circ}+\frac{ADC}{1023}\bigl(PW_{180^\circ}-PW_{0^\circ}\bigr) \]
+
+  <h4>Statistics</h4>
+  \[ \bar{x}=\frac{\sum x_i}{n} \quad s=\sqrt{\frac{\sum (x_i-\bar{x})^2}{n-1}} \quad SE=\frac{s}{\sqrt{n}} \quad CI_{95}=\bar{x}\pm t_{0.025,n-1}SE \]
+  \[ m=\frac{n\sum x_iy_i-\sum x_i\sum y_i}{n\sum x_i^2-(\sum x_i)^2} \qquad R^2=1-\frac{\sum(y_i-\hat{y}_i)^2}{\sum(y_i-\bar{y})^2} \]
+
+  <h4>Bit idioms</h4>
+<pre><code>REG |=  (1&lt;&lt;BIT);          <span class="c">// set</span>
+REG &amp;= ~(1&lt;&lt;BIT);          <span class="c">// clear</span>
+REG ^=  (1&lt;&lt;BIT);          <span class="c">// toggle</span>
+if (REG &amp; (1&lt;&lt;BIT))        <span class="c">// test high</span>
+REG = (REG &amp; ~MASK) | VAL; <span class="c">// replace a field</span></code></pre>
+</section>
+
+<!-- ================= 13 ================= -->
+<section id="selfcheck">
+  <span class="sec-num">13</span>
+  <h2>Self-check</h2>
+
+  <p>If you cannot answer one of these from memory, the section it points to is where to go back.</p>
+
+  <ol>
+    <li>Which register do you read to learn the voltage on an input pin, and why not the other two? <span style="color:var(--ink-faint)">(&sect;02)</span></li>
+    <li>A pin has <code>DDRC</code> bit 0 and <code>PORTC</code> bit 0. What state is it in, and what will <code>PINC</code> read? <span style="color:var(--ink-faint)">(&sect;02, &sect;03)</span></li>
+    <li>Why can four LEDs at 1, 2, 3, and 4 Hz not be produced by four <code>_delay_ms()</code> calls? <span style="color:var(--ink-faint)">(&sect;03)</span></li>
+    <li>Your button counter reads 14 after 10 presses, with a pull-up fitted. What is the cause and the fix? <span style="color:var(--ink-faint)">(&sect;03)</span></li>
+    <li>Hold a button wired to INT0 configured for low-level triggering. How many times does the ISR run? <span style="color:var(--ink-faint)">(&sect;04)</span></li>
+    <li>Why must <code>EEMPE</code> and <code>EEPE</code> be set within four clock cycles of each other? <span style="color:var(--ink-faint)">(&sect;04)</span></li>
+    <li>What does RCLK do on a 74HC595, and what happens if you pulse it inside the shift loop? <span style="color:var(--ink-faint)">(&sect;04)</span></li>
+    <li>At 16 MHz with prescaler 64, how long is one Timer0 tick, and what error does calling it &ldquo;1 ms&rdquo; introduce over 1000 ticks? <span style="color:var(--ink-faint)">(&sect;05)</span></li>
+    <li>Compute <code>ICR1</code> and <code>OCR1A</code> for a 50 Hz servo signal with a 1200 &micro;s pulse, \(N=8\). <span style="color:var(--ink-faint)">(&sect;05, &sect;12)</span></li>
+    <li>Why is ADC prescaler 128 chosen at 16 MHz rather than 8? <span style="color:var(--ink-faint)">(&sect;05)</span></li>
+    <li>Why will the LDR&rsquo;s ADC-vs-duty-cycle curve not be a straight line? <span style="color:var(--ink-faint)">(&sect;05, &sect;10)</span></li>
+    <li>Name three reasons a &ldquo;blue is strongest&rdquo; conclusion might be wrong. <span style="color:var(--ink-faint)">(&sect;05)</span></li>
+    <li>What does ESP32 ADC attenuation change, and what does it <em>not</em> change? <span style="color:var(--ink-faint)">(&sect;07)</span></li>
+    <li>Why does an I2C LCD send each byte as two nibbles? <span style="color:var(--ink-faint)">(&sect;07)</span></li>
+    <li>What is keypad ghosting, and what hardware fixes it? <span style="color:var(--ink-faint)">(&sect;07)</span></li>
+    <li>What breaks if <code>motor_running</code> is not <code>volatile</code>? What would still break if it were a 32-bit counter? <span style="color:var(--ink-faint)">(&sect;08)</span></li>
+    <li>You halve both STEP delays and the motor buzzes instead of spinning faster. What happened? <span style="color:var(--ink-faint)">(&sect;08)</span></li>
+    <li>Which two lines of supplied ADC code are wrong, and what are the corrections? <span style="color:var(--ink-faint)">(&sect;09)</span></li>
+    <li>Your regression returns \(R^2 = 0.98\). Why is that not sufficient evidence that the model is right? <span style="color:var(--ink-faint)">(&sect;10)</span></li>
+    <li>You discarded a run because the lid was open. What do you do with that page? <span style="color:var(--ink-faint)">(&sect;01)</span></li>
+  </ol>
+</section>
+
+<footer class="end">
+  <p>Built from the six released LBYCPA3 Canvas activity pages and the course ABET document (rubrics, grading weights, class policies). Where the ABET document&rsquo;s older PIC/assembly sequence disagrees with the Canvas modules, the Canvas modules are current.</p>
+  <p>Figures referenced on the activity pages (block diagrams, pinouts, register maps, keypad layouts) are not reproduced here &mdash; open them on Canvas alongside this page. Verify register details against the ATmega328P and ESP32 datasheets before committing them to a report.</p>
+</footer>
+
+</div>
+</body>
+</html>
