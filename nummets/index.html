@@ -1,0 +1,2350 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Error Budget</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-svg.js" id="MathJax-script" async></script>
+<style>
+  :root {
+    --ground: #EEF1F6;
+    --surface: #FFFFFF;
+    --surface-sunk: #E4E9F1;
+    --ink: #141A29;
+    --ink-soft: #4E586E;
+    --ink-faint: #7C879C;
+    --rule: #CFD7E4;
+    --cool: #3B4CC0;      /* approximation — cold end of the coolwarm map */
+    --cool-wash: #E3E7FA;
+    --hot: #B40426;       /* exact value — warm end */
+    --hot-wash: #FBE4E6;
+    --good: #1C6B4B;
+    --good-wash: #DCF0E6;
+    --amber: #9A6100;
+    --amber-wash: #FBEFD6;
+    --shadow: 0 1px 2px rgba(20, 26, 41, .06), 0 8px 24px -16px rgba(20, 26, 41, .35);
+
+    --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+    --step: clamp(14px, 1.4vw, 17px);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+      --ground: #0E1220;
+      --surface: #161C2E;
+      --surface-sunk: #10182A;
+      --ink: #E7EBF4;
+      --ink-soft: #A8B2C7;
+      --ink-faint: #7A8499;
+      --rule: #2A3350;
+      --cool: #8C9BF5;
+      --cool-wash: #1E2748;
+      --hot: #FF7A83;
+      --hot-wash: #3A1E27;
+      --good: #6FD3A4;
+      --good-wash: #172E27;
+      --amber: #F0B657;
+      --amber-wash: #33270F;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px -18px rgba(0, 0, 0, .9);
+      color-scheme: dark;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0E1220;
+      --surface: #161C2E;
+      --surface-sunk: #10182A;
+      --ink: #E7EBF4;
+      --ink-soft: #A8B2C7;
+      --ink-faint: #7A8499;
+      --rule: #2A3350;
+      --cool: #8C9BF5;
+      --cool-wash: #1E2748;
+      --hot: #FF7A83;
+      --hot-wash: #3A1E27;
+      --good: #6FD3A4;
+      --good-wash: #172E27;
+      --amber: #F0B657;
+      --amber-wash: #33270F;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px -18px rgba(0, 0, 0, .9);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0E1220;
+    --surface: #161C2E;
+    --surface-sunk: #10182A;
+    --ink: #E7EBF4;
+    --ink-soft: #A8B2C7;
+    --ink-faint: #7A8499;
+    --rule: #2A3350;
+    --cool: #8C9BF5;
+    --cool-wash: #1E2748;
+    --hot: #FF7A83;
+    --hot-wash: #3A1E27;
+    --good: #6FD3A4;
+    --good-wash: #172E27;
+    --amber: #F0B657;
+    --amber-wash: #33270F;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 30px -18px rgba(0, 0, 0, .9);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: var(--step);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 40px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 0 96px;
+  }
+
+  /* ---------- navigation rail ---------- */
+  nav.rail {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding-block: 28px;
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+  }
+  nav.rail .rail-title {
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-size: 10.5px;
+    margin-bottom: 14px;
+  }
+  nav.rail ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  nav.rail a {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 6px;
+    padding: 6px 8px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    border-radius: 0 4px 4px 0;
+  }
+  nav.rail a span.num { color: var(--ink-faint); }
+  nav.rail a:hover { background: var(--surface); color: var(--ink); }
+  nav.rail a.here { border-left-color: var(--cool); color: var(--ink); background: var(--surface); }
+  nav.rail a.gap span.num { color: var(--amber); }
+
+  /* ---------- masthead ---------- */
+  header.mast {
+    padding-block: 72px 28px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 44px;
+  }
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-bottom: 20px;
+  }
+  .eyebrow b { color: var(--cool); font-weight: 500; }
+  h1 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(38px, 6vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -.02em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--cool); }
+  .standfirst {
+    font-family: var(--f-display);
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0;
+  }
+  .mast-meta {
+    margin-top: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .chip {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    padding: 4px 9px;
+    border-radius: 3px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+  }
+  .chip.have { border-color: var(--cool); color: var(--cool); background: var(--cool-wash); }
+  .chip.missing { border-color: var(--amber); color: var(--amber); background: var(--amber-wash); }
+
+  /* ---------- sections ---------- */
+  section { scroll-margin-top: 24px; margin-bottom: 76px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; flex-wrap: wrap; }
+  .sec-num {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    color: var(--cool);
+    letter-spacing: .1em;
+    padding-top: 6px;
+  }
+  h2 {
+    font-family: var(--f-display);
+    font-weight: 600;
+    font-size: clamp(25px, 3.4vw, 34px);
+    line-height: 1.15;
+    letter-spacing: -.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .sec-sub {
+    color: var(--ink-soft);
+    max-width: 66ch;
+    margin: 0 0 26px;
+  }
+  h3 {
+    font-family: var(--f-body);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    margin: 34px 0 10px;
+  }
+  h4 {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin: 0 0 10px;
+  }
+  p { max-width: 68ch; }
+  ul, ol { max-width: 68ch; padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  a { color: var(--cool); }
+  strong { font-weight: 600; }
+  code {
+    font-family: var(--f-mono);
+    font-size: .88em;
+    background: var(--surface-sunk);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ---------- panels ---------- */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    margin: 26px 0;
+    overflow: hidden;
+  }
+  .panel-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 9px 16px;
+    background: var(--surface-sunk);
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .panel-bar .live { color: var(--cool); }
+  .panel-body { padding: 18px 16px 20px; }
+
+  .note {
+    border-left: 3px solid var(--cool);
+    background: var(--cool-wash);
+    padding: 12px 16px;
+    border-radius: 0 4px 4px 0;
+    margin: 22px 0;
+    max-width: 68ch;
+  }
+  .note p { margin: 0; }
+  .note.warn { border-left-color: var(--amber); background: var(--amber-wash); }
+  .note.trap { border-left-color: var(--hot); background: var(--hot-wash); }
+  .note-tag {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- rule list (sig figs) ---------- */
+  .rules { display: grid; gap: 0; border: 1px solid var(--rule); border-radius: 5px; overflow: hidden; }
+  .rule-row {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) minmax(0, 200px);
+    gap: 14px;
+    padding: 11px 14px;
+    align-items: baseline;
+    background: var(--surface);
+    border-bottom: 1px solid var(--rule);
+  }
+  .rule-row:last-child { border-bottom: 0; }
+  .rule-row .r-id { font-family: var(--f-mono); font-size: 11px; color: var(--ink-faint); }
+  .rule-row .r-ex { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-soft); }
+  .rule-row .r-ex b { color: var(--cool); font-weight: 500; }
+  .yes { color: var(--good); font-weight: 600; }
+  .no { color: var(--hot); font-weight: 600; }
+
+  /* ---------- controls ---------- */
+  .ctrl-row { display: flex; flex-wrap: wrap; gap: 18px 24px; align-items: flex-end; margin-bottom: 16px; }
+  .ctrl { display: flex; flex-direction: column; gap: 5px; }
+  .ctrl label {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  input[type="text"], select {
+    font-family: var(--f-mono);
+    font-size: 15px;
+    padding: 7px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--surface);
+    color: var(--ink);
+    min-width: 150px;
+  }
+  input[type="range"] { width: 100%; min-width: 210px; accent-color: var(--cool); }
+  :focus-visible { outline: 2px solid var(--cool); outline-offset: 2px; }
+
+  button {
+    font-family: var(--f-body);
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--cool);
+    background: var(--cool);
+    color: #fff;
+    cursor: pointer;
+  }
+  :root[data-theme="dark"] button, :root:not([data-theme="light"]) button { color: var(--ground); }
+  button.ghost { background: transparent; color: var(--cool); }
+  button:hover { filter: brightness(1.08); }
+
+  .readout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .readout > div { background: var(--surface); padding: 11px 13px; }
+  .readout .k {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .readout .v {
+    font-family: var(--f-mono);
+    font-size: 19px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.01em;
+  }
+  .v.cool { color: var(--cool); }
+  .v.hot { color: var(--hot); }
+  .v.good { color: var(--good); }
+
+  .trace {
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .digits { font-family: var(--f-mono); font-size: 27px; letter-spacing: .06em; margin-top: 4px; }
+  .digits .sig { color: var(--cool); font-weight: 600; }
+  .digits .insig { color: var(--ink-faint); opacity: .55; text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  /* ---------- tables ---------- */
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table { border-collapse: collapse; width: 100%; min-width: 440px; font-size: 13.5px; }
+  th, td {
+    text-align: right;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--f-mono);
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    font-size: 10.5px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    border-bottom: 1px solid var(--ink-faint);
+  }
+  td:first-child, th:first-child { text-align: left; }
+  tr.marked td { background: var(--cool-wash); }
+
+  canvas { display: block; width: 100%; max-width: 100%; border-radius: 4px; }
+
+  /* ---------- target figure ---------- */
+  .targets { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  .target-card { text-align: center; }
+  .target-card svg { width: 100%; height: auto; max-width: 160px; }
+  .target-card .cap {
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* ---------- quiz ---------- */
+  .q { border-top: 1px solid var(--rule); padding: 16px 0; }
+  .q:first-child { border-top: 0; padding-top: 0; }
+  .q .stem { font-weight: 500; margin: 0 0 10px; }
+  .q .stem span.qn { font-family: var(--f-mono); color: var(--ink-faint); font-size: 12px; margin-right: 8px; }
+  .opts { display: flex; flex-direction: column; gap: 6px; max-width: 60ch; }
+  .opt {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    padding: 7px 11px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    cursor: pointer;
+    background: var(--surface);
+  }
+  .opt:hover { border-color: var(--cool); }
+  .opt input { margin-top: 4px; accent-color: var(--cool); }
+  .opt.right { border-color: var(--good); background: var(--good-wash); }
+  .opt.wrong { border-color: var(--hot); background: var(--hot-wash); }
+  .why {
+    margin-top: 9px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--rule);
+    padding-left: 11px;
+    max-width: 62ch;
+  }
+  .why[hidden] { display: none; }
+
+  /* ---------- formula sheet ---------- */
+  .sheet { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    padding: 14px 16px;
+  }
+  .card h4 { margin-bottom: 8px; }
+  .card .fx { overflow-x: auto; }
+  .card p { font-size: 13.5px; color: var(--ink-soft); margin: 8px 0 0; }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 22px;
+    color: var(--ink-faint);
+    font-family: var(--f-mono);
+    font-size: 12px;
+  }
+
+  /* long display equations scroll inside their own box, never the page */
+  mjx-container[display="true"] {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    padding-block: 3px;
+  }
+
+  /* ---------- worked problems ---------- */
+  .wp {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    margin: 24px 0;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .wp-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    background: var(--surface-sunk);
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .wp-head .wp-id { color: var(--cool); }
+  .wp-head .wp-src { color: var(--ink-faint); }
+  .wp-body { padding: 16px; }
+  .ask {
+    font-size: 15px;
+    margin: 0 0 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--hot);
+    max-width: 68ch;
+  }
+  .approach {
+    background: var(--cool-wash);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin: 0 0 16px;
+    font-size: 14px;
+    max-width: 68ch;
+  }
+  .approach b {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--cool);
+    display: block;
+    margin-bottom: 3px;
+  }
+  ol.steps { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; max-width: 70ch; }
+  ol.steps > li { margin: 0; padding-left: 16px; border-left: 2px solid var(--rule); }
+  ol.steps .sl {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 2px;
+  }
+  ol.steps .sl b { color: var(--ink); font-weight: 600; }
+  .answer {
+    margin-top: 16px;
+    border-left: 3px solid var(--good);
+    background: var(--good-wash);
+    padding: 10px 14px;
+    border-radius: 0 4px 4px 0;
+    max-width: 68ch;
+  }
+  .answer .lab {
+    font-family: var(--f-mono);
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--good);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .answer p { margin: 0; }
+  .recur {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    max-width: 68ch;
+  }
+  .strip { width: 100%; height: 74px; }
+
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: 1fr; gap: 0; }
+    nav.rail {
+      position: static;
+      max-height: none;
+      border-bottom: 1px solid var(--rule);
+      padding-block: 18px;
+    }
+    nav.rail ol { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+    nav.rail a { grid-template-columns: auto; border-left: 0; border-bottom: 2px solid transparent; padding: 4px 8px; }
+    nav.rail a span.num { display: none; }
+    nav.rail a.here { border-left: 0; border-bottom-color: var(--cool); }
+    header.mast { padding-top: 40px; }
+    .rule-row { grid-template-columns: 26px 1fr; }
+    .rule-row .r-ex { grid-column: 2; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+</style>
+
+<div class="shell">
+
+  <nav class="rail" aria-label="Contents">
+    <div class="rail-title">Contents</div>
+    <ol>
+      <li><a href="#prereq"><span class="num">00a</span><span>Calculus you need</span></a></li>
+      <li><a href="#stats"><span class="num">00b</span><span>Statistics you need</span></a></li>
+      <li><a href="#sigfig"><span class="num">01</span><span>Significant figures</span></a></li>
+      <li><a href="#accuracy"><span class="num">01b</span><span>Precision vs accuracy</span></a></li>
+      <li><a href="#sources" class="gap"><span class="num">02</span><span>Where error comes from</span></a></li>
+      <li><a href="#errors"><span class="num">03.1</span><span>Measuring errors</span></a></li>
+      <li><a href="#stopping"><span class="num">03.1b</span><span>Stopping criterion</span></a></li>
+      <li><a href="#taylor"><span class="num">03.2</span><span>Taylor series</span></a></li>
+      <li><a href="#remainder"><span class="num">03.2b</span><span>Remainder &amp; error bound</span></a></li>
+      <li><a href="#worked"><span class="num">WP</span><span>Every problem, solved</span></a></li>
+      <li><a href="#next"><span class="num">04</span><span>What comes next</span></a></li>
+      <li><a href="#sheet"><span class="num">—</span><span>Formula sheet</span></a></li>
+      <li><a href="#quiz"><span class="num">—</span><span>Self-check</span></a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="mast">
+      <div class="eyebrow">
+        <span>DLSU &middot; Engineering</span>
+        <span>Numerical Methods</span>
+        <span><b>Study guide</b></span>
+      </div>
+      <h1>The <em>Error</em> Budget</h1>
+      <p class="standfirst">
+        Every calculus course so far handed you the exact answer. This one hands you an
+        approximation and asks a harder question: <em>how wrong is it, and how would you know
+        without the exact answer to compare against?</em> That question is the whole course.
+      </p>
+      <div class="mast-meta">
+        <span class="chip have">01 Significant Figures</span>
+        <span class="chip have">03.1 Measuring Errors</span>
+        <span class="chip have">03.2 Taylor Series Revisited</span>
+        <span class="chip missing">02 bridged below</span>
+      </div>
+    </header>
+
+    <!-- ================= 00 PREREQ ================= -->
+    <section id="prereq">
+      <div class="sec-head"><span class="sec-num">00</span><h2>The calculus you actually need</h2></div>
+      <p class="sec-sub">
+        Four ideas from Calc 1–3 carry the entire course. If these are shaky, everything downstream
+        feels like memorized formulas — so start here.
+      </p>
+
+      <h3>1. The derivative is already a limit of approximations</h3>
+      <p>The definition you learned is a numerical method with the error squeezed out:</p>
+      <p>\[ f'(x) \;=\; \lim_{h \to 0}\frac{f(x+h) - f(x)}{h} \]</p>
+      <p>
+        A computer cannot take \(h \to 0\). It picks a small but finite \(h\) and stops. Drop the
+        limit and you get the <strong>forward difference formula</strong> used all over Lecture 03.1:
+      </p>
+      <p>\[ f'(x) \;\approx\; \frac{f(x+h) - f(x)}{h} \]</p>
+      <p>
+        The gap between those two lines <em>is</em> the error. Numerical methods is the study of that gap.
+      </p>
+
+      <h3>2. A function can be rebuilt from its derivatives at one point</h3>
+      <p>
+        A power series is an infinite polynomial. Taylor's theorem says a well-behaved \(f\) equals one:
+      </p>
+      <p>\[ f(x+h) = f(x) + f'(x)h + \frac{f''(x)}{2!}h^2 + \frac{f'''(x)}{3!}h^3 + \cdots \]</p>
+      <p>
+        Polynomials are the only things a computer really knows how to evaluate — add and multiply.
+        Everything else (\(e^x\), \(\sin x\), \(\ln x\)) gets turned into a polynomial first. That is
+        why Lecture 03.2 exists.
+      </p>
+
+      <h3>3. Continuity and differentiability are the fine print</h3>
+      <p>
+        Taylor's expansion is valid only if all the derivatives used exist and are continuous on the
+        interval \([x,\,x+h]\). When a method blows up on you in this course, a violated smoothness
+        assumption is usually why.
+      </p>
+
+      <h3>4. Limits of sequences = convergence of algorithms</h3>
+      <p>
+        Numerical algorithms are iterative: they make guess \(x_1, x_2, x_3, \dots\) and hope the
+        sequence converges. Two separate questions, always asked in this order:
+      </p>
+      <ul>
+        <li><strong>Does it converge?</strong> — does the sequence approach a limit at all</li>
+        <li><strong>How fast?</strong> — how many iterations to hit a required accuracy</li>
+      </ul>
+
+      <div class="note">
+        <span class="note-tag">The shift in mindset</span>
+        <p>
+          In Calc, \(=\) meant exactly equal. From now on, almost every \(=\) is really
+          \(\approx\) with a remainder term you are responsible for bounding. Grades in this course
+          are won on the remainder term, not the main formula.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 00b STATS ================= -->
+    <section id="stats">
+      <div class="sec-head"><span class="sec-num">00b</span><h2>The statistics you actually need</h2></div>
+      <p class="sec-sub">
+        Fundamental stats, rebuilt from zero — only the parts this course uses. Two places it shows
+        up: <em>random error</em> in Lecture 01 is literally a standard deviation, and the regression
+        chapter later in the term is entirely least squares.
+      </p>
+
+      <h3>1. Centre: the mean</h3>
+      <p>
+        Take \(n\) repeated measurements \(x_1, x_2, \dots, x_n\). Their arithmetic mean is your best
+        single estimate of the quantity:
+      </p>
+      <p>\[ \bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i \]</p>
+      <p>
+        The mean is the number that makes the deviations \((x_i - \bar{x})\) sum to exactly zero —
+        which is why you square them before averaging, or the spread would always come out as zero.
+      </p>
+
+      <h3>2. Spread: variance and standard deviation</h3>
+      <p>
+        Squared deviations summed give the <strong>sum of squares</strong>, written \(S_t\) in most
+        numerical methods textbooks:
+      </p>
+      <p>\[ S_t = \sum_{i=1}^{n}(x_i - \bar{x})^2 \qquad
+            s^2 = \frac{S_t}{n-1} \qquad
+            s = \sqrt{\frac{\sum (x_i-\bar{x})^2}{n-1}} \]</p>
+      <p>
+        \(s\) is the <strong>sample standard deviation</strong>, in the same units as \(x\) — the
+        everyday measure of scatter. The divisor is \(n-1\), not \(n\): you spent one piece of
+        information computing \(\bar{x}\) from the same data, so only \(n-1\) deviations are free to
+        vary. That is the <em>degrees of freedom</em>. Use \(n\) only when you genuinely have the
+        whole population, which in a lab you never do.
+      </p>
+
+      <h3>3. Relative spread: coefficient of variation</h3>
+      <p>\[ \text{c.v.} = \frac{s}{\bar{x}} \times 100\% \]</p>
+      <p>
+        Same idea as relative error: an absolute spread means nothing until you compare it to the
+        size of the thing measured. \(s = 0.5\ \text{mm}\) is superb on a bridge span and appalling
+        on a bearing. The c.v. is the honest way to compare precision across instruments and scales.
+      </p>
+
+      <h3>4. The normal distribution, in one line each</h3>
+      <ul>
+        <li>Random errors pile up symmetrically around the mean in a bell curve.</li>
+        <li><strong>68%</strong> of readings fall within \(\bar{x} \pm s\), <strong>95%</strong> within \(\pm 2s\), <strong>99.7%</strong> within \(\pm 3s\).</li>
+        <li>That is why a result is reported as \(\bar{x} \pm s\): it is a statement about where the next reading will probably land, not a guess at the true value.</li>
+        <li>A reading beyond \(3s\) is a plausible outlier — investigate it, don't silently delete it.</li>
+      </ul>
+
+      <h3>5. Averaging buys precision, at a price</h3>
+      <p>\[ s_{\bar{x}} = \frac{s}{\sqrt{n}} \]</p>
+      <p>
+        The <strong>standard error of the mean</strong>. Scatter in the average shrinks like
+        \(\sqrt{n}\), so cutting your uncertainty in half takes <em>four times</em> the readings, and
+        by ten takes a hundred. Note what it never fixes: a bias. Average a mis-calibrated scale a
+        million times and you converge beautifully on the wrong answer.
+      </p>
+
+      <div class="note">
+        <span class="note-tag">This is the bridge to Lecture 01</span>
+        <p>
+          <strong>Precision = small \(s\)</strong> (readings agree with each other).
+          <strong>Accuracy = small \(|\bar{x} - \text{true}|\)</strong> (readings agree with reality).
+          They are computed from different things, which is exactly why a set of measurements can
+          have one and not the other.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-bar"><span>Measurement set analyser</span><span class="live">live</span></div>
+        <div class="panel-body">
+          <div class="ctrl-row">
+            <div class="ctrl" style="flex:1 1 300px">
+              <label for="st-data">Readings (comma separated)</label>
+              <input type="text" id="st-data" value="5.02, 5.03, 5.02, 5.04, 5.03" autocomplete="off" spellcheck="false" style="width:100%">
+            </div>
+            <div class="ctrl">
+              <label for="st-true">True value</label>
+              <input type="text" id="st-true" value="7.00" autocomplete="off" spellcheck="false" style="min-width:110px">
+            </div>
+          </div>
+          <svg class="strip" id="st-strip" role="img" aria-label="Number line showing each reading, the mean, and the true value"></svg>
+          <div class="readout" style="margin-top:12px">
+            <div><span class="k">n</span><span class="v" id="st-n">5</span></div>
+            <div><span class="k">Mean x̄</span><span class="v cool" id="st-mean">5.0280</span></div>
+            <div><span class="k">Std dev s</span><span class="v" id="st-sd">0.00837</span></div>
+            <div><span class="k">c.v.</span><span class="v" id="st-cv">0.17%</span></div>
+            <div><span class="k">Std error s/√n</span><span class="v" id="st-se">0.00374</span></div>
+            <div><span class="k">|% error| of mean</span><span class="v hot" id="st-err">28.2%</span></div>
+          </div>
+          <p class="trace" id="st-verdict" style="margin-top:12px"></p>
+        </div>
+      </div>
+
+      <h3>6. Least squares, previewed</h3>
+      <p>
+        The regression chapter fits a line \(y = a_0 + a_1x\) by minimising the sum of squared
+        residuals \(S_r = \sum (y_i - a_0 - a_1x_i)^2\). The quality of the fit is reported as the
+        coefficient of determination:
+      </p>
+      <p>\[ r^2 = \frac{S_t - S_r}{S_t} \]</p>
+      <p>
+        Read it as: of the total spread in \(y\) about its mean \((S_t)\), the fraction the line
+        explains. \(r^2 = 1\) means the line passes through every point; \(r^2 = 0\) means the line
+        is no better than the flat average. Same two symbols as above — \(S_t\) is still a sum of
+        squared deviations from a mean.
+      </p>
+    </section>
+
+    <!-- ================= 01 SIG FIGS ================= -->
+    <section id="sigfig">
+      <div class="sec-head"><span class="sec-num">01</span><h2>Significant figures</h2></div>
+      <p class="sec-sub">
+        Lecture 01. Significant figures are the digits known with some degree of reliability. They
+        are how you say "I trust this far and no further" — the bookkeeping for every error claim
+        you'll make later.
+      </p>
+
+      <h4>The seven rules</h4>
+      <div class="rules">
+        <div class="rule-row"><span class="r-id">R1</span><span>All non-zero digits are <span class="yes">significant</span>.</span><span class="r-ex"><b>1.54</b> → 3 &middot; <b>45</b> → 2</span></div>
+        <div class="rule-row"><span class="r-id">R2</span><span>Zeros <em>between</em> two non-zero digits are <span class="yes">significant</span>.</span><span class="r-ex">0.02<b>5</b>03 → 4 &middot; 4<b>0</b>2 → 3</span></div>
+        <div class="rule-row"><span class="r-id">R3</span><span>Leading zeros are <span class="no">not significant</span>.</span><span class="r-ex">0.103 → 3 &middot; 0.000002 → 1</span></div>
+        <div class="rule-row"><span class="r-id">R4</span><span>Trailing zeros to the right of the decimal are <span class="yes">significant</span>.</span><span class="r-ex">1.05<b>0</b> → 4</span></div>
+        <div class="rule-row"><span class="r-id">R5</span><span>Trailing zeros in a whole number <em>with</em> the decimal shown are <span class="yes">significant</span>.</span><span class="r-ex">1.00×10³ → 3 &middot; 1<span style="text-decoration:overline">0</span> → 2</span></div>
+        <div class="rule-row"><span class="r-id">R6</span><span>Trailing zeros in a whole number with <em>no</em> decimal shown are <span class="no">not significant</span>.</span><span class="r-ex">1000 → 1 &middot; 190 → 2</span></div>
+        <div class="rule-row"><span class="r-id">R7</span><span>Exact numbers (definitions, counts) have <span class="yes">infinite</span> sig figs.</span><span class="r-ex">10 dm = 1 m → ∞</span></div>
+      </div>
+      <p style="margin-top:14px">
+        For scientific notation \(N \times 10^{x}\): every digit in \(N\) is judged by rules 1–6.
+        The "10" and the exponent are <strong>never</strong> significant — they only move the decimal point.
+      </p>
+
+      <div class="panel">
+        <div class="panel-bar"><span>Counter &middot; type any number</span><span class="live">live</span></div>
+        <div class="panel-body">
+          <div class="ctrl-row">
+            <div class="ctrl">
+              <label for="sf-in">Value</label>
+              <input type="text" id="sf-in" value="0.02503" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="ctrl">
+              <label for="sf-pick">Try one</label>
+              <select id="sf-pick">
+                <option value="0.02503">0.02503</option>
+                <option value="1000">1000</option>
+                <option value="1000.">1000.</option>
+                <option value="190">190</option>
+                <option value="1.050">1.050</option>
+                <option value="0.000002">0.000002</option>
+                <option value="1.00e3">1.00e3</option>
+                <option value="3.00674">3.00674</option>
+                <option value="9.5140">9.5140</option>
+              </select>
+            </div>
+          </div>
+          <div class="readout">
+            <div><span class="k">Significant figures</span><span class="v cool" id="sf-count">4</span></div>
+            <div><span class="k">Digit map</span><span class="digits" id="sf-map"></span></div>
+          </div>
+          <div class="trace" id="sf-trace"></div>
+        </div>
+      </div>
+
+      <div class="note trap">
+        <span class="note-tag">Classic exam trap</span>
+        <p>
+          <code>1000</code> has 1 sig fig, but <code>1000.</code> has 4, and <code>1.000×10³</code>
+          has 4 as well. If you need to report 3 sig figs on a round number, scientific notation is
+          the only unambiguous way to write it.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 01b ACCURACY ================= -->
+    <section id="accuracy">
+      <div class="sec-head"><span class="sec-num">01b</span><h2>Precision is not accuracy</h2></div>
+      <p class="sec-sub">
+        The two words are interchangeable in ordinary speech and strictly different here. Mixing
+        them up is the single most common conceptual error in the first exam.
+      </p>
+
+      <div class="panel">
+        <div class="panel-bar"><span>Target diagram &middot; ISO definition</span><span>figure</span></div>
+        <div class="panel-body">
+          <div class="targets" id="targets"></div>
+          <p style="margin-top:16px; font-size:13.5px">
+            <strong>Precision</strong> is repeatability — consistent results when the measurement is
+            repeated. It is spoiled by <em>random error</em> (scatter).
+            <strong>Accuracy</strong> is closeness to truth — free of <em>systematic error</em> (bias).
+            ISO reserves "accurate" for a measurement that is both true and consistent: the
+            bottom-right target.
+          </p>
+        </div>
+      </div>
+
+      <p>Percentage error, as given in Lecture 01:</p>
+      <p>\[ |\%\ \text{error}| \;=\; \left|\frac{\text{error}}{\text{actual value}}\right| \times 100\% \]</p>
+
+      <div class="note warn">
+        <span class="note-tag">Why engineers care</span>
+        <p>
+          A biased instrument is fixable — calibrate it and the systematic error subtracts out.
+          A scattered instrument is not; you can only average many readings and pay for it in time.
+          Precision without accuracy still gives you a useful <em>relative</em> measurement.
+          Accuracy without precision gives you one good number you cannot reproduce.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 02 SOURCES ================= -->
+    <section id="sources">
+      <div class="sec-head"><span class="sec-num">02</span><h2>Where error comes from</h2></div>
+      <p class="sec-sub">
+        Bridging material — the lecture numbered 02 isn't in your folder, but 03.1 and 03.2 assume
+        it. These are the two error species every numerical method carries, and they pull in
+        opposite directions.
+      </p>
+
+      <h3>Round-off error — the machine's fault</h3>
+      <p>
+        A computer stores numbers in finite binary. \(1/3\), \(\pi\), even \(0.1\) get truncated to
+        roughly 16 decimal digits in double precision. The size of that gap is
+        <strong>machine epsilon</strong>, \(\varepsilon_{\text{mach}} \approx 2.2 \times 10^{-16}\):
+        the smallest number where \(1 + \varepsilon \neq 1\) on the machine.
+      </p>
+      <p>
+        The killer is <strong>subtractive cancellation</strong>: subtract two nearly equal numbers and
+        the leading digits cancel, promoting round-off junk into the leading position.
+      </p>
+      <p>\[ \underbrace{19.0288}_{\text{6 s.f.}} - \underbrace{19.0279}_{\text{6 s.f.}} = \underbrace{0.0009}_{\text{1 s.f.}} \]</p>
+      <p>
+        Six good digits in, one good digit out. Look at the forward difference formula again —
+        \(f(x+h) - f(x)\) is exactly this subtraction, and it gets worse as \(h\) shrinks.
+      </p>
+
+      <h3>Truncation error — the method's fault</h3>
+      <p>
+        You cut an infinite process short: stopping a Taylor series after \(n\) terms, using a finite
+        \(h\) instead of \(h \to 0\), stopping an iteration early. This error exists even on a
+        hypothetical computer with infinite digits.
+      </p>
+
+      <div class="note">
+        <span class="note-tag">The central tension of the whole course</span>
+        <p>
+          Truncation error <em>shrinks</em> as \(h\) shrinks. Round-off error <em>grows</em> as \(h\)
+          shrinks. The total is a valley: there is an optimal \(h\), and going smaller makes your
+          answer worse. You can see this happen in the plot in the next section.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 03.1 ERRORS ================= -->
+    <section id="errors">
+      <div class="sec-head"><span class="sec-num">03.1</span><h2>Measuring errors</h2></div>
+      <p class="sec-sub">
+        Lecture 03.1. Two reasons to measure error: to state the accuracy of a result, and to build
+        a stopping rule for an iterative algorithm. Four definitions do all the work.
+      </p>
+
+      <div class="sheet">
+        <div class="card">
+          <h4>True error \(E_t\)</h4>
+          <div class="fx">\[ E_t = \text{True} - \text{Approx} \]</div>
+          <p>Signed. Carries units. Needs the true value — usually unavailable in practice.</p>
+        </div>
+        <div class="card">
+          <h4>Relative true error \(\epsilon_t\)</h4>
+          <div class="fx">\[ \epsilon_t = \frac{E_t}{\text{True value}} \]</div>
+          <p>Dimensionless, ×100 for a percentage. Says whether the error <em>matters</em> at this scale.</p>
+        </div>
+        <div class="card">
+          <h4>Approximate error \(E_a\)</h4>
+          <div class="fx">\[ E_a = \text{Present} - \text{Previous} \]</div>
+          <p>Compares two successive approximations. No true value required — this is the practical one.</p>
+        </div>
+        <div class="card">
+          <h4>Relative approximate error \(\epsilon_a\)</h4>
+          <div class="fx">\[ \epsilon_a = \frac{E_a}{\text{Present approx}} \]</div>
+          <p>The quantity an actual algorithm watches. Its absolute value drives the stopping rule.</p>
+        </div>
+      </div>
+
+      <div class="note warn">
+        <span class="note-tag">Read the denominators</span>
+        <p>
+          \(\epsilon_t\) divides by the <em>true</em> value. \(\epsilon_a\) divides by the
+          <em>present</em> approximation — not the previous one, not the average. Points get lost
+          here every term.
+        </p>
+      </div>
+
+      <h3>The lecture's worked example, made live</h3>
+      <p>
+        Lecture 03.1 estimates \(f'(2)\) for \(f(x) = 7e^{0.5x}\) using the forward difference, and
+        compares it with the exact \(f'(x) = 3.5e^{0.5x}\), so \(f'(2) = 3.5e = 9.5140\). Drag \(h\)
+        and watch all four error measures move.
+      </p>
+
+      <div class="panel">
+        <div class="panel-bar"><span>Forward difference explorer &middot; f(x) = 7e^0.5x at x = 2</span><span class="live">live</span></div>
+        <div class="panel-body">
+          <div class="ctrl-row">
+            <div class="ctrl" style="flex:1 1 280px">
+              <label for="h-slider">Step size h = <span id="h-label" style="color:var(--cool)">0.3</span></label>
+              <input type="range" id="h-slider" min="-16" max="0" step="0.001" value="-0.5229">
+            </div>
+            <div class="ctrl">
+              <label for="h-preset">Lecture values</label>
+              <select id="h-preset">
+                <option value="0.3">h = 0.3</option>
+                <option value="0.15">h = 0.15</option>
+                <option value="0.10">h = 0.10</option>
+                <option value="0.01">h = 0.01</option>
+                <option value="0.001">h = 0.001</option>
+                <option value="1e-12">h = 1e-12 (too small!)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="readout">
+            <div><span class="k">Approximation f′(2)</span><span class="v cool" id="fd-approx">10.263</span></div>
+            <div><span class="k">True value 3.5e</span><span class="v hot">9.51402</span></div>
+            <div><span class="k">True error E<sub>t</sub></span><span class="v" id="fd-et">−0.7490</span></div>
+            <div><span class="k">|ε<sub>t</sub>| true rel.</span><span class="v" id="fd-ret">7.873%</span></div>
+            <div><span class="k">|ε<sub>a</sub>| vs. half-step</span><span class="v" id="fd-rea">3.877%</span></div>
+            <div><span class="k">Correct sig digits m</span><span class="v good" id="fd-m">1</span></div>
+          </div>
+
+          <p style="margin-top:18px; font-size:13.5px; color:var(--ink-soft)">
+            Total error vs. step size, both axes logarithmic. The left arm is round-off blowing up
+            from cancellation; the right arm is truncation from a too-coarse \(h\). Your handle sits
+            on the curve.
+          </p>
+          <canvas id="hplot" height="300" aria-label="Log-log plot of absolute true error against step size, forming a V shape"></canvas>
+        </div>
+      </div>
+
+      <h3>The lecture's table, reproduced</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>h</th><th>f′(2)</th><th>|ε<sub>a</sub>| %</th><th>m</th></tr></thead>
+          <tbody>
+            <tr><td>0.3</td><td>10.263</td><td>—</td><td>0</td></tr>
+            <tr><td>0.15</td><td>9.8800</td><td>3.877</td><td>1</td></tr>
+            <tr><td>0.10</td><td>9.7558</td><td>1.273</td><td>1</td></tr>
+            <tr><td>0.01</td><td>9.5378</td><td>2.285</td><td>1</td></tr>
+            <tr class="marked"><td>0.001</td><td>9.5164</td><td>0.2249</td><td>2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13.5px; color:var(--ink-soft)">
+        Note \(|\epsilon_a|\) is not monotone — it rises from 1.273% to 2.285% because the
+        \(h = 0.01\) row is compared against \(h = 0.10\), not against a halving. \(\epsilon_a\) is
+        only meaningful between <em>successive</em> iterates of the same refinement scheme.
+      </p>
+    </section>
+
+    <!-- ================= 03.1b STOPPING ================= -->
+    <section id="stopping">
+      <div class="sec-head"><span class="sec-num">03.1b</span><h2>The stopping criterion</h2></div>
+      <p class="sec-sub">
+        This is the formula the course returns to in every later chapter — bisection, Newton-Raphson,
+        Gauss-Seidel, every iterative solver. Memorize it.
+      </p>
+
+      <p>Stop iterating when the absolute relative approximate error falls under a pre-set tolerance:</p>
+      <p>\[ |\epsilon_a| \le \epsilon_s \]</p>
+      <p>And if the answer must be correct to at least \(m\) significant digits, the required tolerance is:</p>
+      <p>\[ |\epsilon_a| \le 0.5 \times 10^{\,2-m}\,\% \]</p>
+
+      <div class="panel">
+        <div class="panel-bar"><span>Tolerance calculator</span><span class="live">live</span></div>
+        <div class="panel-body">
+          <div class="ctrl-row">
+            <div class="ctrl" style="flex:1 1 260px">
+              <label for="m-slider">Significant digits required, m = <span id="m-label" style="color:var(--cool)">3</span></label>
+              <input type="range" id="m-slider" min="1" max="10" step="1" value="3">
+            </div>
+          </div>
+          <div class="readout">
+            <div><span class="k">Tolerance ε<sub>s</sub></span><span class="v cool" id="m-tol">0.05%</span></div>
+            <div><span class="k">As a fraction</span><span class="v" id="m-frac">5×10⁻⁴</span></div>
+            <div><span class="k">Reads as</span><span class="v" style="font-size:14px" id="m-words">3 digits trustworthy</span></div>
+          </div>
+          <p style="margin-top:14px; font-size:13.5px; color:var(--ink-soft)">
+            Each extra significant digit costs a factor of ten in tolerance — and, for a linearly
+            converging method, roughly ten times the iterations.
+          </p>
+        </div>
+      </div>
+
+      <div class="note trap">
+        <span class="note-tag">Direction of the inequality</span>
+        <p>
+          Big \(m\) means a <em>small</em> tolerance. \(m = 1 \Rightarrow 5\%\);
+          \(m = 3 \Rightarrow 0.05\%\). If your answer comes out with tolerance growing as \(m\)
+          grows, you flipped the exponent sign.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= 03.2 TAYLOR ================= -->
+    <section id="taylor">
+      <div class="sec-head"><span class="sec-num">03.2</span><h2>Taylor series, revisited</h2></div>
+      <p class="sec-sub">
+        Lecture 03.2. You have seen these series in Calc 2 as a convergence exercise. Here they are
+        a construction tool: nearly every numerical method in the rest of the course is a truncated
+        Taylor series with the remainder analyzed.
+      </p>
+
+      <p>The general form, expanding around a known point \(x\) to reach \(x+h\):</p>
+      <p>\[ f(x+h) = f(x) + f'(x)h + \frac{f''(x)}{2!}h^2 + \frac{f'''(x)}{3!}h^3 + \cdots \]</p>
+      <p>
+        valid provided all derivatives of \(f\) are continuous and exist on \([x,\,x+h]\).
+        As the lecture puts it — give me the value of the function and all its derivatives at a single
+        point, and I can give you the function anywhere else.
+      </p>
+      <p>The <strong>Maclaurin series</strong> is just the Taylor series centered at \(x = 0\):</p>
+      <p>\[ e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots \qquad
+            \sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \cdots \qquad
+            \cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \cdots \]</p>
+
+      <div class="panel">
+        <div class="panel-bar"><span>Taylor polynomial explorer</span><span class="live">live</span></div>
+        <div class="panel-body">
+          <div class="ctrl-row">
+            <div class="ctrl">
+              <label for="t-fn">Function</label>
+              <select id="t-fn">
+                <option value="exp">f(x) = e^x</option>
+                <option value="sin" selected>f(x) = sin x</option>
+                <option value="cos">f(x) = cos x</option>
+                <option value="ln">f(x) = ln(1+x)</option>
+                <option value="geo">f(x) = 1/(1−x)</option>
+              </select>
+            </div>
+            <div class="ctrl" style="flex:1 1 210px">
+              <label for="t-n">Terms up to order n = <span id="t-n-label" style="color:var(--cool)">3</span></label>
+              <input type="range" id="t-n" min="0" max="16" step="1" value="3">
+            </div>
+            <div class="ctrl" style="flex:1 1 210px">
+              <label for="t-a">Expansion point a = <span id="t-a-label" style="color:var(--cool)">0.0</span></label>
+              <input type="range" id="t-a" min="-3" max="3" step="0.1" value="0">
+            </div>
+          </div>
+          <canvas id="tplot" height="330" aria-label="Plot of a function in warm red against its Taylor polynomial in cool blue"></canvas>
+          <p style="margin-top:12px; font-size:13.5px; color:var(--ink-soft)">
+            <span style="color:var(--hot); font-weight:600">Red</span> is the true function,
+            <span style="color:var(--cool); font-weight:600">blue</span> the Taylor polynomial, and
+            the tick marks the expansion point \(a\). Push \(n\) up and watch the agreement spread
+            outward from \(a\) — the approximation is always best near the expansion point and decays
+            as you move away. Try \(1/(1-x)\) past \(x = 1\): more terms never help, because the
+            series does not converge there.
+          </p>
+        </div>
+      </div>
+
+      <h3>Worked example from the lecture</h3>
+      <p>
+        Given \(f(4) = 125\), \(f'(4) = 74\), \(f''(4) = 30\), \(f'''(4) = 6\) and all higher
+        derivatives zero, find \(f(6)\). Here \(x = 4\) and \(h = 6 - 4 = 2\):
+      </p>
+      <p>\[ f(6) = 125 + 74(2) + \frac{30}{2!}(2)^2 + \frac{6}{3!}(2)^3 = 125 + 148 + 60 + 8 = 341 \]</p>
+      <p>
+        Exact, not approximate — the higher derivatives vanish, so the truncation error is genuinely
+        zero. That happens only for polynomials. Every other function leaves a remainder.
+      </p>
+    </section>
+
+    <!-- ================= 03.2b REMAINDER ================= -->
+    <section id="remainder">
+      <div class="sec-head"><span class="sec-num">03.2b</span><h2>The remainder, and how to bound it</h2></div>
+      <p class="sec-sub">
+        The part that gets examined. Truncate the series after order \(n\) and you owe an exact
+        remainder term.
+      </p>
+
+      <p>For \(f\) with \(n+1\) continuous derivatives on \([x,\,x+h]\):</p>
+      <p>\[ f(x+h) = f(x) + f'(x)h + \frac{f''(x)}{2!}h^2 + \cdots + \frac{f^{(n)}(x)}{n!}h^n + R_n(x) \]</p>
+      <p>\[ R_n(x) = \frac{f^{(n+1)}(c)}{(n+1)!}\,h^{\,n+1}, \qquad x \le c \le x+h \]</p>
+
+      <div class="note">
+        <span class="note-tag">What c means</span>
+        <p>
+          \(c\) is some unknown point in the interval — the theorem promises it exists but never tells
+          you where. So you never <em>compute</em> \(R_n\); you <strong>bound</strong> it, by replacing
+          \(f^{(n+1)}(c)\) with its largest possible magnitude on the interval. Every remainder problem
+          is that one move.
+        </p>
+      </div>
+
+      <h3>The lecture's \(e^1\) problem, step by step</h3>
+      <p>
+        <em>How many terms are needed so the true error in \(e^1\) is below \(10^{-6}\)?</em>
+        Here \(x = 0\), \(h = 1\), \(f(x) = e^x\), and every derivative of \(e^x\) is \(e^x\):
+      </p>
+      <p>\[ |R_n(0)| = \left|\frac{e^{c}}{(n+1)!}(1)^{\,n+1}\right| = \frac{e^{c}}{(n+1)!}, \qquad 0 \le c \le 1 \]</p>
+      <p>
+        The worst case is \(c = 1\), giving \(e^c \le e \approx 2.718 &lt; 3\). Bound it and solve:
+      </p>
+      <p>\[ \frac{e}{(n+1)!} \le 10^{-6} \;\Longrightarrow\; (n+1)! \ge e \times 10^{6} \approx 2.72\times10^{6} \]</p>
+      <p>
+        \(9! = 362\,880\) — too small. \(10! = 3\,628\,800\) — clears it. So \(n+1 = 10\), giving
+        \(\boxed{n \ge 9}\): nine terms or more.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>n</th><th>(n+1)!</th><th>Error bound e/(n+1)!</th><th>Under 10⁻⁶?</th></tr></thead>
+          <tbody id="fact-rows"></tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <span class="note-tag">Exam technique</span>
+        <p>
+          Note the bound is on \(|R_n|\), not on the exact error — the true error is always
+          <em>smaller</em>. When a problem asks "how many terms guarantee accuracy X", you solve the
+          inequality on the bound and round <strong>up</strong> to the next whole \(n\). Rounding
+          down loses the guarantee, and the mark.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= WORKED PROBLEMS ================= -->
+    <section id="worked">
+      <div class="sec-head"><span class="sec-num">WP</span><h2>Every problem, solved</h2></div>
+      <p class="sec-sub">
+        All eleven worked problems from the three lecture files, each with the <em>approach</em>
+        stated before the algebra — what to notice, which formula that forces, and what to check at
+        the end. Read the approach first and try it yourself; the steps are there to mark against.
+      </p>
+
+      <h3>First: which error formula?</h3>
+      <p>Nearly every question in Lecture 03.1 is answered by picking the right row of this table.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>If the question says…</th><th>Use</th><th>Needs true value?</th></tr></thead>
+          <tbody>
+            <tr><td style="white-space:normal">"find the true error"</td><td>\(E_t = \text{True} - \text{Approx}\)</td><td>yes</td></tr>
+            <tr><td style="white-space:normal">"relative true error" / "% error"</td><td>\(\epsilon_t = E_t/\text{True}\)</td><td>yes</td></tr>
+            <tr><td style="white-space:normal">"approximate error", two iterations given</td><td>\(E_a = \text{Now} - \text{Before}\)</td><td>no</td></tr>
+            <tr><td style="white-space:normal">"relative approximate error"</td><td>\(\epsilon_a = E_a/\text{Now}\)</td><td>no</td></tr>
+            <tr><td style="white-space:normal">"how many digits are correct" / "when do I stop"</td><td>\(|\epsilon_a| \le 0.5\times10^{2-m}\%\)</td><td>no</td></tr>
+            <tr><td style="white-space:normal">"how many terms are needed"</td><td>\(|R_n| \le \text{tolerance}\)</td><td>no</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13.5px; color:var(--ink-soft)">
+        The "needs true value" column is the fastest filter. If a problem gives you no exact answer
+        and no way to differentiate/integrate by hand, it cannot be asking for \(E_t\).
+      </p>
+
+      <!-- WP1 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-1 · Counting significant figures</span><span class="wp-src">Lecture 01</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            How many significant figures are in 0.02503, 1000, 190, 1.050, 1.00×10³, 0.000002 and 3.00674?
+          </p>
+          <p class="approach"><b>Approach</b>
+            Never count left to right blindly. Run a fixed four-step scan on every number: strip the
+            exponent, kill leading zeros, decide trailing zeros by whether a decimal point is
+            <em>visible</em>, then count what survives. Only the trailing-zero step ever changes answer
+            between two numbers that look alike.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Strip the exponent</b></span>
+              For \(N \times 10^{x}\), throw away the \(\times 10^{x}\) entirely and judge only \(N\).
+              So 1.00×10³ is judged as "1.00".</li>
+            <li><span class="sl">Step 2 · <b>Kill leading zeros</b></span>
+              Scan from the left to the first non-zero digit; everything before it is placeholding, not
+              measuring. 0.02503 loses two zeros; 0.000002 loses six.</li>
+            <li><span class="sl">Step 3 · <b>Judge trailing zeros by the decimal point</b></span>
+              Decimal point visible → trailing zeros are significant (1.050, 1.00). No decimal point
+              shown → trailing zeros are not (1000, 190).</li>
+            <li><span class="sl">Step 4 · <b>Count survivors</b></span>
+              Every non-zero digit, plus every zero trapped between non-zeros, plus the trailing zeros
+              rule 3 kept.</li>
+          </ol>
+          <div class="answer"><span class="lab">Answers</span>
+            <p>0.02503 → <strong>4</strong> &middot; 1000 → <strong>1</strong> &middot;
+               190 → <strong>2</strong> &middot; 1.050 → <strong>4</strong> &middot;
+               1.00×10³ → <strong>3</strong> &middot; 0.000002 → <strong>1</strong> &middot;
+               3.00674 → <strong>6</strong></p>
+          </div>
+          <p class="recur">Same scan reappears whenever a problem says "report your answer to 3 significant figures" — decide the digits first, then round once, at the end.</p>
+        </div>
+      </div>
+
+      <!-- WP2 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-2 · Percentage error</span><span class="wp-src">Lecture 01</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            A gauge reads 9.80 kPa where the actual pressure is 10.00 kPa. Find the percentage error.
+          </p>
+          <p class="approach"><b>Approach</b>
+            Two decisions only: what is the error (a difference), and what is the denominator (always
+            the <em>actual</em> value, never the measurement). Divide, then multiply by 100 — and do it
+            in that order, so the 100 never sneaks into the ratio.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Error as a difference</b></span>
+              \(\text{error} = 9.80 - 10.00 = -0.20\ \text{kPa}\). Negative means the gauge reads low.</li>
+            <li><span class="sl">Step 2 · <b>Divide by the actual value</b></span>
+              \[ \frac{-0.20}{10.00} = -0.020 \]</li>
+            <li><span class="sl">Step 3 · <b>Scale to a percentage</b></span>
+              \(-0.020 \times 100\% = -2.0\%\); the lecture asks for the magnitude, so \(|\%\ \text{error}| = 2.0\%\).</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span><p><strong>2.0%</strong> (gauge reads 2% low).</p></div>
+          <p class="recur">Sign convention warning: Lecture 01 writes error = measured − actual, Lecture 03.1 writes \(E_t\) = true − approximate. The magnitudes match; only the sign flips. Read which one the question wants before you commit to a sign.</p>
+        </div>
+      </div>
+
+      <!-- WP3 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-3 · Forward difference estimate</span><span class="wp-src">Lecture 03.1 · Example 1a</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            For \(f(x) = 7e^{0.5x}\) with \(h = 0.3\), find the approximate value of \(f'(2)\) using
+            \(f'(x) \approx \dfrac{f(x+h)-f(x)}{h}\).
+          </p>
+          <p class="approach"><b>Approach</b>
+            Pure substitution — the only trap is arithmetic hygiene. Write down \(x\) and \(h\) first,
+            evaluate the function at <em>two</em> points (never differentiate here, the whole point is
+            that you are pretending you cannot), then subtract and divide. Keep 5+ digits in the
+            intermediates: the numerator is a subtraction of close numbers, so early rounding poisons
+            the result.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Label the pieces</b></span>
+              \(x = 2\), \(h = 0.3\), so \(x + h = 2.3\). The formula needs \(f(2.3)\) and \(f(2)\).</li>
+            <li><span class="sl">Step 2 · <b>Evaluate at both points</b></span>
+              \[ f(2.3) = 7e^{0.5(2.3)} = 7e^{1.15} = 22.107 \]
+              \[ f(2) = 7e^{0.5(2)} = 7e^{1} = 19.028 \]</li>
+            <li><span class="sl">Step 3 · <b>Subtract, then divide by h</b></span>
+              \[ f'(2) \approx \frac{22.107 - 19.028}{0.3} = \frac{3.079}{0.3} = 10.263 \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span><p>\(f'(2) \approx \mathbf{10.263}\)</p></div>
+          <p class="recur">Sanity check that costs five seconds: the slope should be positive and roughly the size of the function value, since \(f' = 0.5f\) here. 10.263 against \(f(2) = 19\) is plausible; a negative or wildly larger number means a sign or exponent slip.</p>
+        </div>
+      </div>
+
+      <!-- WP4 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-4 · True value and true error</span><span class="wp-src">Lecture 03.1 · Example 1b, 1c</span></div>
+        <div class="wp-body">
+          <p class="ask">Find the exact \(f'(2)\), then the true error in the estimate from WP-3.</p>
+          <p class="approach"><b>Approach</b>
+            "True value" is a signal to put the numerical method down and use calculus. Differentiate
+            symbolically, evaluate, <em>then</em> subtract in the order true − approximate. Getting the
+            subtraction order right is worth a mark on its own.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Differentiate by hand</b></span>
+              Chain rule on \(7e^{0.5x}\): \[ f'(x) = 7(0.5)e^{0.5x} = 3.5e^{0.5x} \]</li>
+            <li><span class="sl">Step 2 · <b>Evaluate at x = 2</b></span>
+              \[ f'(2) = 3.5e^{1} = 9.5140 \]</li>
+            <li><span class="sl">Step 3 · <b>Subtract in the defined order</b></span>
+              \[ E_t = \text{True} - \text{Approx} = 9.5140 - 10.263 = -0.7490 \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p>True value \(f'(2) = \mathbf{9.5140}\), true error \(E_t = \mathbf{-0.7490}\).
+               Negative sign = the forward difference <em>over</em>-estimated the slope, which it always
+               does for a convex function like \(e^{0.5x}\).</p>
+          </div>
+          <p class="recur">Watch the slide: it prints \(E_t = -0.722\), but \(9.5140 - 10.263\) is \(-0.7490\) — the \(-0.722\) comes from a transposed 10.263 → 10.236. The method is right; the arithmetic on that slide is not. If the answer key insists on \(-0.722\) (and the \(-7.5888\%\) that follows from it), reproduce the key but know where it came from.</p>
+        </div>
+      </div>
+
+      <!-- WP5 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-5 · Relative true error</span><span class="wp-src">Lecture 03.1 · Example 2</span></div>
+        <div class="wp-body">
+          <p class="ask">Find the relative true error \(\epsilon_t\) for the same estimate.</p>
+          <p class="approach"><b>Approach</b>
+            One division, done in the right direction. \(\epsilon_t\) is a ratio to the <em>true</em>
+            value, so the number you already computed for \(E_t\) goes on top and the true value goes
+            underneath. Report as a fraction and again as a percentage — questions ask for either.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Carry E_t forward</b></span>
+              From the slide's figures, \(E_t = -0.722\).</li>
+            <li><span class="sl">Step 2 · <b>Divide by the true value</b></span>
+              \[ \epsilon_t = \frac{E_t}{\text{True value}} = \frac{-0.722}{9.5140} = -0.075888 \]</li>
+            <li><span class="sl">Step 3 · <b>Convert to a percentage</b></span>
+              \[ \epsilon_t = -0.075888 \times 100\% = -7.5888\% \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p>\(\epsilon_t = \mathbf{-7.5888\%}\) (with the corrected \(E_t = -0.7490\) it is \(-7.873\%\)).</p>
+          </div>
+          <p class="recur">Interpretation, which exams do ask for: roughly 8% off means not even the first digit is reliable — 10.263 versus a truth of 9.5140 disagrees in the units place.</p>
+        </div>
+      </div>
+
+      <!-- WP6 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-6 · Approximate error</span><span class="wp-src">Lecture 03.1 · Example 3</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            Estimate \(f'(2)\) again with \(h = 0.15\), then find the approximate error \(E_a\).
+          </p>
+          <p class="approach"><b>Approach</b>
+            The word <em>approximate</em> error means no true value is allowed anywhere in this
+            calculation. Redo the same estimate with a refined step, then subtract: present minus
+            previous. Present = the one with the smaller \(h\), because that is the newer, better
+            iterate.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Rerun WP-3 with the halved step</b></span>
+              \(x = 2\), \(h = 0.15\), so \(x + h = 2.15\).
+              \[ f'(2) \approx \frac{f(2.15) - f(2)}{0.15} = \frac{20.510 - 19.028}{0.15} = \frac{1.482}{0.15} = 9.8800 \]</li>
+            <li><span class="sl">Step 2 · <b>Identify present and previous</b></span>
+              Present (h = 0.15) = 9.8800. Previous (h = 0.3) = 10.263.</li>
+            <li><span class="sl">Step 3 · <b>Subtract in the defined order</b></span>
+              \[ E_a = \text{Present} - \text{Previous} = 9.8800 - 10.263 = -0.38300 \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p>\(f'(2) \approx \mathbf{9.8800}\) at \(h = 0.15\), and \(E_a = \mathbf{-0.38300}\).</p>
+          </div>
+          <p class="recur">Notice \(|E_a| = 0.383\) while the true error was \(0.749\): the approximate error <em>underestimates</em> how wrong you are. It measures how much the answer moved, not how far it still has to go. That is the price of not knowing the truth.</p>
+        </div>
+      </div>
+
+      <!-- WP7 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-7 · Relative approximate error</span><span class="wp-src">Lecture 03.1 · Example 4</span></div>
+        <div class="wp-body">
+          <p class="ask">Find \(\epsilon_a\), and its absolute value, for the two estimates above.</p>
+          <p class="approach"><b>Approach</b>
+            Identical shape to WP-5, one denominator changed: divide by the <strong>present</strong>
+            approximation. Then take the absolute value, because every stopping rule in this course is
+            written with \(|\epsilon_a|\) — a negative tolerance would be meaningless.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Set up the ratio</b></span>
+              \[ \epsilon_a = \frac{\text{Approximate error}}{\text{Present approximation}} = \frac{-0.38300}{9.8800} \]</li>
+            <li><span class="sl">Step 2 · <b>Divide and scale</b></span>
+              \[ \epsilon_a = -0.038765 = -3.8765\% \]</li>
+            <li><span class="sl">Step 3 · <b>Take the magnitude for the stopping rule</b></span>
+              \[ |\epsilon_a| = 0.038765 = 3.8765\% \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p>\(\epsilon_a = \mathbf{-3.8765\%}\), \(|\epsilon_a| = \mathbf{3.8765\%}\).</p>
+          </div>
+          <p class="recur">The single most common slip on this problem is dividing by 10.263 (the previous value) instead of 9.8800. Read the definition off the formula sheet every time until it is automatic.</p>
+        </div>
+      </div>
+
+      <!-- WP8 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-8 · How many digits are correct?</span><span class="wp-src">Lecture 03.1 · Table of values</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            Given \(|\epsilon_a| = 3.8765\%\), at least how many significant digits of the answer are
+            correct?
+          </p>
+          <p class="approach"><b>Approach</b>
+            The lecture's table just prints \(m\); here is the algebra it came from. Put your
+            \(|\epsilon_a|\) into \(|\epsilon_a| \le 0.5\times10^{2-m}\%\), solve for \(m\) with logs,
+            and then <em>round down</em> — you may only claim digits the inequality actually supports.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Write the criterion as an inequality in m</b></span>
+              \[ 3.8765 \le 0.5 \times 10^{\,2-m} \]</li>
+            <li><span class="sl">Step 2 · <b>Isolate the power of ten</b></span>
+              \[ 10^{\,2-m} \ge \frac{3.8765}{0.5} = 7.753 \]</li>
+            <li><span class="sl">Step 3 · <b>Take log base 10</b></span>
+              \[ 2 - m \ge \log_{10}(7.753) = 0.8895 \;\Longrightarrow\; m \le 1.1105 \]</li>
+            <li><span class="sl">Step 4 · <b>Round DOWN to a whole digit</b></span>
+              \(m = 1\). Rounding up would claim accuracy the inequality never gave you.</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p><strong>m = 1</strong> — only the first significant digit is trustworthy, matching the lecture's table.</p>
+          </div>
+          <p class="recur">Reverse direction, asked just as often: "what tolerance for 3 correct digits?" → \(0.5\times10^{2-3} = 0.05\%\). Same formula, solved the easy way round.</p>
+        </div>
+      </div>
+
+      <!-- WP9 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-9 · Taylor series with given derivatives</span><span class="wp-src">Lecture 03.2 · Example 1</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            Find \(f(6)\) given \(f(4) = 125\), \(f'(4) = 74\), \(f''(4) = 30\), \(f'''(4) = 6\), and
+            all higher derivatives zero.
+          </p>
+          <p class="approach"><b>Approach</b>
+            Three-quarters of this problem is bookkeeping: decide \(x\) (where you know things) and
+            \(h\) (how far you must travel), <em>then</em> substitute. Students lose this one by
+            plugging 6 in as \(h\). The known point is always \(x\); the gap is always
+            \(h = \text{target} - x\).</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Write the general form</b></span>
+              \[ f(x+h) = f(x) + f'(x)h + \frac{f''(x)}{2!}h^2 + \frac{f'''(x)}{3!}h^3 + \cdots \]</li>
+            <li><span class="sl">Step 2 · <b>Identify x and h</b></span>
+              Everything is known at \(x = 4\), and the target is 6, so \(h = 6 - 4 = 2\).</li>
+            <li><span class="sl">Step 3 · <b>Truncate honestly</b></span>
+              All derivatives past the third are zero, so the series <em>terminates</em> — no
+              remainder, no approximation.</li>
+            <li><span class="sl">Step 4 · <b>Substitute, one term at a time</b></span>
+              \[ f(6) = 125 + 74(2) + \frac{30}{2!}(2)^2 + \frac{6}{3!}(2)^3 \]
+              \[ = 125 + 148 + \frac{30}{2}(4) + \frac{6}{6}(8) = 125 + 148 + 60 + 8 \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span><p>\(f(6) = \mathbf{341}\), exactly.</p></div>
+          <p class="recur">Why exact: zero fourth derivative means \(f\) is a cubic, and a Taylor series of a polynomial reproduces the polynomial. Any non-polynomial leaves the remainder of WP-11.</p>
+        </div>
+      </div>
+
+      <!-- WP10 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-10 · Deriving a Maclaurin series</span><span class="wp-src">Lecture 03.2 · Example 2</span></div>
+        <div class="wp-body">
+          <p class="ask">Derive the Maclaurin series for \(e^x\).</p>
+          <p class="approach"><b>Approach</b>
+            "Maclaurin" means "Taylor with \(x = 0\)" — that single substitution is the whole trick.
+            Build a short table of derivatives, evaluate every one at 0, drop them into the general
+            form, and rename \(h\) to \(x\) at the end because the expansion point is the origin.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Set the expansion point to zero</b></span>
+              \[ f(0+h) = f(0) + f'(0)h + \frac{f''(0)}{2!}h^2 + \frac{f'''(0)}{3!}h^3 + \cdots \]</li>
+            <li><span class="sl">Step 2 · <b>Differentiate repeatedly</b></span>
+              \(f(x) = e^x,\ f'(x) = e^x,\ f''(x) = e^x,\ \dots,\ f^{(n)}(x) = e^x\) — the property that
+              makes \(e^x\) the standard example.</li>
+            <li><span class="sl">Step 3 · <b>Evaluate every derivative at 0</b></span>
+              \(f^{(n)}(0) = e^{0} = 1\) for every \(n\). Every coefficient is \(1/n!\).</li>
+            <li><span class="sl">Step 4 · <b>Substitute and rename h as x</b></span>
+              \[ e^{x} = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p>\[ e^{x} = \sum_{k=0}^{\infty}\frac{x^{k}}{k!} \]</p>
+          </div>
+          <p class="recur">Run the identical four steps on \(\sin x\) and \(\cos x\). Their derivative tables cycle \(\sin, \cos, -\sin, -\cos\), so half the terms evaluate to zero at the origin — which is exactly why \(\sin\) keeps only odd powers and \(\cos\) only even ones.</p>
+        </div>
+      </div>
+
+      <!-- WP11 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-11 · How many terms are needed?</span><span class="wp-src">Lecture 03.2 · Example 3</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            How many terms of the Taylor series are required to approximate \(e^{1}\) with a true
+            error magnitude below \(10^{-6}\)?
+          </p>
+          <p class="approach"><b>Approach</b>
+            This is the flagship problem type of Lecture 03.2, and it always runs in the same four
+            moves: write \(R_n\), replace the unknown \(f^{(n+1)}(c)\) by its <em>maximum</em> on the
+            interval (you cannot locate \(c\), so you bound it), set that bound \(\le\) the tolerance,
+            and climb factorials until the inequality holds.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Write the remainder with the problem's numbers</b></span>
+              Expanding about \(x = 0\) to reach \(x = 1\) means \(h = 1\), \(f(x) = e^x\):
+              \[ R_n(0) = \frac{f^{(n+1)}(c)}{(n+1)!}(1)^{\,n+1} = \frac{e^{c}}{(n+1)!}, \qquad 0 \le c \le 1 \]</li>
+            <li><span class="sl">Step 2 · <b>Bound the unknown derivative</b></span>
+              \(e^{c}\) is increasing, so its largest value on \([0,1]\) is at \(c = 1\):
+              \(e^{c} \le e \approx 2.718 &lt; 3\). Hence \(|R_n| \le \dfrac{e}{(n+1)!}\).</li>
+            <li><span class="sl">Step 3 · <b>Impose the tolerance</b></span>
+              \[ \frac{e}{(n+1)!} \le 10^{-6} \;\Longrightarrow\; (n+1)! \ge e \times 10^{6} \approx 2.72\times10^{6} \]</li>
+            <li><span class="sl">Step 4 · <b>Climb the factorials</b></span>
+              \(9! = 362\,880\) — fails. \(10! = 3\,628\,800 \ge 2.72\times10^{6}\) — holds. So
+              \(n + 1 = 10\), giving \(n \ge 9\).</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p><strong>9 terms or more</strong> \((n \ge 9)\) guarantee a true error below \(10^{-6}\).</p>
+          </div>
+          <p class="recur">Two habits that save marks here: bound the derivative <em>before</em> touching the factorial, and round \(n\) <strong>up</strong> — the inequality must be satisfied, so a fractional \(n\) always goes to the next whole number.</p>
+        </div>
+      </div>
+
+      <!-- WP12 -->
+      <div class="wp">
+        <div class="wp-head"><span class="wp-id">WP-12 · Precision, accuracy and a data set</span><span class="wp-src">Lecture 01 + statistics recap</span></div>
+        <div class="wp-body">
+          <p class="ask">
+            A beam's deflection is measured five times: 5.02, 5.03, 5.02, 5.04, 5.03 mm. The true
+            deflection is 7.00 mm. Comment on the instrument's precision and accuracy.
+          </p>
+          <p class="approach"><b>Approach</b>
+            The two verdicts come from two different numbers, so compute both: the standard deviation
+            answers "precise?", and the distance from the mean to the truth answers "accurate?".
+            Never judge either by eye.</p>
+          <ol class="steps">
+            <li><span class="sl">Step 1 · <b>Mean</b></span>
+              \[ \bar{x} = \frac{5.02+5.03+5.02+5.04+5.03}{5} = \frac{25.14}{5} = 5.028\ \text{mm} \]</li>
+            <li><span class="sl">Step 2 · <b>Standard deviation (divide by n − 1)</b></span>
+              Deviations: \(-0.008,\ 0.002,\ -0.008,\ 0.012,\ 0.002\). Squares sum to \(2.8\times10^{-4}\).
+              \[ s = \sqrt{\frac{2.8\times10^{-4}}{4}} = 0.0084\ \text{mm} \]</li>
+            <li><span class="sl">Step 3 · <b>Relative spread</b></span>
+              \[ \text{c.v.} = \frac{0.0084}{5.028}\times100\% = 0.17\% \;\Rightarrow\; \text{highly precise} \]</li>
+            <li><span class="sl">Step 4 · <b>Distance from truth</b></span>
+              \[ |\%\ \text{error}| = \left|\frac{5.028-7.00}{7.00}\right|\times100\% = 28.2\% \;\Rightarrow\; \text{not accurate} \]</li>
+          </ol>
+          <div class="answer"><span class="lab">Answer</span>
+            <p><strong>Precise but not accurate.</strong> The scatter is tiny (random error is small),
+               but a 28% systematic offset says the instrument is mis-calibrated — fixable by
+               calibration, and no amount of extra readings will fix it on its own.</p>
+          </div>
+          <p class="recur">Change the inputs in the analyser back in section 00b to watch the verdict flip between all four target diagrams.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 04 NEXT ================= -->
+    <section id="next">
+      <div class="sec-head"><span class="sec-num">04</span><h2>Where all this is heading</h2></div>
+      <p class="sec-sub">
+        Nothing above is self-contained trivia. Each piece is load-bearing for a method later in the
+        syllabus — here is the map, so the early weeks feel like setup rather than busywork.
+      </p>
+
+      <div class="sheet">
+        <div class="card">
+          <h4>Root finding</h4>
+          <p>
+            Bisection and Newton-Raphson iterate toward \(f(x) = 0\) and stop on
+            \(|\epsilon_a| \le \epsilon_s\). Newton's formula
+            \(x_{i+1} = x_i - f(x_i)/f'(x_i)\) <em>is</em> the Taylor series truncated after the
+            linear term — solved for the root.
+          </p>
+        </div>
+        <div class="card">
+          <h4>Numerical differentiation</h4>
+          <p>
+            Forward, backward and central differences all come from Taylor expansions. The remainder
+            term tells you each one's order: forward is \(O(h)\), central is \(O(h^2)\) — which is why
+            central is the better formula for the same work.
+          </p>
+        </div>
+        <div class="card">
+          <h4>Numerical integration</h4>
+          <p>
+            Trapezoidal and Simpson's rules integrate a truncated Taylor/interpolating polynomial
+            instead of the real function. Their error formulas are remainder terms with a derivative
+            evaluated at an unknown \(c\) — the same move as 03.2b.
+          </p>
+        </div>
+        <div class="card">
+          <h4>ODEs</h4>
+          <p>
+            Euler's method is literally \(y_{i+1} = y_i + f(x_i, y_i)h\): the Taylor series cut after
+            two terms. Runge-Kutta methods keep more terms without computing higher derivatives.
+          </p>
+        </div>
+        <div class="card">
+          <h4>Linear systems</h4>
+          <p>
+            Gaussian elimination is where round-off bites hardest; pivoting exists purely to dodge
+            subtractive cancellation. Gauss-Seidel iterates and stops on the same \(|\epsilon_a|\) rule.
+          </p>
+        </div>
+        <div class="card">
+          <h4>Regression &amp; interpolation</h4>
+          <p>
+            Least squares minimizes a sum of squared errors — a different error norm from the
+            pointwise ones here, but still error bookkeeping, and still reported in significant figures.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SHEET ================= -->
+    <section id="sheet">
+      <div class="sec-head"><span class="sec-num">—</span><h2>One-page formula sheet</h2></div>
+      <p class="sec-sub">Everything from the three lectures, in the form you'd want on a cheat sheet.</p>
+
+      <div class="sheet">
+        <div class="card">
+          <h4>Forward difference</h4>
+          <div class="fx">\[ f'(x) \approx \frac{f(x+h)-f(x)}{h} \]</div>
+          <p>Truncation error \(O(h)\). Shrinking \(h\) helps only until round-off takes over.</p>
+        </div>
+        <div class="card">
+          <h4>True &amp; relative true error</h4>
+          <div class="fx">\[ E_t = \text{True}-\text{Approx}, \quad \epsilon_t = \frac{E_t}{\text{True}} \]</div>
+          <p>Multiply by 100 for percent. Sign carries meaning: negative means you over-estimated.</p>
+        </div>
+        <div class="card">
+          <h4>Approximate &amp; relative approx. error</h4>
+          <div class="fx">\[ E_a = \text{Now}-\text{Before}, \quad \epsilon_a = \frac{E_a}{\text{Now}} \]</div>
+          <p>The only one computable without the true answer.</p>
+        </div>
+        <div class="card">
+          <h4>Stopping rule for m digits</h4>
+          <div class="fx">\[ |\epsilon_a| \le 0.5\times10^{\,2-m}\ \% \]</div>
+          <p>m = 1 → 5% &middot; m = 2 → 0.5% &middot; m = 3 → 0.05%.</p>
+        </div>
+        <div class="card">
+          <h4>Taylor series</h4>
+          <div class="fx">\[ f(x+h)=\sum_{k=0}^{n}\frac{f^{(k)}(x)}{k!}h^{k}+R_n \]</div>
+          <p>Maclaurin is the same thing with \(x = 0\).</p>
+        </div>
+        <div class="card">
+          <h4>Lagrange remainder</h4>
+          <div class="fx">\[ R_n = \frac{f^{(n+1)}(c)}{(n+1)!}h^{\,n+1},\ \ c\in[x,x+h] \]</div>
+          <p>Bound \(f^{(n+1)}(c)\) by its max on the interval, then solve for \(n\).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= QUIZ ================= -->
+    <section id="quiz">
+      <div class="sec-head"><span class="sec-num">—</span><h2>Self-check</h2></div>
+      <p class="sec-sub">
+        Eight questions in the style the first exam asks them. Answer, then reveal — the explanation
+        matters more than the score.
+      </p>
+
+      <div class="panel">
+        <div class="panel-bar"><span>Quiz &middot; <span id="quiz-score">0 / 8 answered</span></span><span class="live">interactive</span></div>
+        <div class="panel-body" id="quiz-body"></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        Built from lectures 01 (Significant Figures), 03.1 (Measuring Errors) and 03.2 (Taylor Series
+        Revisited); WP-1 to WP-11 are the worked examples in those files. Sections 00a, 00b and 02
+        are bridging material, not lecture content — confirm details against your own slides when
+        lecture 02 arrives. WP-4 and WP-5 flag an arithmetic slip on the Lecture 03.1 slide; the
+        method there is sound.
+      </p>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- theme-aware colors for canvas ---------- */
+  function tok(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  /* =========================================================
+     01 — significant figure counter
+     ========================================================= */
+  var sfIn = document.getElementById("sf-in");
+  var sfPick = document.getElementById("sf-pick");
+  var sfCount = document.getElementById("sf-count");
+  var sfMap = document.getElementById("sf-map");
+  var sfTrace = document.getElementById("sf-trace");
+
+  function countSigFigs(raw) {
+    var s = String(raw).trim().replace(/^[+-]/, "");
+    var notes = [];
+    var mantissa = s, exponent = "";
+    var eSplit = s.split(/[eE]/);
+    if (eSplit.length === 2) {
+      mantissa = eSplit[0];
+      exponent = eSplit[1];
+      notes.push("R7 — scientific notation: the ×10^" + exponent + " part is never significant.");
+    }
+    if (!/^\d*\.?\d*$/.test(mantissa) || !/\d/.test(mantissa)) return null;
+
+    var hasDot = mantissa.indexOf(".") >= 0;
+    var digits = mantissa.replace(".", "").split("");
+    var flags = new Array(digits.length).fill(true);
+
+    // leading zeros never count (R3)
+    var firstNZ = digits.findIndex(function (d) { return d !== "0"; });
+    if (firstNZ === -1) { // all zeros
+      for (var z = 0; z < flags.length; z++) flags[z] = false;
+      if (hasDot) { flags[flags.length - 1] = true; }
+      notes.push("All digits zero — an edge case; report in scientific notation instead.");
+    } else {
+      for (var i = 0; i < firstNZ; i++) flags[i] = false;
+      if (firstNZ > 0) notes.push("R3 — " + firstNZ + " leading zero(s) dropped; they only place the decimal.");
+      var lastNZ = digits.length - 1;
+      while (lastNZ > firstNZ && digits[lastNZ] === "0") lastNZ--;
+      var trailing = digits.length - 1 - lastNZ;
+      if (trailing > 0) {
+        if (hasDot) {
+          notes.push("R4/R5 — " + trailing + " trailing zero(s) kept: the decimal point is shown.");
+        } else {
+          for (var j = lastNZ + 1; j < digits.length; j++) flags[j] = false;
+          notes.push("R6 — " + trailing + " trailing zero(s) dropped: whole number, no decimal shown.");
+        }
+      }
+      var interior = 0;
+      for (var k = firstNZ + 1; k < lastNZ; k++) if (digits[k] === "0") interior++;
+      if (interior > 0) notes.push("R2 — " + interior + " zero(s) sandwiched between non-zeros are significant.");
+      notes.push("R1 — every non-zero digit counts.");
+    }
+
+    var n = flags.filter(Boolean).length;
+    // rebuild display with decimal point in place
+    var html = "", di = 0;
+    for (var c = 0; c < mantissa.length; c++) {
+      var ch = mantissa[c];
+      if (ch === ".") { html += '<span class="insig" style="text-decoration:none">.</span>'; continue; }
+      html += '<span class="' + (flags[di] ? "sig" : "insig") + '">' + ch + "</span>";
+      di++;
+    }
+    if (exponent !== "") html += '<span class="insig">×10<sup>' + exponent + "</sup></span>";
+    return { n: n, html: html, notes: notes };
+  }
+
+  function updateSigFig() {
+    var res = countSigFigs(sfIn.value);
+    if (!res) {
+      sfCount.textContent = "—";
+      sfMap.innerHTML = '<span class="insig">?</span>';
+      sfTrace.textContent = "Not a plain number. Try 0.02503, 1000, or 1.00e3.";
+      return;
+    }
+    sfCount.textContent = res.n;
+    sfMap.innerHTML = res.html;
+    sfTrace.innerHTML = res.notes.map(function (t) { return "<span>" + t + "</span>"; }).join("");
+  }
+  sfIn.addEventListener("input", updateSigFig);
+  sfPick.addEventListener("change", function () { sfIn.value = sfPick.value; updateSigFig(); });
+  updateSigFig();
+
+  /* =========================================================
+     00b — measurement set analyser
+     ========================================================= */
+  var stData = document.getElementById("st-data");
+  var stTrue = document.getElementById("st-true");
+  var stStrip = document.getElementById("st-strip");
+
+  function updateStats() {
+    var xs = stData.value.split(/[,\s]+/)
+      .map(function (t) { return parseFloat(t); })
+      .filter(function (v) { return isFinite(v); });
+    var truth = parseFloat(stTrue.value);
+    var verdict = document.getElementById("st-verdict");
+
+    if (xs.length < 2) {
+      ["st-n", "st-mean", "st-sd", "st-cv", "st-se", "st-err"].forEach(function (id) {
+        document.getElementById(id).textContent = "—";
+      });
+      verdict.textContent = "Enter at least two readings, comma separated.";
+      stStrip.innerHTML = "";
+      return;
+    }
+
+    var n = xs.length;
+    var mean = xs.reduce(function (a, b) { return a + b; }, 0) / n;
+    var ss = xs.reduce(function (a, b) { return a + (b - mean) * (b - mean); }, 0);
+    var sd = Math.sqrt(ss / (n - 1));
+    var cv = Math.abs(mean) > 0 ? sd / Math.abs(mean) * 100 : NaN;
+    var se = sd / Math.sqrt(n);
+    var pct = isFinite(truth) && truth !== 0 ? Math.abs((mean - truth) / truth) * 100 : NaN;
+
+    document.getElementById("st-n").textContent = n;
+    document.getElementById("st-mean").textContent = mean.toPrecision(5);
+    document.getElementById("st-sd").textContent = sd ? sd.toPrecision(3) : "0";
+    document.getElementById("st-cv").textContent = isFinite(cv) ? cv.toPrecision(3) + "%" : "—";
+    document.getElementById("st-se").textContent = se ? se.toPrecision(3) : "0";
+    document.getElementById("st-err").textContent = isFinite(pct) ? pct.toPrecision(3) + "%" : "—";
+
+    var precise = isFinite(cv) && cv < 1;
+    var accurate = isFinite(pct) && pct < 1;
+    var words = precise
+      ? (accurate ? "Precise AND accurate — c.v. under 1% and the mean lands on the true value."
+                  : "Precise but NOT accurate — tight scatter around the wrong centre. Systematic error; calibrate.")
+      : (accurate ? "Accurate but NOT precise — the mean is right, individual readings are not. Random error; average more."
+                  : "Neither — scattered and off-centre. Both error types present.");
+    verdict.textContent = "Verdict: " + words;
+
+    // number-line strip: readings, mean, true value
+    var lo = Math.min.apply(null, xs), hi = Math.max.apply(null, xs);
+    if (isFinite(truth)) { lo = Math.min(lo, truth); hi = Math.max(hi, truth); }
+    var pad = (hi - lo) * 0.15 || 0.5;
+    lo -= pad; hi += pad;
+    var W = 100, mapX = function (v) { return (v - lo) / (hi - lo) * W; };
+
+    var marks = xs.map(function (v) {
+      return '<circle cx="' + mapX(v) + '" cy="30" r="1.1" fill="var(--cool)" fill-opacity="0.9"/>';
+    }).join("");
+    var meanMark =
+      '<line x1="' + mapX(mean) + '" y1="18" x2="' + mapX(mean) + '" y2="42" stroke="var(--cool)" stroke-width="0.7"/>' +
+      '<text x="' + mapX(mean) + '" y="14" fill="var(--cool)" font-size="4.5" text-anchor="middle" font-family="IBM Plex Mono, monospace">mean</text>';
+    var trueMark = isFinite(truth)
+      ? '<line x1="' + mapX(truth) + '" y1="18" x2="' + mapX(truth) + '" y2="42" stroke="var(--hot)" stroke-width="0.7"/>' +
+        '<text x="' + mapX(truth) + '" y="52" fill="var(--hot)" font-size="4.5" text-anchor="middle" font-family="IBM Plex Mono, monospace">true</text>'
+      : "";
+    stStrip.setAttribute("viewBox", "-6 0 " + (W + 12) + " 58");
+    stStrip.innerHTML =
+      '<line x1="0" y1="30" x2="' + W + '" y2="30" stroke="var(--rule)" stroke-width="0.5"/>' +
+      trueMark + meanMark + marks;
+  }
+  stData.addEventListener("input", updateStats);
+  stTrue.addEventListener("input", updateStats);
+  updateStats();
+
+  /* =========================================================
+     01b — precision / accuracy targets
+     ========================================================= */
+  var shots = {
+    "Precise, not accurate": [[-16, -18], [-12, -22], [-18, -13], [-13, -14], [-20, -19]],
+    "Accurate, not precise": [[2, -24], [-22, 6], [18, 14], [-6, 22], [10, -12]],
+    "Neither": [[24, 10], [-28, 22], [6, 30], [-14, -30], [30, -20]],
+    "Accurate and precise": [[2, 3], [-4, 1], [1, -4], [4, -2], [-2, -3]]
+  };
+  var targetsEl = document.getElementById("targets");
+  Object.keys(shots).forEach(function (label) {
+    var pts = shots[label];
+    var best = label === "Accurate and precise";
+    var svg =
+      '<svg viewBox="-60 -60 120 120" role="img" aria-label="' + label + '">' +
+      '<circle cx="0" cy="0" r="48" fill="var(--surface-sunk)" stroke="var(--rule)" stroke-width="1.5"/>' +
+      '<circle cx="0" cy="0" r="32" fill="none" stroke="var(--rule)" stroke-width="1.5"/>' +
+      '<circle cx="0" cy="0" r="16" fill="none" stroke="var(--rule)" stroke-width="1.5"/>' +
+      '<circle cx="0" cy="0" r="3.5" fill="var(--hot)"/>' +
+      pts.map(function (p) {
+        return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5" fill="' +
+          (best ? "var(--good)" : "var(--cool)") + '" fill-opacity="0.85"/>';
+      }).join("") +
+      "</svg>";
+    var card = document.createElement("div");
+    card.className = "target-card";
+    card.innerHTML = svg + '<span class="cap"' + (best ? ' style="color:var(--good)"' : "") + ">" + label + "</span>";
+    targetsEl.appendChild(card);
+  });
+
+  /* =========================================================
+     03.1 — forward difference explorer
+     ========================================================= */
+  var f = function (x) { return 7 * Math.exp(0.5 * x); };
+  var TRUE_D = 3.5 * Math.E;            // f'(2) = 3.5 e
+  var X0 = 2;
+
+  function fwd(h) { return (f(X0 + h) - f(X0)) / h; }
+
+  var hSlider = document.getElementById("h-slider");
+  var hPreset = document.getElementById("h-preset");
+  var hLabel = document.getElementById("h-label");
+  var outApprox = document.getElementById("fd-approx");
+  var outEt = document.getElementById("fd-et");
+  var outRet = document.getElementById("fd-ret");
+  var outRea = document.getElementById("fd-rea");
+  var outM = document.getElementById("fd-m");
+  var hplot = document.getElementById("hplot");
+
+  function fmt(v, d) {
+    if (!isFinite(v)) return "∞";
+    if (v !== 0 && (Math.abs(v) < 1e-3 || Math.abs(v) >= 1e5)) return v.toExponential(2);
+    return v.toFixed(d === undefined ? 4 : d);
+  }
+  function fmtH(h) {
+    if (h >= 0.001) return h.toPrecision(3).replace(/0+$/, "").replace(/\.$/, "");
+    return h.toExponential(1);
+  }
+
+  function currentH() { return Math.pow(10, parseFloat(hSlider.value)); }
+
+  function updateFD() {
+    var h = currentH();
+    var approx = fwd(h);
+    var prev = fwd(h * 2);                 // "previous iterate" = coarser step
+    var Et = TRUE_D - approx;
+    var ret = Math.abs(Et / TRUE_D) * 100;
+    var rea = Math.abs((approx - prev) / approx) * 100;
+    var m = rea > 0 ? Math.floor(2 - Math.log10(rea / 0.5)) : 16;
+    if (m < 0 || !isFinite(m)) m = 0;
+
+    hLabel.textContent = fmtH(h);
+    outApprox.textContent = fmt(approx, 5);
+    outEt.textContent = (Et >= 0 ? "" : "−") + fmt(Math.abs(Et), 5);
+    outRet.textContent = fmt(ret, 4) + "%";
+    outRea.textContent = fmt(rea, 4) + "%";
+    outM.textContent = m;
+    drawHPlot(h);
+  }
+
+  function drawHPlot(markH) {
+    var dpr = window.devicePixelRatio || 1;
+    var w = hplot.clientWidth || 600, hgt = 300;
+    hplot.width = w * dpr; hplot.height = hgt * dpr;
+    var g = hplot.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, hgt);
+
+    var padL = 56, padR = 16, padT = 14, padB = 34;
+    var W = w - padL - padR, H = hgt - padT - padB;
+    var ink = tok("--ink-faint"), rule = tok("--rule");
+
+    // domain: log10(h) from -16..0, log10(err) from -12..2
+    var xmin = -16, xmax = 0, ymin = -12, ymax = 2;
+    var X = function (lh) { return padL + (lh - xmin) / (xmax - xmin) * W; };
+    var Y = function (le) { return padT + (ymax - le) / (ymax - ymin) * H; };
+
+    g.strokeStyle = rule; g.lineWidth = 1; g.font = '10px "IBM Plex Mono", monospace';
+    g.fillStyle = ink; g.textAlign = "center"; g.textBaseline = "top";
+    for (var lx = xmin; lx <= xmax; lx += 4) {
+      g.beginPath(); g.moveTo(X(lx), padT); g.lineTo(X(lx), padT + H); g.stroke();
+      g.fillText("1e" + lx, X(lx), padT + H + 7);
+    }
+    g.textAlign = "right"; g.textBaseline = "middle";
+    for (var ly = ymin; ly <= ymax; ly += 2) {
+      g.beginPath(); g.moveTo(padL, Y(ly)); g.lineTo(padL + W, Y(ly)); g.stroke();
+      g.fillText("1e" + ly, padL - 7, Y(ly));
+    }
+    g.textAlign = "center"; g.textBaseline = "top";
+    g.fillText("step size  h", padL + W / 2, hgt - 12);
+    g.save();
+    g.translate(13, padT + H / 2); g.rotate(-Math.PI / 2);
+    g.fillText("| true error |", 0, 0);
+    g.restore();
+
+    // the error curve
+    g.strokeStyle = tok("--cool"); g.lineWidth = 2; g.beginPath();
+    var started = false;
+    for (var p = 0; p <= 320; p++) {
+      var lh = xmin + (xmax - xmin) * p / 320;
+      var hh = Math.pow(10, lh);
+      var err = Math.abs(TRUE_D - fwd(hh));
+      if (!isFinite(err) || err <= 0) continue;
+      var le = Math.log10(err);
+      if (le < ymin) le = ymin;
+      var px = X(lh), py = Y(le);
+      if (!started) { g.moveTo(px, py); started = true; } else g.lineTo(px, py);
+    }
+    g.stroke();
+
+    // marker at the current h
+    var errNow = Math.abs(TRUE_D - fwd(markH));
+    var leNow = Math.max(ymin, Math.log10(errNow));
+    var mx = X(Math.log10(markH)), my = Y(leNow);
+    g.strokeStyle = tok("--hot"); g.lineWidth = 1.5; g.setLineDash([3, 3]);
+    g.beginPath(); g.moveTo(mx, padT); g.lineTo(mx, padT + H); g.stroke();
+    g.setLineDash([]);
+    g.fillStyle = tok("--hot");
+    g.beginPath(); g.arc(mx, my, 5, 0, Math.PI * 2); g.fill();
+
+    // annotations
+    g.fillStyle = ink; g.font = '10px "IBM Plex Mono", monospace';
+    g.textAlign = "left";
+    g.fillText("round-off dominates", X(-15.4), Y(-1.2));
+    g.textAlign = "right";
+    g.fillText("truncation dominates", X(-0.4), Y(-5.4));
+  }
+
+  hSlider.addEventListener("input", updateFD);
+  hPreset.addEventListener("change", function () {
+    hSlider.value = Math.log10(parseFloat(hPreset.value));
+    updateFD();
+  });
+  window.addEventListener("resize", function () { drawHPlot(currentH()); drawTaylor(); });
+  updateFD();
+
+  /* =========================================================
+     03.1b — tolerance calculator
+     ========================================================= */
+  var mSlider = document.getElementById("m-slider");
+  function updateM() {
+    var m = parseInt(mSlider.value, 10);
+    var tolPct = 0.5 * Math.pow(10, 2 - m);
+    document.getElementById("m-label").textContent = m;
+    document.getElementById("m-tol").textContent =
+      (tolPct >= 0.0001 ? String(parseFloat(tolPct.toPrecision(3))) : tolPct.toExponential(1)) + "%";
+    var frac = tolPct / 100;
+    document.getElementById("m-frac").textContent = frac.toExponential(0).replace("e", "×10^").replace("+", "");
+    document.getElementById("m-words").textContent = m + (m === 1 ? " digit" : " digits") + " trustworthy";
+  }
+  mSlider.addEventListener("input", updateM);
+  updateM();
+
+  /* =========================================================
+     03.2 — Taylor explorer
+     ========================================================= */
+  var FN = {
+    exp: {
+      f: Math.exp,
+      d: function (k, a) { return Math.exp(a); },
+      range: [-3, 3], yr: [-2, 14], ok: function () { return true; }
+    },
+    sin: {
+      f: Math.sin,
+      d: function (k, a) { return Math.sin(a + k * Math.PI / 2); },
+      range: [-8, 8], yr: [-3, 3], ok: function () { return true; }
+    },
+    cos: {
+      f: Math.cos,
+      d: function (k, a) { return Math.cos(a + k * Math.PI / 2); },
+      range: [-8, 8], yr: [-3, 3], ok: function () { return true; }
+    },
+    ln: {
+      f: function (x) { return Math.log(1 + x); },
+      d: function (k, a) {
+        if (k === 0) return Math.log(1 + a);
+        var fact = 1;
+        for (var i = 1; i <= k - 1; i++) fact *= i;
+        return Math.pow(-1, k - 1) * fact / Math.pow(1 + a, k);
+      },
+      range: [-0.95, 4], yr: [-3, 3], ok: function (x) { return x > -1; }
+    },
+    geo: {
+      f: function (x) { return 1 / (1 - x); },
+      d: function (k, a) {
+        var fact = 1;
+        for (var i = 1; i <= k; i++) fact *= i;
+        return fact / Math.pow(1 - a, k + 1);
+      },
+      range: [-3, 2.4], yr: [-6, 6], ok: function (x) { return Math.abs(x - 1) > 1e-6; }
+    }
+  };
+
+  var tFn = document.getElementById("t-fn");
+  var tN = document.getElementById("t-n");
+  var tA = document.getElementById("t-a");
+  var tplot = document.getElementById("tplot");
+
+  function taylorAt(spec, a, n, x) {
+    var sum = 0, fact = 1;
+    for (var k = 0; k <= n; k++) {
+      if (k > 0) fact *= k;
+      var dk = spec.d(k, a);
+      if (!isFinite(dk)) return NaN;
+      sum += dk * Math.pow(x - a, k) / fact;
+    }
+    return sum;
+  }
+
+  function drawTaylor() {
+    var spec = FN[tFn.value];
+    var n = parseInt(tN.value, 10);
+    var a = parseFloat(tA.value);
+    document.getElementById("t-n-label").textContent = n;
+    document.getElementById("t-a-label").textContent = a.toFixed(1);
+
+    var dpr = window.devicePixelRatio || 1;
+    var w = tplot.clientWidth || 600, hgt = 330;
+    tplot.width = w * dpr; tplot.height = hgt * dpr;
+    var g = tplot.getContext("2d");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, hgt);
+
+    var padL = 44, padR = 16, padT = 14, padB = 30;
+    var W = w - padL - padR, H = hgt - padT - padB;
+    var x0 = spec.range[0], x1 = spec.range[1];
+    var y0 = spec.yr[0], y1 = spec.yr[1];
+    var X = function (x) { return padL + (x - x0) / (x1 - x0) * W; };
+    var Y = function (y) { return padT + (y1 - y) / (y1 - y0) * H; };
+
+    var ink = tok("--ink-faint"), rule = tok("--rule");
+    g.font = '10px "IBM Plex Mono", monospace';
+
+    // grid
+    g.strokeStyle = rule; g.lineWidth = 1;
+    var xstep = (x1 - x0) > 10 ? 4 : ((x1 - x0) > 5 ? 2 : 1);
+    g.fillStyle = ink; g.textAlign = "center"; g.textBaseline = "top";
+    for (var gx = Math.ceil(x0 / xstep) * xstep; gx <= x1; gx += xstep) {
+      g.beginPath(); g.moveTo(X(gx), padT); g.lineTo(X(gx), padT + H); g.stroke();
+      g.fillText(String(gx), X(gx), padT + H + 6);
+    }
+    var ystep = (y1 - y0) > 10 ? 4 : ((y1 - y0) > 6 ? 3 : 1);
+    g.textAlign = "right"; g.textBaseline = "middle";
+    for (var gy = Math.ceil(y0 / ystep) * ystep; gy <= y1; gy += ystep) {
+      g.beginPath(); g.moveTo(padL, Y(gy)); g.lineTo(padL + W, Y(gy)); g.stroke();
+      g.fillText(String(gy), padL - 6, Y(gy));
+    }
+    // axes
+    g.strokeStyle = ink; g.lineWidth = 1.2;
+    if (y0 < 0 && y1 > 0) { g.beginPath(); g.moveTo(padL, Y(0)); g.lineTo(padL + W, Y(0)); g.stroke(); }
+    if (x0 < 0 && x1 > 0) { g.beginPath(); g.moveTo(X(0), padT); g.lineTo(X(0), padT + H); g.stroke(); }
+
+    g.save();
+    g.beginPath(); g.rect(padL, padT, W, H); g.clip();
+
+    function plot(fn, color, width) {
+      g.strokeStyle = color; g.lineWidth = width; g.beginPath();
+      var pen = false;
+      for (var p = 0; p <= 700; p++) {
+        var x = x0 + (x1 - x0) * p / 700;
+        if (!spec.ok(x)) { pen = false; continue; }
+        var y = fn(x);
+        if (!isFinite(y) || y > y1 + 40 || y < y0 - 40) { pen = false; continue; }
+        var px = X(x), py = Y(y);
+        if (!pen) { g.moveTo(px, py); pen = true; } else g.lineTo(px, py);
+      }
+      g.stroke();
+    }
+
+    plot(spec.f, tok("--hot"), 2.4);
+    plot(function (x) { return taylorAt(spec, a, n, x); }, tok("--cool"), 2);
+    g.restore();
+
+    // expansion point tick
+    var fa = spec.f(a);
+    if (isFinite(fa) && fa >= y0 && fa <= y1 && a >= x0 && a <= x1) {
+      g.fillStyle = tok("--ink");
+      g.beginPath(); g.arc(X(a), Y(fa), 4, 0, Math.PI * 2); g.fill();
+      g.font = '10px "IBM Plex Mono", monospace';
+      g.textAlign = "center"; g.textBaseline = "bottom";
+      g.fillText("a = " + a.toFixed(1), X(a), Y(fa) - 8);
+    }
+  }
+
+  tFn.addEventListener("change", drawTaylor);
+  tN.addEventListener("input", drawTaylor);
+  tA.addEventListener("input", drawTaylor);
+  drawTaylor();
+
+  /* =========================================================
+     03.2b — factorial bound table
+     ========================================================= */
+  var rows = document.getElementById("fact-rows");
+  var fact = 1;
+  for (var n2 = 5; n2 <= 11; n2++) {
+    fact = 1;
+    for (var q = 1; q <= n2 + 1; q++) fact *= q;
+    var bound = Math.E / fact;
+    var pass = bound <= 1e-6;
+    var tr = document.createElement("tr");
+    if (n2 === 9) tr.className = "marked";
+    tr.innerHTML =
+      "<td>" + n2 + "</td>" +
+      "<td>" + fact.toLocaleString("en-US") + "</td>" +
+      "<td>" + bound.toExponential(2) + "</td>" +
+      '<td style="color:' + (pass ? "var(--good)" : "var(--hot)") + '">' + (pass ? "yes" : "no") + "</td>";
+    rows.appendChild(tr);
+  }
+
+  /* =========================================================
+     quiz
+     ========================================================= */
+  var QUESTIONS = [
+    {
+      q: "How many significant figures does 0.004070 have?",
+      opts: ["3", "4", "6", "7"],
+      a: 1,
+      why: "Leading zeros never count (R3), so 0.00 is out. 4, 0, 7 count — the middle zero is sandwiched (R2) — and the trailing zero counts because the decimal is shown (R4). Four."
+    },
+    {
+      q: "A scale reads 5.02 kg, 5.03 kg, 5.02 kg for an object that truly weighs 7.00 kg. The scale is:",
+      opts: ["Accurate but not precise", "Precise but not accurate", "Both", "Neither"],
+      a: 1,
+      why: "The readings repeat tightly — that is precision. They sit 2 kg from the truth — a systematic error, so not accurate. Bias is fixable by calibration; scatter is not."
+    },
+    {
+      q: "Which error measure can you compute during an iteration without knowing the answer?",
+      opts: ["True error E_t", "Relative true error ε_t", "Relative approximate error ε_a", "All of them"],
+      a: 2,
+      why: "E_t and ε_t both need the true value — if you had that you would not be iterating. ε_a compares the present approximation with the previous one, which is why every stopping rule is written in terms of it."
+    },
+    {
+      q: "Successive iterates give 2.4500 then 2.4571. What is |ε_a| as a percentage?",
+      opts: ["0.289%", "0.290%", "2.90%", "0.0029%"],
+      a: 0,
+      why: "E_a = 2.4571 − 2.4500 = 0.0071. Divide by the PRESENT value 2.4571, not the previous one: 0.0071 / 2.4571 = 0.00289 → 0.289%."
+    },
+    {
+      q: "You need 4 correct significant digits. The tolerance on |ε_a| is:",
+      opts: ["0.5%", "0.05%", "0.005%", "0.0005%"],
+      a: 2,
+      why: "|ε_a| ≤ 0.5 × 10^(2−m) % with m = 4 gives 0.5 × 10^(−2) = 0.005%. Each extra digit divides the tolerance by ten."
+    },
+    {
+      q: "Given f(1) = 2, f′(1) = 3, f″(1) = 4 and all higher derivatives zero, f(3) equals:",
+      opts: ["12", "16", "18", "20"],
+      a: 1,
+      why: "h = 3 − 1 = 2. f(3) = 2 + 3(2) + (4/2!)(2)² = 2 + 6 + 8 = 16. With all higher derivatives zero the series terminates, so this is exact — f is a quadratic."
+    },
+    {
+      q: "In the remainder R_n = f⁽ⁿ⁺¹⁾(c)·hⁿ⁺¹/(n+1)!, the point c is:",
+      opts: ["Always the midpoint of the interval", "An unknown point somewhere in [x, x+h]", "The expansion point x", "Always x + h"],
+      a: 1,
+      why: "The theorem guarantees such a c exists but never locates it. That is why you bound the remainder — replace f⁽ⁿ⁺¹⁾(c) with its maximum magnitude on the interval — instead of computing it."
+    },
+    {
+      q: "Using the forward difference for f′(x), you shrink h from 10⁻³ to 10⁻¹⁵ and the answer gets much worse. Why?",
+      opts: [
+        "Truncation error grows for small h",
+        "The formula is only valid for h > 0.1",
+        "Subtractive cancellation: f(x+h) and f(x) agree to nearly all digits, so round-off dominates",
+        "The derivative does not exist there"
+      ],
+      a: 2,
+      why: "Truncation error keeps shrinking — it is round-off that explodes. Subtracting two nearly identical values destroys the leading significant digits, and dividing by a tiny h amplifies the surviving junk. Hence the V-shaped error curve and an optimal h."
+    }
+  ];
+
+  var quizBody = document.getElementById("quiz-body");
+  var answered = 0;
+  QUESTIONS.forEach(function (item, qi) {
+    var wrap = document.createElement("div");
+    wrap.className = "q";
+    var opts = item.opts.map(function (text, oi) {
+      var id = "q" + qi + "o" + oi;
+      return '<label class="opt" for="' + id + '"><input type="radio" id="' + id + '" name="q' + qi + '" value="' + oi + '"><span>' + text + "</span></label>";
+    }).join("");
+    wrap.innerHTML =
+      '<p class="stem"><span class="qn">Q' + (qi + 1) + "</span>" + item.q + "</p>" +
+      '<div class="opts">' + opts + "</div>" +
+      '<div class="why" id="why' + qi + '" hidden></div>';
+    quizBody.appendChild(wrap);
+
+    wrap.addEventListener("change", function (ev) {
+      if (ev.target.name !== "q" + qi) return;
+      var picked = parseInt(ev.target.value, 10);
+      var labels = wrap.querySelectorAll(".opt");
+      var fresh = !wrap.dataset.done;
+      labels.forEach(function (l, li) {
+        l.classList.remove("right", "wrong");
+        if (li === item.a) l.classList.add("right");
+        else if (li === picked) l.classList.add("wrong");
+      });
+      var why = document.getElementById("why" + qi);
+      why.innerHTML = (picked === item.a ? "<strong>Correct. </strong>" : "<strong>Not quite. </strong>") + item.why;
+      why.hidden = false;
+      if (fresh) { wrap.dataset.done = "1"; answered++; }
+      document.getElementById("quiz-score").textContent = answered + " / " + QUESTIONS.length + " answered";
+    });
+  });
+
+  /* =========================================================
+     nav highlighting + theme redraw
+     ========================================================= */
+  var links = Array.prototype.slice.call(document.querySelectorAll("nav.rail a"));
+  var secs = links.map(function (l) { return document.querySelector(l.getAttribute("href")); });
+  var spy = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      var i = secs.indexOf(e.target);
+      links.forEach(function (l, li) { l.classList.toggle("here", li === i); });
+    });
+  }, { rootMargin: "-10% 0px -70% 0px" });
+  secs.forEach(function (s) { if (s) spy.observe(s); });
+
+  function repaint() { drawHPlot(currentH()); drawTaylor(); }
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", repaint);
+  }
+  new MutationObserver(repaint).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  document.fonts && document.fonts.ready && document.fonts.ready.then(repaint);
+})();
+</script>

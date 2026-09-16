@@ -1,0 +1,1653 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selection in Present Economy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global', scale: 1.0 },
+    options: { renderActions: { addMenu: [] } }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --ground:   #EEF2F1;
+    --grid:     #DAE3E1;
+    --surface:  #FFFFFF;
+    --surface-2:#E7EDEB;
+    --ink:      #111C1B;
+    --ink-mut:  #566663;
+    --ink-soft: #7C8C89;
+    --rule:     #CFDAD8;
+    --rule-hard:#A8B8B5;
+    --accent:   #A8401C;
+    --accent-bg:#F6E7E0;
+    --teal:     #0D6A66;
+    --teal-bg:  #DDEDEB;
+    --shadow:   0 1px 2px rgba(17,28,27,.06), 0 8px 24px -16px rgba(17,28,27,.35);
+
+    --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --f-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+    --measure: 68ch;
+    --wide: 1120px;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #0C1413;
+      --grid:     #15201F;
+      --surface:  #131E1D;
+      --surface-2:#1B2827;
+      --ink:      #E4EDEB;
+      --ink-mut:  #A0B2AF;
+      --ink-soft: #7A8D8A;
+      --rule:     #263534;
+      --rule-hard:#3B504E;
+      --accent:   #E4794A;
+      --accent-bg:#2A1913;
+      --teal:     #54BDB3;
+      --teal-bg:  #102827;
+      --shadow:   0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:   #0C1413;
+    --grid:     #15201F;
+    --surface:  #131E1D;
+    --surface-2:#1B2827;
+    --ink:      #E4EDEB;
+    --ink-mut:  #A0B2AF;
+    --ink-soft: #7A8D8A;
+    --rule:     #263534;
+    --rule-hard:#3B504E;
+    --accent:   #E4794A;
+    --accent-bg:#2A1913;
+    --teal:     #54BDB3;
+    --teal-bg:  #102827;
+    --shadow:   0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background-color: var(--ground);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 30px 30px;
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: var(--wide);
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 0 72px;
+  }
+
+  .col { max-width: var(--measure); }
+
+  a { color: var(--teal); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--f-display); text-wrap: balance; margin: 0; }
+
+  /* ---------- masthead ---------- */
+  .mast {
+    padding-block: 56px 40px;
+    border-bottom: 2px solid var(--rule-hard);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .eyebrow {
+    font-family: var(--f-mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .mast h1 {
+    font-size: clamp(2.3rem, 6.5vw, 3.6rem);
+    font-weight: 700;
+    letter-spacing: -.022em;
+    line-height: 1.02;
+  }
+  .mast h1 em { font-style: normal; color: var(--accent); }
+  .standfirst { font-size: 1.12rem; color: var(--ink-mut); max-width: 62ch; margin: 0; }
+  .tags { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tag {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .04em;
+    padding: 5px 11px;
+    border: 1px solid var(--rule-hard);
+    background: var(--surface);
+    color: var(--ink-mut);
+  }
+  .tag b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- nav ---------- */
+  nav.toc {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin-inline: -20px;
+    padding-inline: 20px;
+    background: var(--ground);
+    border-bottom: 1px solid var(--rule);
+    overflow-x: auto;
+  }
+  @supports (background: color-mix(in srgb, red 50%, transparent)) {
+    nav.toc {
+      background: color-mix(in srgb, var(--ground) 92%, transparent);
+      backdrop-filter: blur(8px);
+    }
+  }
+  nav.toc ol { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; min-width: max-content; }
+  nav.toc a {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .03em;
+    text-decoration: none;
+    color: var(--ink-mut);
+    padding: 12px 10px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+  nav.toc a:hover { color: var(--ink); border-bottom-color: var(--rule-hard); }
+
+  /* ---------- sections ---------- */
+  section { padding-block: 54px 0; }
+  .sec-head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; }
+  .sec-head h2 {
+    font-size: clamp(1.5rem, 3.6vw, 2.05rem);
+    font-weight: 600;
+    letter-spacing: -.015em;
+    line-height: 1.12;
+  }
+  h3 { font-size: 1.16rem; font-weight: 600; letter-spacing: -.005em; margin: 34px 0 10px; }
+  h4 { font-size: 1rem; font-weight: 600; }
+  p { margin: 0 0 1.05em; }
+  .col > p:last-child { margin-bottom: 0; }
+  strong { font-weight: 600; }
+  .lede { font-size: 1.07rem; }
+
+  code, .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+  p code, li code, td code, dd code {
+    font-size: .88em;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+
+  ul.plain { margin: 0 0 1.05em; padding-left: 1.15em; }
+  ul.plain li { margin-bottom: .5em; }
+
+  /* ---------- rule cards ---------- */
+  .rules { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); margin-block: 26px; }
+  .rule-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--teal);
+    padding: 22px 22px 24px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .rule-card .eyebrow { color: var(--teal); }
+  .rule-card h3 { margin: 0; font-size: 1.16rem; }
+  .rule-card p { margin: 0; font-size: .95rem; color: var(--ink-mut); }
+  .rule-card p.k { color: var(--ink); }
+
+  /* ---------- callouts ---------- */
+  .note, .key {
+    padding: 16px 18px;
+    margin-block: 24px;
+    font-size: .97rem;
+    max-width: var(--measure);
+  }
+  .note { border-left: 3px solid var(--accent); background: var(--accent-bg); }
+  .key  { border-left: 3px solid var(--teal);   background: var(--teal-bg); }
+  .note .eyebrow { color: var(--accent); margin-bottom: 6px; }
+  .key .eyebrow  { color: var(--teal);   margin-bottom: 6px; }
+  .note p:last-child, .key p:last-child { margin-bottom: 0; }
+
+  /* ---------- math ---------- */
+  .math-block { margin-block: 22px; padding: 4px 0; overflow-x: auto; max-width: 100%; }
+  mjx-container[display="true"] { margin: .6em 0 !important; }
+
+  /* ---------- calc blocks ---------- */
+  .calc {
+    font-family: var(--f-mono);
+    font-size: 12.5px;
+    line-height: 1.85;
+    font-variant-numeric: tabular-nums;
+    background: var(--surface-2);
+    border-left: 2px solid var(--rule-hard);
+    padding: 12px 15px;
+    margin: 0 0 14px;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--ink);
+  }
+  .calc b { color: var(--teal); font-weight: 600; }
+  .calc i { color: var(--accent); font-style: normal; font-weight: 600; }
+  .calc s { color: var(--ink-soft); }
+
+  /* ---------- figures ---------- */
+  figure { margin: 32px 0; max-width: 880px; }
+  figcaption {
+    font-family: var(--f-mono);
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    max-width: 70ch;
+  }
+  .panel { background: var(--surface); border: 1px solid var(--rule); box-shadow: var(--shadow); }
+  .panel-head {
+    display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+    gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--rule); background: var(--surface-2);
+  }
+  .panel-head h4 { font-size: .95rem; letter-spacing: -.005em; }
+  .panel-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+  /* ---------- controls ---------- */
+  .controls { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .ctrl { display: flex; flex-direction: column; gap: 7px; }
+  .ctrl label {
+    font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft); display: flex; justify-content: space-between; gap: 10px; align-items: baseline;
+  }
+  .ctrl label output {
+    font-size: 15px; letter-spacing: 0; text-transform: none;
+    color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums;
+  }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 22px; background: transparent; margin: 0; cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track { height: 3px; background: var(--rule-hard); border-radius: 2px; }
+  input[type="range"]::-moz-range-track { height: 3px; background: var(--rule-hard); border-radius: 2px; }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 17px; height: 17px; margin-top: -7px;
+    background: var(--accent); border: 2px solid var(--surface); border-radius: 50%;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 15px; height: 15px; background: var(--accent); border: 2px solid var(--surface); border-radius: 50%;
+  }
+  .reset, .seg button {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    background: none; border: 1px solid var(--rule-hard); color: var(--ink-mut);
+    padding: 6px 11px; cursor: pointer;
+  }
+  .reset:hover, .seg button:hover { color: var(--ink); border-color: var(--ink-mut); }
+  .seg { display: flex; flex-wrap: wrap; gap: 8px; }
+  .seg button[aria-pressed="true"] {
+    background: var(--teal); border-color: var(--teal); color: var(--surface);
+  }
+  :root[data-theme="dark"] .seg button[aria-pressed="true"],
+  .seg button[aria-pressed="true"] { color: #FFF; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .seg button[aria-pressed="true"] { color: #0C1413; }
+  }
+  :root[data-theme="dark"] .seg button[aria-pressed="true"] { color: #0C1413; }
+
+  /* ---------- bars ---------- */
+  .bars { display: flex; flex-direction: column; gap: 14px; }
+  .bar-row { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; }
+  .bar-row .bl { font-family: var(--f-mono); font-size: 12px; letter-spacing: .04em; color: var(--ink-mut); text-align: right; }
+  .bar-track { position: relative; height: 34px; background: var(--surface-2); }
+  .bar-fill { position: absolute; inset: 0 auto 0 0; background: var(--rule-hard); transition: width .18s ease; }
+  .bar-row.win .bar-fill { background: var(--teal); }
+  .bar-row.lose .bar-fill { background: var(--accent); }
+  .bar-val {
+    position: absolute; inset: 0 10px 0 auto; display: flex; align-items: center;
+    font-family: var(--f-mono); font-size: 13px; font-weight: 500;
+    font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+
+  .verdict {
+    font-family: var(--f-mono); font-size: 13.5px; line-height: 1.55;
+    padding: 13px 16px; border: 1px dashed var(--rule-hard); background: var(--surface-2); margin: 0;
+  }
+  .verdict b { color: var(--teal); font-weight: 600; }
+  .verdict i { font-style: normal; color: var(--accent); font-weight: 600; }
+
+  /* ---------- readouts ---------- */
+  .readout { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); background: var(--rule); border: 1px solid var(--rule); }
+  .ro { background: var(--surface); padding: 13px 15px; display: flex; flex-direction: column; gap: 3px; }
+  .ro span { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .ro strong { font-family: var(--f-mono); font-size: 1.12rem; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .ro.hi strong { color: var(--teal); }
+  .ro.warn strong { color: var(--accent); }
+
+  svg.chart { display: block; width: 100%; height: auto; max-width: 100%; }
+
+  /* ---------- tables ---------- */
+  .tw { overflow-x: auto; margin-block: 26px; border: 1px solid var(--rule); background: var(--surface); max-width: 880px; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; min-width: 440px; }
+  caption {
+    text-align: left; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-soft); padding: 13px 16px 11px;
+    border-bottom: 1px solid var(--rule); background: var(--surface-2);
+  }
+  th, td { padding: 11px 16px; text-align: left; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; color: var(--ink-soft); }
+  td.n, th.n { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; font-size: .92rem; }
+  tbody tr:last-child td { border-bottom: none; }
+  tr.total td { border-top: 2px solid var(--rule-hard); font-weight: 600; background: var(--surface-2); }
+  td.win { color: var(--teal); font-weight: 600; }
+  .strike { color: var(--ink-soft); text-decoration: line-through; }
+
+  /* ---------- glossary ---------- */
+  .gloss { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-block: 26px; max-width: 880px; }
+  .gterm { background: var(--surface); padding: 16px 18px; display: grid; gap: 4px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .gterm { grid-template-columns: 210px 1fr; gap: 4px 22px; } }
+  .gterm dt {
+    font-family: var(--f-display); font-weight: 600; font-size: .98rem;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .gterm dt small {
+    font-family: var(--f-mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+    font-weight: 500;
+  }
+  .gterm dt small.rel { color: var(--teal); }
+  .gterm dt small.irr { color: var(--accent); }
+  .gterm dd { margin: 0; font-size: .95rem; color: var(--ink-mut); }
+  .gterm dd em { font-style: normal; color: var(--ink); font-weight: 600; }
+
+  /* ---------- procedure ---------- */
+  ol.steps { list-style: none; counter-reset: s; margin: 26px 0 0; padding: 0; max-width: 880px; }
+  ol.steps li {
+    counter-increment: s;
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    grid-template-areas: "num head" ". body";
+    column-gap: 14px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  ol.steps li:first-child { border-top: 1px solid var(--rule); }
+  ol.steps li::before {
+    content: counter(s, decimal-leading-zero);
+    grid-area: num;
+    font-family: var(--f-mono); font-size: 13px; font-weight: 600; color: var(--accent); padding-top: 3px;
+  }
+  ol.steps b {
+    grid-area: head;
+    font-family: var(--f-display); font-size: 1rem; font-weight: 600;
+  }
+  ol.steps p { grid-area: body; margin: 3px 0 0; font-size: .95rem; color: var(--ink-mut); }
+  @media (max-width: 560px) {
+    ol.steps li { grid-template-areas: "num head" "body body"; }
+    ol.steps p { margin-top: 7px; }
+  }
+
+  /* ---------- problem set ---------- */
+  .pset { margin-top: 26px; }
+  .pcard {
+    border-top: 1px solid var(--rule);
+    padding-block: 30px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .pcard:last-child { border-bottom: 1px solid var(--rule); }
+  @media (min-width: 880px) { .pcard { grid-template-columns: 200px 1fr; gap: 30px; } }
+  .prail { display: flex; flex-direction: column; gap: 9px; align-items: flex-start; }
+  .pno {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .pcard h3 { margin: 0; font-size: 1.1rem; line-height: 1.25; }
+  .badge {
+    font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em;
+    border: 1px solid var(--teal); color: var(--teal);
+    padding: 3px 8px; white-space: nowrap;
+  }
+  .pbody { min-width: 0; }
+  .pbody > p { margin: 0 0 12px; font-size: .97rem; max-width: 64ch; }
+  .pbody > p:last-child { margin-bottom: 0; }
+  .plabel {
+    font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-soft); margin: 18px 0 7px;
+  }
+  .plabel:first-child { margin-top: 0; }
+  .pans {
+    border-left: 3px solid var(--teal); background: var(--teal-bg);
+    padding: 11px 15px; font-size: .96rem; margin: 0 0 12px; max-width: 64ch;
+  }
+  .pans b { color: var(--teal); font-weight: 600; }
+  .pwarn {
+    border-left: 3px solid var(--accent); background: var(--accent-bg);
+    padding: 11px 15px; font-size: .93rem; margin: 0; max-width: 64ch;
+  }
+  .pwarn .eyebrow { color: var(--accent); margin-bottom: 5px; }
+  .pwarn p { margin: 0; }
+
+  /* ---------- answer key ---------- */
+  .answers { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); margin-top: 26px; max-width: 880px; }
+  .ans { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--teal); padding: 20px 22px 22px; }
+  .ans h3 { margin: 0 0 14px; font-size: 1.05rem; }
+  .ans dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 9px 14px; align-items: baseline; }
+  .ans dt { font-size: .93rem; color: var(--ink-mut); }
+  .ans dd {
+    margin: 0; font-family: var(--f-mono); font-size: .95rem; font-weight: 600;
+    font-variant-numeric: tabular-nums; text-align: right; color: var(--teal);
+  }
+  .ans .sum { margin: 15px 0 0; padding-top: 14px; border-top: 1px solid var(--rule); font-size: .95rem; }
+
+  footer {
+    margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--rule);
+    font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft);
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+  }
+
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .bar-row { grid-template-columns: 72px 1fr; }
+    .ans dl { grid-template-columns: 1fr; gap: 3px 0; }
+    .ans dd { text-align: left; }
+    .ans dt { margin-top: 6px; }
+  }
+
+  html { scroll-behavior: smooth; }
+  section { scroll-margin-top: 56px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="mast">
+    <p class="eyebrow">Engineering Economy &middot; DLSU Industrial Engineering</p>
+    <h1>Selection in the <em>Present Economy</em></h1>
+    <p class="standfirst">No interest rates, no discounting &mdash; just the discipline of comparing two things that are not yet comparable. Foundations from scratch, the method stated as three rules, then all thirteen problems in the set worked with the approach shown before the arithmetic.</p>
+    <div class="tags">
+      <span class="tag">Assignment 1 &mdash; <b>Problems 5 &amp; 6</b></span>
+      <span class="tag"><b>13 problems</b> worked</span>
+      <span class="tag"><b>7 patterns</b> to recognize</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Sections">
+    <ol>
+      <li><a href="#what">Foundations</a></li>
+      <li><a href="#vocab">Cost vocabulary</a></li>
+      <li><a href="#math">The arithmetic</a></li>
+      <li><a href="#rules">Three rules</a></li>
+      <li><a href="#patterns">Seven patterns</a></li>
+      <li><a href="#p5">P5 &middot; Bricks</a></li>
+      <li><a href="#p6">P6 &middot; Crew</a></li>
+      <li><a href="#everything">All 13 worked</a></li>
+      <li><a href="#procedure">Procedure</a></li>
+      <li><a href="#mistakes">Mistakes</a></li>
+      <li><a href="#reference">Formulas</a></li>
+      <li><a href="#answers">Answer key</a></li>
+    </ol>
+  </nav>
+
+  <!-- ============ FOUNDATIONS ============ -->
+  <section id="what">
+    <div class="sec-head col">
+      <p class="eyebrow">Start here</p>
+      <h2>Money now and money later are the same money</h2>
+    </div>
+    <div class="col">
+      <p class="lede">Engineering economy splits into two halves. Knowing which half you are in tells you which tools are allowed.</p>
+      <p><strong>Present economy</strong> is the half you are in now. Alternatives differ over a short horizon, so the time value of money is ignored. No interest rates, no discounting, no present-worth factors. A peso today and a peso six months from now are the same peso.</p>
+      <p><strong>Time-value economy</strong> is the other half, later in the course. Alternatives span years, so interest, compounding, present worth, annual worth and rate of return all enter.</p>
+      <p>The dividing line in practice: if the study period is short enough that interest would not change the ranking, you are in present economy. Every problem in your set runs over months or days.</p>
+
+      <div class="note">
+        <p class="eyebrow">Two things you will <em>not</em> need</p>
+        <p><strong>No compound interest.</strong> If you reach for \(P = F(1+i)^{-n}\) anywhere in this set, you have misread the problem.</p>
+        <p><strong>No statistics.</strong> There is no probability, no distribution, no expected value, no regression anywhere in these thirteen problems. Every number given is treated as certain. If you are worried about half-remembered statistics, you can set that worry down &mdash; what this topic actually requires is covered in the two sections below.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VOCABULARY ============ -->
+  <section id="vocab">
+    <div class="sec-head col">
+      <p class="eyebrow">Preliminaries &middot; 1 of 2</p>
+      <h2>The cost vocabulary the problems assume you have</h2>
+    </div>
+    <div class="col">
+      <p>These terms come from cost accounting, and the problem set uses them without defining them. The tag on each says whether that kind of cost normally enters a present-economy decision.</p>
+    </div>
+
+    <dl class="gloss">
+      <div class="gterm">
+        <dt>Fixed cost<small class="rel">Depends</small></dt>
+        <dd>Does not change with output volume &mdash; rent, supervisor salaries, depreciation, insurance. <em>Fixed does not mean irrelevant.</em> It is irrelevant only when it is the same under every alternative. In make-or-buy it usually continues after you stop making, which is the whole trap.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Variable cost<small class="rel">Usually relevant</small></dt>
+        <dd>Moves in proportion to output &mdash; direct materials, piece-rate labor, power. In Problem 6 the day-wage is variable with respect to man-days worked.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Direct cost<small class="rel">Usually relevant</small></dt>
+        <dd>Traceable to one unit of product without guesswork. Direct material and direct labor.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Indirect cost / overhead<small class="rel">Depends</small></dt>
+        <dd>Shared across products, allocated rather than traced &mdash; factory power, maintenance, supervision. Splits into <em>variable overhead</em> (rises with output) and <em>fixed overhead</em> (does not). Problem 2 gives you both, separately, on purpose.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Sunk cost<small class="irr">Never relevant</small></dt>
+        <dd>Already spent and unrecoverable. It cannot be changed by any choice you make now, so it never belongs in a comparison. Money already poured into a design, a study, or a half-finished job.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Opportunity cost<small class="rel">Often relevant</small></dt>
+        <dd>The value of the best alternative you give up. It never appears in an accounting ledger but it is a real cost. In Problem 13 the paint you <em>fail</em> to produce with slower media is an opportunity cost.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Avoidable / unavoidable cost<small class="rel">The make-or-buy key</small></dt>
+        <dd>Avoidable costs disappear if you drop the activity; unavoidable ones continue. Only avoidable costs belong in the &ldquo;make&rdquo; column of a make-or-buy comparison &mdash; and the unavoidable ones must be added to the &ldquo;buy&rdquo; column, because you pay them either way.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Differential (incremental) cost<small class="rel">The decider</small></dt>
+        <dd>The difference in total cost between two alternatives. <em>This is the only number that ever decides anything.</em> Everything else in this vocabulary exists to help you work out which costs are differential.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Marginal cost<small class="rel">Relevant</small></dt>
+        <dd>The cost of producing one more unit. In a short-run decision it is normally the variable cost per unit, since fixed cost does not move.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Contribution margin<small class="rel">Relevant</small></dt>
+        <dd>Selling price minus variable cost, per unit. What each unit sold <em>contributes</em> toward covering fixed cost and then producing profit. Problem 4 hands you ₱ 8 per unit already computed &mdash; do not subtract variable cost from it again.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Liquidated damages<small class="rel">Relevant</small></dt>
+        <dd>A penalty per day of late delivery, agreed in the contract in advance so neither side has to prove actual losses in court. A real, differential cost. Problem 6 turns entirely on it.</dd>
+      </div>
+      <div class="gterm">
+        <dt>Economic advantage<small class="rel">The answer</small></dt>
+        <dd>The amount by which the chosen alternative beats the rejected one. Always report it <em>with units and direction</em> &mdash; &ldquo;cheaper by ₱ 56,250 per month&rdquo;, never a bare number.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- ============ MATH ============ -->
+  <section id="math">
+    <div class="sec-head col">
+      <p class="eyebrow">Preliminaries &middot; 2 of 2</p>
+      <h2>The five pieces of arithmetic you actually use</h2>
+    </div>
+    <div class="col">
+
+      <h3>1. Unit analysis &mdash; the error-catcher</h3>
+      <p>Carry the units through every multiplication and cancel them. If the result does not come out in pesos, the setup is wrong. This single habit catches most mistakes in the set before you ever look at the number.</p>
+      <div class="calc">₱ 100/<b>ton-km</b> &times; 900 <b>km</b> &times; 75 <b>tons</b>  =  ₱ 6,750,000
+      └── ton and km both cancel, ₱ survives  <b>✓</b>
+
+₱ 25,000/<b>ton</b> ÷ 4 <b>months</b>  =  ₱ 6,250/<b>ton-month</b>
+      └── a rate, not a price — now comparable  <b>✓</b></div>
+      <p>Watch for rates with compound or scaled units. Problem 11 prices shipping at <code>$1 per kg per 100 km</code>, so a 2,500 km trip is <code>25</code> units of &ldquo;100 km&rdquo;, not 2,500. Getting that wrong is a factor-of-100 error.</p>
+
+      <h3>2. Rate normalization &mdash; making things comparable</h3>
+      <p>When two alternatives last different lengths of time, produce different amounts, or cover different quantities, divide to get a rate. Then and only then can you compare.</p>
+      <div class="math-block">
+        \[ \text{cost per month} = \frac{\text{cost}}{\text{life in months}} \qquad
+           \text{cost per liter} = \frac{\text{cost}}{\text{liters produced}} \]
+      </div>
+
+      <h3>3. Least common multiple &mdash; the other way to do the same thing</h3>
+      <p>Instead of dividing to a rate, scale both alternatives up to a shared horizon: the LCM of their lives. For lives of 4 and 6 months, \(\operatorname{lcm}(4,6)=12\); for 2 and 3 months, \(\operatorname{lcm}(2,3)=6\). Both methods give identical rankings. Use whichever your instructor showed.</p>
+
+      <h3>4. Weighted sums &mdash; bills of materials and machine hours</h3>
+      <p>Extend each line (quantity &times; unit cost), then total. Nearly half the problem set is this and nothing more. The difficulty is never the sum &mdash; it is the unit conversions hidden in the rows.</p>
+      <div class="calc">nails: 100 <b>g</b> at ₱ 300/<b>kg</b>  →  0.1 kg &times; 300  =  ₱ 30
+milling: 8 <b>min</b> at ₱ 400/<b>hr</b>  →  (8/60) hr &times; 400  =  ₱ 53.33</div>
+
+      <h3>5. Ratio comparison &mdash; the thirty-second sanity check</h3>
+      <p>For two options where one costs more but delivers more, compare the two ratios directly. If the benefit ratio beats the cost ratio, the pricier option wins &mdash; before you compute a single peso.</p>
+      <div class="math-block">
+        \[ \frac{p_B}{p_A} \;<\; \frac{L_B}{L_A} \;\;\Longrightarrow\;\; \text{choose } B \]
+      </div>
+      <p>This is a check on your arithmetic, not a substitute for it. Show the full working, then verify with the ratio.</p>
+
+      <div class="key">
+        <p class="eyebrow">The decision rule, once and for all</p>
+        <p>Choose the alternative with the <strong>lowest total relevant cost</strong> &mdash; but only when every alternative produces the same sellable output. When output differs and that output earns a profit, choose the <strong>highest total relevant profit</strong> instead. Problem 13 is in the set specifically to make you notice the difference.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RULES ============ -->
+  <section id="rules">
+    <div class="sec-head col">
+      <p class="eyebrow">The whole method</p>
+      <h2>Three rules govern every problem in the set</h2>
+    </div>
+
+    <div class="rules">
+      <div class="rule-card">
+        <p class="eyebrow">Rule 1</p>
+        <h3>Only differences matter</h3>
+        <p class="k">Any cost or revenue identical across all alternatives is irrelevant. It cancels. Including it wastes time; excluding it never changes the answer.</p>
+        <p>This is why Problem 5 hands you &ldquo;130 tons per day of clinker&rdquo; and you never use it. Same kiln, same output, same revenue either way.</p>
+        <p>The flip side: a cost that <em>does</em> differ belongs in the comparison even if it feels unrelated &mdash; a fuel penalty, a contractual fine, a start-up cost after a shutdown.</p>
+      </div>
+      <div class="rule-card">
+        <p class="eyebrow">Rule 2</p>
+        <h3>Compare on a common basis</h3>
+        <p class="k">Two numbers measuring different things cannot be compared. Put the alternatives on the same footing first.</p>
+        <p><strong>Common time</strong> &mdash; different lives. Convert to cost per month, or scale both to the LCM.</p>
+        <p><strong>Common output</strong> &mdash; different production. Convert to cost per liter, per ton, per unit.</p>
+        <p><strong>Common quantity</strong> &mdash; a fixed stated requirement. Total cost of meeting exactly that requirement, each way.</p>
+      </div>
+      <div class="rule-card">
+        <p class="eyebrow">Rule 3</p>
+        <h3>Minimize cost only when output is equal</h3>
+        <p class="k">Cost minimization is a shortcut that is valid only when both alternatives deliver the same sellable output.</p>
+        <p>When one option produces more, and that extra output sells at a profit, the cheaper-per-unit option can still be the wrong choice. Switch the basis from cost to profit.</p>
+        <p>Problem 13 is exactly this: the ceramic media costs more per liter and is still worth ₱ 351,000 more over six months.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PATTERNS ============ -->
+  <section id="patterns">
+    <div class="sec-head col">
+      <p class="eyebrow">Recognition</p>
+      <h2>Seven patterns cover the entire set</h2>
+    </div>
+    <div class="col">
+      <p>Every problem you will be asked is one of these shapes. Identifying the shape tells you the basis to use before you compute anything &mdash; which is step four of the procedure and the step students most often skip.</p>
+    </div>
+
+    <div class="tw">
+      <table>
+        <caption>Pattern taxonomy</caption>
+        <thead>
+          <tr><th>Pattern</th><th>Tell</th><th>Basis to use</th><th class="n">Problems</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>A &mdash; Fixed requirement</strong></td><td>A total quantity is stated, or a per-unit comparison is asked</td><td>Total cost for that quantity</td><td class="n">1, 10, 11</td></tr>
+          <tr><td><strong>B &mdash; Avoidable cost</strong></td><td>Make-or-buy, shut down, drop a line</td><td>Relevant cost only; unavoidable costs charged to both</td><td class="n">2, 4</td></tr>
+          <tr><td><strong>C &mdash; Weighted resource use</strong></td><td>Hours &times; machine rates, kg &times; material rates</td><td>Cost-weighted sum per unit</td><td class="n">3, 9, 12</td></tr>
+          <tr><td><strong>D &mdash; Incremental</strong></td><td>Sell now or process further</td><td>&Delta;revenue vs &Delta;cost only</td><td class="n">8</td></tr>
+          <tr><td><strong>E &mdash; Unequal lives</strong></td><td>Items wear out and are replaced at different intervals</td><td>Cost per month, or LCM of lives</td><td class="n">5, 13</td></tr>
+          <tr><td><strong>F &mdash; Optimization</strong></td><td>A known cost curve, ratio, or optimum is given</td><td>Percentage off the minimum + geometry</td><td class="n">7</td></tr>
+          <tr><td><strong>G &mdash; Schedule</strong></td><td>Men, days, deadlines, penalties</td><td>Man-days conserved; compare total cost incl. penalties</td><td class="n">6</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ PROBLEM 5 ============ -->
+  <section id="p5">
+    <div class="sec-head col">
+      <p class="eyebrow">Assignment problem 5 &middot; Pattern E &middot; ME Board Oct 1987</p>
+      <h2>A higher price tag that is actually cheaper</h2>
+    </div>
+
+    <div class="col">
+      <p class="lede">A cement kiln holds about <strong>45 tons</strong> of magnesite chrome brick in its burning zone, replaced periodically as the lining wears out.</p>
+
+      <div class="tw">
+        <table>
+          <caption>Given</caption>
+          <thead><tr><th>Item</th><th class="n">Local brick</th><th class="n">Imported brick</th></tr></thead>
+          <tbody>
+            <tr><td>Price</td><td class="n">₱ 25,000 / ton</td><td class="n">₱ 30,000 / ton</td></tr>
+            <tr><td>Service life</td><td class="n">4 months</td><td class="n">6 months</td></tr>
+            <tr><td>Brick in burning zone</td><td class="n">45 tons</td><td class="n">45 tons</td></tr>
+            <tr><td>Kiln capacity</td><td class="n strike">130 t/day</td><td class="n strike">130 t/day</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-family:var(--f-mono);font-size:12px;color:var(--ink-soft);margin-top:-14px;">Struck row = identical across alternatives, therefore irrelevant (Rule 1).</p>
+
+      <h3>The trap</h3>
+      <p>The naive reading is &ldquo;₱ 25,000 is less than ₱ 30,000, so buy local.&rdquo; The problem is built to punish exactly this.</p>
+      <p>The price tag is what it costs to <em>acquire</em> the brick. But what the kiln consumes is <strong>brick-months of lining</strong>. Local gives four months of service for the money; imported gives six. Those are different amounts of service, so the prices are not comparable numbers.</p>
+
+      <div class="math-block">
+        \[ \text{Equivalent cost} \;=\; \frac{\text{price}}{\text{life}} \qquad\Longrightarrow\qquad
+        \underbrace{\frac{25{,}000}{4} = 6{,}250}_{\text{local, ₱/ton-month}}
+        \;>\;
+        \underbrace{\frac{30{,}000}{6} = 5{,}000}_{\text{imported, ₱/ton-month}} \]
+      </div>
+
+      <p>Now both numbers measure the same thing, and imported wins. Multiply by the 45 tons the kiln holds:</p>
+
+      <div class="math-block">
+        \[ \text{Local} = \frac{45 \times 25{,}000}{4} = \frac{1{,}125{,}000}{4} = ₱\,281{,}250\ \text{per month} \]
+        \[ \text{Imported} = \frac{45 \times 30{,}000}{6} = \frac{1{,}350{,}000}{6} = ₱\,225{,}000\ \text{per month} \]
+        \[ \Delta = 281{,}250 - 225{,}000 = \boxed{₱\,56{,}250\ \text{per month}} \]
+      </div>
+
+      <div class="key">
+        <p class="eyebrow">The one-line sanity check</p>
+        <p>Imported costs <strong>20&percnt; more</strong> \(\left(\tfrac{30{,}000}{25{,}000} = 1.20\right)\) but lasts <strong>50&percnt; longer</strong> \(\left(\tfrac{6}{4} = 1.50\right)\). Since \(1.50 > 1.20\), imported wins before you compute a single peso.</p>
+      </div>
+    </div>
+
+    <figure>
+      <div class="panel">
+        <div class="panel-head">
+          <h4>Where the crossover sits</h4>
+          <button class="reset" id="brickReset" type="button">Reset to problem</button>
+        </div>
+        <div class="panel-body">
+          <div class="controls">
+            <div class="ctrl">
+              <label for="impPrice">Imported price <output id="impPriceOut">₱ 30,000/t</output></label>
+              <input type="range" id="impPrice" min="20000" max="50000" step="500" value="30000">
+            </div>
+            <div class="ctrl">
+              <label for="impLife">Imported life <output id="impLifeOut">6 months</output></label>
+              <input type="range" id="impLife" min="2" max="12" step="1" value="6">
+            </div>
+          </div>
+
+          <div class="bars">
+            <div class="bar-row" id="rowLocal">
+              <span class="bl">LOCAL</span>
+              <div class="bar-track"><div class="bar-fill" id="barLocal"></div><span class="bar-val" id="valLocal"></span></div>
+            </div>
+            <div class="bar-row" id="rowImp">
+              <span class="bl">IMPORTED</span>
+              <div class="bar-track"><div class="bar-fill" id="barImp"></div><span class="bar-val" id="valImp"></span></div>
+            </div>
+          </div>
+
+          <div class="readout">
+            <div class="ro"><span>Local ₱/ton-month</span><strong id="roLocalUnit"></strong></div>
+            <div class="ro"><span>Imported ₱/ton-month</span><strong id="roImpUnit"></strong></div>
+            <div class="ro hi" id="roDeltaBox"><span>Monthly advantage</span><strong id="roDelta"></strong></div>
+          </div>
+
+          <p class="verdict" id="brickVerdict"></p>
+        </div>
+      </div>
+      <figcaption>Local brick is held at the problem&rsquo;s ₱ 25,000 / 4 months. Drag the imported price up far enough, or its life down far enough, and the ratio test flips. Break-even life at ₱ 30,000 is 4.8 months &mdash; anything shorter and local wins.</figcaption>
+    </figure>
+
+    <div class="col">
+      <h3>Why the answer is a rate and not a total</h3>
+      <p>The problem never says how long the kiln will run, so there is no fixed total to compute. The honest answer is a rate. If your instructor prefers a total, use the LCM:</p>
+      <div class="math-block">
+        \[ \operatorname{lcm}(4,6) = 12\ \text{months} \]
+        \[ \text{Local: } \tfrac{12}{4} = 3 \times 1{,}125{,}000 = ₱\,3{,}375{,}000 \qquad
+           \text{Imported: } \tfrac{12}{6} = 2 \times 1{,}350{,}000 = ₱\,2{,}700{,}000 \]
+        \[ \Delta_{12\text{mo}} = ₱\,675{,}000 \;\div\; 12 = ₱\,56{,}250\ \text{per month} \;\checkmark \]
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROBLEM 6 ============ -->
+  <section id="p6">
+    <div class="sec-head col">
+      <p class="eyebrow">Assignment problem 6 &middot; Pattern G &middot; ME Board Apr 1988</p>
+      <h2>Ten more men, still late, still worth it</h2>
+    </div>
+
+    <div class="col">
+      <p class="lede">An installation job in its completion stage takes <strong>40 days</strong> of 8-hour work with <strong>40 men</strong>. The contract expires in <strong>30 days</strong>. The contractor adds 10 men. Overtime is forbidden. Liquidated damages run ₱ 2,000 per day of delay; men are paid ₱ 80 per day.</p>
+
+      <h3>Idea 1 &mdash; Work content is conserved</h3>
+      <p>A job holds a fixed amount of work, measured in man-days. Changing the crew changes how fast it gets done, not how much there is.</p>
+      <div class="math-block">
+        \[ W = \text{men} \times \text{days} = 40 \times 40 = 1{,}600\ \text{man-days} \qquad (= 12{,}800\ \text{man-hours}) \]
+        \[ t_{50} = \frac{W}{\text{men}} = \frac{1{,}600}{50} = 32\ \text{days} \;>\; 30\ \text{days} \]
+      </div>
+      <p>So &ldquo;will he finish on time?&rdquo; is answered <strong>no</strong> &mdash; two days late. This assumes perfect proportionality: 50 men work exactly 25&percnt; faster than 40. Real sites do not behave that way, but board problems always assume it does, and so should you.</p>
+      <p>The 8-hour day is a quieter distractor. It defines what a day means, but since both options work the same eight hours and overtime is forbidden, it cancels. Work in man-days and never convert.</p>
+
+      <h3>Idea 2 &mdash; Labor cost does not move, and that is the punchline</h3>
+      <div class="math-block">
+        \[ C_{\text{labor}} = (\text{men} \times \text{days}) \times w = W \times w = 1{,}600 \times 80 = ₱\,128{,}000 \]
+      </div>
+      <p>Identical for both crews &mdash; not a coincidence, just algebra. Work content is locked at 1,600 man-days and the wage is per man-day, so the product cannot change. By Rule 1, labor cost is therefore <em>irrelevant to the decision</em>: you could solve the whole problem from penalties alone and still get ₱ 16,000.</p>
+
+      <div class="note">
+        <p class="eyebrow">Where this breaks</p>
+        <p>The invariance holds <em>only</em> because men are paid per day worked. On a flat monthly salary, or with overtime at a premium, labor cost would differ between options and would have to be compared. It is a property of this wage structure, not a general law.</p>
+      </div>
+
+      <h3>Idea 3 &mdash; Liquidated damages are the differential cost</h3>
+      <div class="math-block">
+        \[ D = \max(0,\; t - 30) \times 2{,}000 \]
+        \[ D_{40} = (40-30)\times 2{,}000 = ₱\,20{,}000 \qquad D_{50} = (32-30)\times 2{,}000 = ₱\,4{,}000 \]
+      </div>
+
+      <div class="tw">
+        <table>
+          <caption>Total cost comparison</caption>
+          <thead><tr><th>Cost component</th><th class="n">40 men</th><th class="n">50 men</th></tr></thead>
+          <tbody>
+            <tr><td>Duration</td><td class="n">40 days</td><td class="n">32 days</td></tr>
+            <tr><td>Days late (vs 30)</td><td class="n">10</td><td class="n">2</td></tr>
+            <tr><td>Labor &mdash; 1,600 man-days &times; ₱ 80</td><td class="n">128,000</td><td class="n">128,000</td></tr>
+            <tr><td>Liquidated damages</td><td class="n">20,000</td><td class="n">4,000</td></tr>
+            <tr class="total"><td>Total cost</td><td class="n">₱ 148,000</td><td class="n win">₱ 132,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="key">
+        <p class="eyebrow">Two questions, two different answers</p>
+        <p><strong>Will he finish on time?</strong> No &mdash; 32 days against a 30-day contract.<br>
+        <strong>Does adding men save money?</strong> Yes &mdash; ₱ 16,000.</p>
+        <p>Students assume these must match: if the deadline still slips, surely the extra men were pointless. Wrong. The ten men do not erase the penalty, but they cut it from ten days to two, and cost nothing extra to do it. <strong>A partial improvement can be economically correct even when it fails to achieve the original goal.</strong></p>
+      </div>
+    </div>
+
+    <figure>
+      <div class="panel">
+        <div class="panel-head">
+          <h4>Total cost against crew size</h4>
+          <button class="reset" id="crewReset" type="button">Reset to 50 men</button>
+        </div>
+        <div class="panel-body">
+          <div class="controls">
+            <div class="ctrl">
+              <label for="crew">Crew size <output id="crewOut">50 men</output></label>
+              <input type="range" id="crew" min="32" max="70" step="1" value="50">
+            </div>
+          </div>
+          <div class="readout">
+            <div class="ro"><span>Duration</span><strong id="roDays"></strong></div>
+            <div class="ro warn" id="roLateBox"><span>Days late</span><strong id="roLate"></strong></div>
+            <div class="ro"><span>Labor cost</span><strong id="roLabor"></strong></div>
+            <div class="ro"><span>Damages</span><strong id="roDmg"></strong></div>
+            <div class="ro hi"><span>Total cost</span><strong id="roTotal"></strong></div>
+          </div>
+          <svg class="chart" id="crewChart" viewBox="0 0 760 340" role="img" aria-labelledby="chartTitle">
+            <title id="chartTitle">Total cost and labor cost plotted against crew size from 32 to 70 men</title>
+          </svg>
+          <p class="verdict" id="crewVerdict"></p>
+        </div>
+      </div>
+      <figcaption>Labor cost is the flat line &mdash; it never moves, because 1,600 man-days &times; ₱ 80 is fixed. Total cost falls only until penalties hit zero at 54 men (1,600 &divide; 30 = 53.33), then flattens onto the labor line. Past that point more men buy nothing. Fractional days shown exact.</figcaption>
+    </figure>
+
+    <div class="col">
+      <p>The chart shows something the problem does not ask but worth knowing: 54 men would finish in 29.6 days with zero damages, total ₱ 128,000 &mdash; cheaper still. It is not on the menu, since the contractor committed to exactly ten extra. But if your model says more men keep getting cheaper forever, your model is wrong.</p>
+    </div>
+  </section>
+
+  <!-- ============ ALL PROBLEMS ============ -->
+  <section id="everything">
+    <div class="sec-head col">
+      <p class="eyebrow">The full set</p>
+      <h2>Every problem, approach first</h2>
+    </div>
+    <div class="col">
+      <p>Each one below leads with <strong>how to see it</strong> &mdash; the pattern, and the decision about basis that follows from it &mdash; before any arithmetic. That ordering is the skill. The numbers are the easy part.</p>
+      <p>Where your answer key contains a typo or stops short, it is flagged. Those flags are worth reading: two of them change the answer.</p>
+    </div>
+
+    <div class="pset">
+
+      <!-- P1 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 1</p>
+          <h3>Door frames &mdash; nearby shop or far-off forest</h3>
+          <span class="badge">Pattern A &middot; Fixed requirement</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>The requirement is pinned at 75 tons, so the basis is total cost for exactly 75 tons. Two cost components: material, and transport. Transport is quoted per <em>ton-km</em>, so it needs three factors multiplied, not two &mdash; that is where people lose it.</p>
+          <p class="plabel">Working</p>
+          <div class="calc">Nearby shop
+  material   ₱ 2,000/ton &times; 75 tons             = $ 150,000
+  transport  negligible                           =         0
+                                            TOTAL = <b>$ 150,000</b>
+
+Far-off forest
+  material   $ 1,250/ton &times; 75 tons             = $  93,750
+  transport  $ 100/ton-km &times; 900 km &times; 75 tons  = $6,750,000
+                                            TOTAL = <i>$6,843,750</i></div>
+          <p class="pans"><b>Nearby shop</b>, cheaper by <b>$ 6,693,750</b>.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>The forest material is 37.5&percnt; cheaper &mdash; that is the bait. But transport at $100/ton-km over 900 km works out to $90,000 per ton, forty-five times the material price itself. Always compute transport before forming an opinion. Also: your answer key prints <code>$96,750</code> for 1,250&times;75; the correct figure is <code>$93,750</code>. Its total of $6,843,750 already uses the right number, so only the middle line is wrong.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P2 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 2</p>
+          <h3>Make or buy part No. 010</h3>
+          <span class="badge">Pattern B &middot; Avoidable cost</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>Make-or-buy always turns on one question: <em>which costs actually disappear if we stop making it?</em> Direct material, direct labor and variable overhead go away. Fixed overhead &mdash; the factory, the supervisors, the depreciation &mdash; does not. So it must be charged to the &ldquo;buy&rdquo; column too.</p>
+          <p class="plabel">Working &mdash; short way (differential)</p>
+          <div class="calc">avoidable cost to make = DM 4 + DL 2 + var. OH 2 = ₱  8/unit
+purchase price                                   = ₱ 13/unit
+                              advantage of making = ₱  5/unit
+                        &times; 50,000 units             = <b>₱ 250,000</b></div>
+          <p class="plabel">Working &mdash; long way (total cost, what the key shows)</p>
+          <div class="calc">Make   50,000 &times; (4+2+2+4)                = ₱ 600,000
+Buy    50,000 &times; 13          = ₱ 650,000
+       + unavoidable fixed OH  = ₱ 200,000   = <i>₱ 850,000</i></div>
+          <p class="pans"><b>Make the part</b>, favorable by <b>₱ 250,000</b> per year.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>The Extra Problems file prints <code>Total Unit Cost Php 15</code>, but 4 + 2 + 2 + 4 = <strong>12</strong>. Use 12; the answer key does. And never compare ₱ 12 against ₱ 13 and conclude &ldquo;buy is only ₱ 1 worse&rdquo; &mdash; the ₱ 4 of fixed overhead does not leave when the work does, so buying actually costs ₱ 17 per unit all-in.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P3 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 3</p>
+          <h3>Jet engine casting &mdash; aluminum or steel</h3>
+          <span class="badge">Pattern C &middot; Weighted resource</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>Per-unit comparison with a downstream cost attached. Casting cost is $/kg &times; kg, machining is given flat, and then a fuel penalty is charged on <em>excess</em> weight. Excess means relative to the lighter option, so the lighter one carries zero penalty by definition.</p>
+          <p class="plabel">Working</p>
+          <div class="calc">                    Aluminum              Steel
+casting    $80 &times; 1.20 = $  96   $35 &times; 1.35 = $ 47.25
+machining                 $ 150                  $170.00
+weight penalty                0   (1.35-1.20) &times; 1,300 = $195.00
+                    ───────────   ──────────────────────
+TOTAL / unit           <b>$ 246.00</b>              <i>$ 412.25</i></div>
+          <p class="pans"><b>Aluminum</b>, advantage <b>$ 166.25 per unit</b>.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>The penalty is charged on the <strong>difference</strong> of 0.15 kg, not on steel&rsquo;s full 1.35 kg. Charging the full weight gives $1,755 and a wildly wrong total. Note also that steel&rsquo;s raw casting cost is half of aluminum&rsquo;s &mdash; the penalty is the only thing that flips the decision, which is the point of including it.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P4 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 4</p>
+          <h3>Pampanga Corp &mdash; close the plant or keep going</h3>
+          <span class="badge">Pattern B &middot; Avoidable cost</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>Both alternatives lose money. That is not a reason to reject either &mdash; it means the decision is about which loss is smaller. Contribution margin is already net of variable cost, so it goes straight against fixed overhead. Shutting down does not zero the overhead; it reduces it, and adds start-up costs on the way back.</p>
+          <p class="plabel">Working</p>
+          <div class="calc">Stay open (6 months)
+  contribution  4,000 units/mo &times; 6 mo &times; ₱ 8  = ₱  192,000
+  less fixed overhead                          = (₱ 320,000)
+                                    NET RESULT = <b>(₱ 128,000)</b>
+
+Shut down (6 months)
+  contribution                                 = ₱        0
+  less reduced overhead                        = (₱ 225,000)
+  less restart / protection costs              = (₱  31,000)
+                                    NET RESULT = <i>(₱ 256,000)</i></div>
+          <p class="pans"><b>Stay open.</b> The loss is <b>₱ 128,000 smaller</b> than shutting down &mdash; the lesser evil.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>The phrase &ldquo;will definitely result to a loss&rdquo; is written to push you toward shutting down. Ignore the framing and compare the two numbers. And do not subtract variable cost from the ₱ 8 &mdash; contribution margin already has it removed.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P7 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 7</p>
+          <h3>Refinery storage tanks &mdash; optimum proportions</h3>
+          <span class="badge">Pattern F &middot; Optimization</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>Two independent sub-problems that share no arithmetic. <strong>Cost:</strong> you are told the current design sits at 111&percnt; of the minimum, so the minimum is the current cost <em>divided</em> by 1.11. <strong>Geometry:</strong> hold the volume constant and impose \(H = 4D\), then solve for \(D\). Do them separately; do not try to link them.</p>
+          <p class="plabel">Working &mdash; volume held constant</p>
+          <div class="calc">original   D = 5.2 m, H = 7 m    (H/D = 1.35 ✓)
+V = πD²H/4 = π(5.2)²(7)/4 = <b>148.66 m³</b> per tank
+
+impose H = 4D:
+V = π D²(4D)/4 = π D³
+  D³ = 148.66 / π = 47.32
+  <b>D = 3.61 m</b>   →   <b>H = 4D = 14.46 m</b></div>
+          <p class="plabel">Working &mdash; cost</p>
+          <div class="calc">current cost is 111% of minimum
+  minimum = 9,000,000 / 1.11 = <b>$ 8,108,108</b>
+  savings = 9,000,000 - 8,108,108 = <b>$ 891,892</b></div>
+          <p class="pans">Optimum tank: <b>D &asymp; 3.61 m</b>, <b>H &asymp; 14.46 m</b>. Expected saving <b>&asymp; $ 891,892</b>.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>&ldquo;111&percnt; of the minimum cost&rdquo; means current = 1.11 &times; minimum, so you <strong>divide</strong> by 1.11. Multiplying by 0.89 instead gives $8,010,000 &mdash; wrong by about $98,000. This exact slip is the most common error on the problem.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P8 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 8</p>
+          <h3>Suarez Corp &mdash; sell now or process further</h3>
+          <span class="badge">Pattern D &middot; Incremental</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>The ₱ 30 manufacturing cost is incurred whichever way you go &mdash; it is a common cost, and by Rule 1 it cancels. Strip it out and the decision reduces to one comparison: what does the extra processing <em>add</em> to revenue, versus what it <em>adds</em> to cost?</p>
+          <p class="plabel">Working</p>
+          <div class="calc">Δ revenue   ₱ 55 - ₱ 45  = + ₱ 10 / unit
+Δ cost      additional     = - ₱ 15 / unit
+                       NET = <i>- ₱  5 / unit</i>
+            &times; 30,000 units = <i>- ₱ 150,000 / year</i>
+
+check by full margins (₱ 30 included both sides):
+  sell now       45 - 30       = ₱ 15 / unit
+  process more   55 - 30 - 15  = ₱ 10 / unit   ✓ same ₱ 5 gap</div>
+          <p class="pans"><b>Sell at the partially processed stage.</b> Advantage <b>₱ 150,000 per year</b>.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>The ₱ 55 selling price is designed to look like the better option. Further processing pays only when the price increase exceeds the added cost &mdash; here it falls ₱ 5 short. Note that both routes are profitable; you are choosing the <em>more</em> profitable one, not avoiding a loss.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P9 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 9</p>
+          <h3>Tapered fastening pin &mdash; Design A or B</h3>
+          <span class="badge">Pattern C &middot; Weighted resource</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>Everything except lathe and grinder time is stated to be identical, so by Rule 1 only those two lines enter. Multiply hours by each machine&rsquo;s own rate and sum. Do not compare total hours &mdash; the two machines cost different amounts per hour.</p>
+          <p class="plabel">Working</p>
+          <div class="calc">per 1,000 units          Design A          Design B
+lathe    @ $200/hr   16.0 h = $3,200    7.0 h = $1,400
+grinder  @ $150/hr    4.5 h = $  675   12.0 h = $1,800
+                     ──────────────    ──────────────
+TOTAL                     <i>$ 3,875</i>         <b>$ 3,200</b>
+(total hours)               20.5 h           19.0 h</div>
+          <p class="pans"><b>Design B</b>, advantage <b>$ 675 per 1,000 units</b> &mdash; and since 1,000 units are required per year, $ 675 per year.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>What B really does is shift work off the expensive lathe onto the cheaper grinder. Even if B had used <em>more</em> total hours, it could still win. Cost-weighted hours decide, never raw hours.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P10 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 10</p>
+          <h3>Dining tables &mdash; wooden top or granite</h3>
+          <span class="badge">Pattern A &middot; Bill of materials</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>A straight bill-of-materials extension: quantity &times; unit cost on every row, then total. No traps in the logic at all &mdash; the entire difficulty is unit conversion hidden in two of the rows.</p>
+          <p class="plabel">Working</p>
+          <div class="calc">WOODEN TOP                                  GRANITE TOP
+wood    0.10 m³ &times; 12,000 = 1,200      0.15 m³ &times; 12,000 = 1,800
+top     1 &times; 3,000        = 3,000      1.62 m² &times; 800    = 1,296
+bushes  4 &times; 10           =    40      4 &times; 25           =   100
+nails   0.100 kg &times; 300   =    30      0.050 kg &times; 300   =    15
+labour  15 h &times; 50        =   750      8 h &times; 50         =   400
+                          ───────                        ───────
+TOTAL                     <i>₱ 5,020</i>                      <b>₱ 3,611</b></div>
+          <p class="pans"><b>Granite top</b>, cheaper by <b>₱ 1,409</b> per table.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>Nails are given in <strong>grams</strong> and priced per <strong>kilogram</strong> &mdash; convert or you are off by 1,000&times;. Granite needs <em>more</em> wood (0.15 vs 0.10 m³) to carry the extra weight and pricier bushes, so it loses three rows and still wins &mdash; on the table top itself and, decisively, on labour, 8 hours against 15.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P11 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 11</p>
+          <h3>Window frames &mdash; steel or aluminum</h3>
+          <span class="badge">Pattern A &middot; Fixed requirement</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>Landed cost per frame: purchase price plus shipping. Shipping is quoted at $1 per kg per <em>100 km</em>, so the distance must first be expressed in hundreds of kilometres. That conversion is the entire problem.</p>
+          <p class="plabel">Working</p>
+          <div class="calc">2,500 km ÷ 100 = <b>25</b> shipping units
+
+                       Steel            Aluminum
+price              $ 1,000            $ 1,500
+shipping   75 kg &times; 25 = $1,875   28 kg &times; 25 = $  700
+                   ───────            ───────
+TOTAL / frame      <i>$ 2,875</i>            <b>$ 2,200</b></div>
+          <p class="pans"><b>Aluminum frames</b>, advantage <b>$ 675 per frame</b>.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>Using 2,500 instead of 25 gives $188,500 of shipping on a $1,000 frame &mdash; absurd on its face, which is exactly why unit analysis catches it. Aluminum costs 50&percnt; more to buy and still wins, because it weighs 37&percnt; of what steel weighs.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P12 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 12</p>
+          <h3>Process planning &mdash; three operation sequences</h3>
+          <span class="badge">Pattern C &middot; Weighted resource</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>Times are in minutes, rates are per hour. Convert once &mdash; either divide each time by 60, or work the whole sum in minutes and divide the total by 60 at the end. The second is faster and less error-prone.</p>
+          <p class="plabel">Working &mdash; sum in minute-pesos, divide once</p>
+          <div class="calc">Sequence 1  turning-milling-shaping-drilling
+  (5&times;200) + (8&times;400) + (10&times;350) + (3&times;300)
+  = 1,000 + 3,200 + 3,500 + 900 = 8,600 ÷ 60 = <i>$ 143.33</i>   (26 min)
+
+Sequence 2  turning-milling-drilling
+  (5&times;200) + (14&times;400) + (3&times;300)
+  = 1,000 + 5,600 + 900         = 7,500 ÷ 60 = <b>$ 125.00</b>   (22 min)
+
+Sequence 3  all CNC
+  (8&times;1,000)                   = 8,000 ÷ 60 = <i>$ 133.33</i>   ( 8 min)</div>
+          <p class="pans"><b>Sequence 2</b> at <b>$ 125.00</b> per component &mdash; $ 8.33 below CNC and $ 18.33 below Sequence 1.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out</p>
+            <p>CNC finishes in 8 minutes, a third of Sequence 2&rsquo;s time, and is still more expensive &mdash; $1,000/hr buys that speed. <strong>Shortest time is not lowest cost.</strong> Sequence 2 also beats Sequence 1 despite longer milling, because dropping the shaping operation saves more than the extra milling costs.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- P13 -->
+      <article class="pcard">
+        <div class="prail">
+          <p class="pno">Problem 13</p>
+          <h3>Paint sand mill &mdash; glass beads or ceramic media</h3>
+          <span class="badge">Pattern E &middot; Unequal lives</span>
+          <span class="badge" style="border-color:var(--accent);color:var(--accent);">Rule 3 trap</span>
+        </div>
+        <div class="pbody">
+          <p class="plabel">How to see it</p>
+          <p>The hardest problem in the set, because <em>two</em> things differ at once: the media replenish on different schedules (2 vs 3 months) <strong>and</strong> the mill produces at different rates (100 vs 120 L/hr). Use LCM(2,3) = 6 months for the time basis. Then &mdash; and this is the part the answer key leaves unfinished &mdash; notice that output differs, so Rule 3 says cost per liter is <em>not</em> the basis that decides.</p>
+          <p class="plabel">Working &mdash; six-month common window</p>
+          <div class="calc">                          Glass beads        Ceramic
+media load                     25 kg           30 kg
+price                      ₱ 200/kg        ₱ 400/kg
+cost per replenishment       ₱ 5,000        ₱ 12,000
+replenishments in 6 mo             3               2
+                          ──────────      ──────────
+6-month media cost          ₱ 15,000        ₱ 24,000
+
+output  L/hr &times; 8 h &times; 25 d &times; 6 mo
+  glass    100 &times; 8 &times; 25 &times; 6 =  <b>120,000 L</b>
+  ceramic  120 &times; 8 &times; 25 &times; 6 =  <b>144,000 L</b>
+
+media cost per liter
+  glass    15,000 / 120,000 = <b>₱ 0.1250 /L</b>
+  ceramic  24,000 / 144,000 = <i>₱ 0.1667 /L</i>   ← ceramic LOSES here</div>
+          <p class="plabel">Why cost per liter is the wrong basis</p>
+          <p>Output is not equal, and the extra output sells at ₱ 15 profit per liter. Media cost is a rounding error next to that.</p>
+          <div class="calc">extra output   144,000 - 120,000       =  24,000 L
+extra profit   24,000 L &times; ₱ 15/L       = ₱ 360,000
+extra media cost  24,000 - 15,000        = (₱   9,000)
+                              NET GAIN   = <b>₱ 351,000</b> per 6 months</div>
+          <p class="pans"><b>Yes &mdash; recommend the change to ceramic media.</b> It gains <b>₱ 351,000 over six months</b> despite costing 33&percnt; more per liter in media.</p>
+          <div class="pwarn">
+            <p class="eyebrow">Watch out &mdash; two things</p>
+            <p><strong>The answer key stops at cost per liter and never answers the question.</strong> If you stop there you will recommend keeping the glass beads, which is backwards. The problem explicitly gives you ₱ 15 profit per liter precisely so you go the extra step.</p>
+            <p><strong>The key also writes &ldquo;25 kgs&rdquo; in the ceramic row</strong>, but the problem says 30 kg. Its ₱ 24,000 figure is correct and requires 30 kg (30 &times; 400 &times; 2), so it is a transcription slip, not a calculation error.</p>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <figure>
+      <div class="panel">
+        <div class="panel-head">
+          <h4>Problem 13 &mdash; the basis decides the answer</h4>
+          <div class="seg" role="group" aria-label="Comparison basis">
+            <button type="button" id="basisCost" aria-pressed="true">Cost per liter</button>
+            <button type="button" id="basisProfit" aria-pressed="false">Total profit</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="bars">
+            <div class="bar-row" id="rowGlass">
+              <span class="bl">GLASS</span>
+              <div class="bar-track"><div class="bar-fill" id="barGlass"></div><span class="bar-val" id="valGlass"></span></div>
+            </div>
+            <div class="bar-row" id="rowCer">
+              <span class="bl">CERAMIC</span>
+              <div class="bar-track"><div class="bar-fill" id="barCer"></div><span class="bar-val" id="valCer"></span></div>
+            </div>
+          </div>
+          <p class="verdict" id="millVerdict"></p>
+        </div>
+      </div>
+      <figcaption>The same six months of operation, the same two numbers, read two ways. On media cost per liter the glass beads win and ceramic looks 33&percnt; worse. On total profit &mdash; which is what the ₱ 15/L figure in the problem is there for &mdash; ceramic wins by ₱ 351,000. Rule 3 in one toggle.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ PROCEDURE ============ -->
+  <section id="procedure">
+    <div class="sec-head col">
+      <p class="eyebrow">Repeatable method</p>
+      <h2>Eight steps that work on any problem in the set</h2>
+    </div>
+    <div class="col">
+      <p>Numbered because they genuinely run in order &mdash; screen for relevance before choosing a basis, choose a basis before computing.</p>
+    </div>
+
+    <ol class="steps">
+      <li><b>Identify the alternatives</b><p>Usually two. Name them plainly &mdash; &ldquo;local brick&rdquo; and &ldquo;imported brick&rdquo;, not &ldquo;A&rdquo; and &ldquo;B&rdquo;.</p></li>
+      <li><b>List every number given, with units</b><p>Units are where the errors hide. ₱/ton is not ₱/ton-month; $/kg/100 km is not $/kg/km.</p></li>
+      <li><b>Screen for relevance</b><p>For each number ask: does this differ between alternatives? If no, set it aside &mdash; and say so in your solution. Naming the distractor earns credit.</p></li>
+      <li><b>Name the pattern, then choose the basis</b><p>Fixed requirement → total cost. Make-or-buy or shutdown → avoidable cost. Different lives → per month or LCM. Different output that sells → total profit, not cost.</p></li>
+      <li><b>Build a comparison table</b><p>One column per alternative, one row per cost component, a total row at the bottom. This is the format your answer key uses throughout, and it makes errors visible.</p></li>
+      <li><b>Compute the difference</b><p>State it with units and direction: &ldquo;imported is cheaper by ₱ 56,250 per month&rdquo;, never a bare number.</p></li>
+      <li><b>Answer what was actually asked</b><p>Problem 6 asks two things and Problem 7 asks two things. Answer both, explicitly, in words.</p></li>
+      <li><b>Sanity check</b><p>Run the ratio test. Do the units cancel to pesos? Is the magnitude plausible? Did you use a number that should have cancelled?</p></li>
+    </ol>
+  </section>
+
+  <!-- ============ MISTAKES ============ -->
+  <section id="mistakes">
+    <div class="sec-head col">
+      <p class="eyebrow">Failure modes</p>
+      <h2>What goes wrong, and where</h2>
+    </div>
+
+    <div class="tw">
+      <table>
+        <caption>Common mistakes across the problem set</caption>
+        <thead><tr><th>Mistake</th><th>Where it bites</th><th>How to avoid it</th></tr></thead>
+        <tbody>
+          <tr><td>Comparing sticker prices directly</td><td>P5 &mdash; &ldquo;local is cheaper&rdquo;</td><td>Divide by life whenever the item is consumed and replaced</td></tr>
+          <tr><td>Using distractor data</td><td>P5 (130 t/day), P6 (8 hr/day)</td><td>Screen every number with &ldquo;does this differ?&rdquo;</td></tr>
+          <tr><td>Dropping a non-obvious differential cost</td><td>P3 fuel penalty, P6 damages, P4 restart cost</td><td>A cost counts if it differs, regardless of category</td></tr>
+          <tr><td>Forgetting unavoidable fixed cost</td><td>P2 make-or-buy</td><td>Fixed overhead that survives outsourcing gets charged to the &ldquo;buy&rdquo; column</td></tr>
+          <tr><td>Wrong unit scaling on a compound rate</td><td>P11 (per 100 km), P10 (g vs kg), P12 (min vs hr)</td><td>Carry units through and cancel them; if the answer isn't in pesos, stop</td></tr>
+          <tr><td>Charging a penalty on the full amount</td><td>P3 &mdash; 1.35 kg instead of 0.15 kg</td><td>&ldquo;Excess&rdquo; always means relative to the other alternative</td></tr>
+          <tr><td>Multiplying by 0.89 instead of dividing by 1.11</td><td>P7 storage tanks</td><td>&ldquo;X&percnt; of the minimum&rdquo; means current = X&percnt; &times; min, so divide</td></tr>
+          <tr><td>Stopping at cost per unit when output differs</td><td>P13 sand mill</td><td>Rule 3 &mdash; switch to total profit whenever the extra output sells</td></tr>
+          <tr><td>Comparing raw hours instead of cost-weighted hours</td><td>P9 pin, P12 sequences</td><td>Different machines cost different amounts per hour</td></tr>
+          <tr><td>Assuming &ldquo;not on time&rdquo; means &ldquo;don't do it&rdquo;</td><td>P6 crew size</td><td>Compare alternative to alternative, not to the ideal</td></tr>
+          <tr><td>Reporting a total when no horizon is given</td><td>P5 kiln bricks</td><td>Report a rate, or state the window you chose</td></tr>
+          <tr><td>Introducing interest or present worth</td><td>Anywhere in this set</td><td>Present economy ignores time value of money entirely</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ REFERENCE ============ -->
+  <section id="reference">
+    <div class="sec-head col">
+      <p class="eyebrow">Quick reference</p>
+      <h2>Formulas worth memorizing</h2>
+    </div>
+    <div class="col">
+      <h3>Consumable item, differing lives &mdash; Pattern E</h3>
+      <div class="math-block">
+        \[ C_{\text{month}} = \frac{\text{unit price} \times \text{quantity}}{\text{life}} \qquad
+           T_{\text{common}} = \operatorname{lcm}(L_A,\, L_B) \]
+        \[ \text{choose the pricier option when}\quad \frac{p_B}{p_A} < \frac{L_B}{L_A} \]
+      </div>
+
+      <h3>Make or buy &mdash; Pattern B</h3>
+      <div class="math-block">
+        \[ C_{\text{make}} = \text{avoidable unit cost} \times Q \qquad
+           C_{\text{buy}} = \text{price} \times Q + \text{unavoidable fixed} \]
+      </div>
+
+      <h3>Sell or process further &mdash; Pattern D</h3>
+      <div class="math-block">
+        \[ \text{process further iff}\quad \Delta\text{revenue} > \Delta\text{cost} \]
+      </div>
+
+      <h3>Fixed work content &mdash; Pattern G</h3>
+      <div class="math-block">
+        \[ W = \text{men} \times \text{days} \;\;\text{(invariant)} \qquad
+           t = \frac{W}{\text{men}} \qquad
+           C_{\text{labor}} = W \times w \;\;\text{(invariant if paid per day)} \]
+        \[ D = \max(0,\; t - t_{\text{allowed}}) \times r \]
+      </div>
+
+      <h3>Cylindrical vessel &mdash; Pattern F</h3>
+      <div class="math-block">
+        \[ V = \frac{\pi D^2 H}{4} \qquad\text{with}\quad H = kD \;\;\Longrightarrow\;\;
+           V = \frac{\pi k D^3}{4} \qquad D = \sqrt[3]{\frac{4V}{\pi k}} \]
+      </div>
+
+      <h3>The decision</h3>
+      <div class="math-block">
+        \[ C_{\text{total}} = \textstyle\sum \text{differential costs} \qquad
+           \text{advantage} = C_{\text{higher}} - C_{\text{lower}} \]
+        \[ \text{output equal} \Rightarrow \min C \qquad\quad \text{output differs and sells} \Rightarrow \max \text{profit} \]
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ANSWERS ============ -->
+  <section id="answers">
+    <div class="sec-head col">
+      <p class="eyebrow">Assignment 1</p>
+      <h2>Final answers</h2>
+    </div>
+
+    <div class="answers">
+      <div class="ans">
+        <h3>Problem 5 &mdash; Kiln bricks</h3>
+        <dl>
+          <dt>Q1 &mdash; Local bricks per month</dt><dd>₱ 281,250</dd>
+          <dt>Q2 &mdash; Difference in cost</dt><dd>₱ 56,250 / mo</dd>
+          <dt>Q3 &mdash; Imported bricks per month</dt><dd>₱ 225,000</dd>
+          <dt>Q4 &mdash; More economical</dt><dd>Imported</dd>
+        </dl>
+        <p class="sum">Imported brick is more economical by <strong>₱ 56,250 per month</strong>, or ₱ 675,000 per year.</p>
+      </div>
+
+      <div class="ans">
+        <h3>Problem 6 &mdash; Crew size</h3>
+        <dl>
+          <dt>Q5 &mdash; Days with 50 workers</dt><dd>32 days</dd>
+          <dt>Q6 &mdash; Total cost, 40 workers</dt><dd>₱ 148,000</dd>
+          <dt>Q7 &mdash; Total cost, 50 workers</dt><dd>₱ 132,000</dd>
+          <dt>Q8 &mdash; Which option</dt><dd>50 men, still late</dd>
+        </dl>
+        <p class="sum">He will <strong>not</strong> finish on time, but adding the ten men <strong>saves ₱ 16,000</strong>.</p>
+      </div>
+    </div>
+
+    <div class="tw">
+      <table>
+        <caption>Every other problem in the set</caption>
+        <thead><tr><th class="n">No.</th><th>Problem</th><th>Choose</th><th class="n">Economic advantage</th></tr></thead>
+        <tbody>
+          <tr><td class="n">1</td><td>Door frames</td><td class="win">Nearby shop</td><td class="n">$ 6,693,750 for 75 tons</td></tr>
+          <tr><td class="n">2</td><td>Part No. 010</td><td class="win">Make</td><td class="n">₱ 250,000 / year</td></tr>
+          <tr><td class="n">3</td><td>Jet engine casting</td><td class="win">Aluminum</td><td class="n">$ 166.25 / unit</td></tr>
+          <tr><td class="n">4</td><td>Pampanga plant</td><td class="win">Stay open</td><td class="n">₱ 128,000 smaller loss</td></tr>
+          <tr><td class="n">7</td><td>Storage tanks</td><td class="win">D 3.61 m &times; H 14.46 m</td><td class="n">&asymp; $ 891,892</td></tr>
+          <tr><td class="n">8</td><td>Suarez product XYZ</td><td class="win">Sell unprocessed</td><td class="n">₱ 150,000 / year</td></tr>
+          <tr><td class="n">9</td><td>Tapered pin</td><td class="win">Design B</td><td class="n">$ 675 / 1,000 units</td></tr>
+          <tr><td class="n">10</td><td>Dining tables</td><td class="win">Granite top</td><td class="n">₱ 1,409 / table</td></tr>
+          <tr><td class="n">11</td><td>Window frames</td><td class="win">Aluminum</td><td class="n">$ 675 / frame</td></tr>
+          <tr><td class="n">12</td><td>Process sequence</td><td class="win">Sequence 2</td><td class="n">$ 8.33 vs CNC</td></tr>
+          <tr><td class="n">13</td><td>Sand mill media</td><td class="win">Ceramic</td><td class="n">₱ 351,000 / 6 months</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col">
+      <div class="note">
+        <p class="eyebrow">Write these two lines into your handwritten solution</p>
+        <p><strong>Problem 5:</strong> state that the 130 t/day capacity is irrelevant &mdash; same kiln, same output, it cancels.<br>
+        <strong>Problem 6:</strong> state that labor cost is identical at ₱ 128,000 in both options, so the entire ₱ 16,000 saving comes from reduced penalties.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>IEMECON &middot; Selection in the Present Economy</span>
+    <span>All 13 problems from the Extra Problems set</span>
+    <span>Figures in Philippine pesos except where the source problem uses dollars</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function peso(n, dp) {
+    return "₱ " + n.toLocaleString("en-PH", {
+      minimumFractionDigits: dp || 0, maximumFractionDigits: dp || 0
+    });
+  }
+
+  /* ---------------- Problem 5: brick explorer ---------------- */
+  var TONS = 45, LOC_P = 25000, LOC_L = 4;
+  var impPrice = document.getElementById("impPrice");
+  var impLife  = document.getElementById("impLife");
+
+  function drawBricks() {
+    var p = +impPrice.value, L = +impLife.value;
+    var locUnit = LOC_P / LOC_L, impUnit = p / L;
+    var locMo = TONS * locUnit, impMo = TONS * impUnit;
+    var max = Math.max(locMo, impMo);
+
+    document.getElementById("impPriceOut").textContent = "₱ " + p.toLocaleString("en-PH") + "/t";
+    document.getElementById("impLifeOut").textContent = L + (L === 1 ? " month" : " months");
+
+    document.getElementById("barLocal").style.width = (locMo / max * 100) + "%";
+    document.getElementById("barImp").style.width   = (impMo / max * 100) + "%";
+    document.getElementById("valLocal").textContent = peso(locMo) + " /mo";
+    document.getElementById("valImp").textContent   = peso(impMo) + " /mo";
+
+    var impWins = impMo < locMo;
+    document.getElementById("rowLocal").className = "bar-row " + (impWins ? "lose" : "win");
+    document.getElementById("rowImp").className   = "bar-row " + (impWins ? "win" : "lose");
+
+    document.getElementById("roLocalUnit").textContent = peso(locUnit);
+    document.getElementById("roImpUnit").textContent   = peso(impUnit);
+
+    var delta = Math.abs(locMo - impMo);
+    document.getElementById("roDeltaBox").className = "ro " + (delta === 0 ? "" : "hi");
+    document.getElementById("roDelta").textContent = delta === 0 ? "—" : peso(delta);
+
+    var pr = p / LOC_P, lr = L / LOC_L;
+    var v = document.getElementById("brickVerdict");
+    if (delta === 0) {
+      v.innerHTML = "Ratio test: price &times;" + pr.toFixed(2) + " = life &times;" + lr.toFixed(2) +
+        ". Dead even — no economic advantage either way.";
+    } else {
+      v.innerHTML = "Ratio test: price &times;<i>" + pr.toFixed(2) + "</i> " + (impWins ? "&lt;" : "&gt;") +
+        " life &times;<b>" + lr.toFixed(2) + "</b> &rarr; <b>" + (impWins ? "imported" : "local") +
+        " wins</b> by " + peso(delta) + " per month.";
+    }
+  }
+
+  impPrice.addEventListener("input", drawBricks);
+  impLife.addEventListener("input", drawBricks);
+  document.getElementById("brickReset").addEventListener("click", function () {
+    impPrice.value = 30000; impLife.value = 6; drawBricks();
+  });
+  drawBricks();
+
+  /* ---------------- Problem 6: crew explorer ---------------- */
+  var WORK = 1600, WAGE = 80, ALLOWED = 30, RATE = 2000;
+  var crew = document.getElementById("crew");
+
+  function model(men) {
+    var t = WORK / men;
+    var late = Math.max(0, t - ALLOWED);
+    var labor = WORK * WAGE;
+    var dmg = late * RATE;
+    return { t: t, late: late, labor: labor, dmg: dmg, total: labor + dmg };
+  }
+
+  var chart = document.getElementById("crewChart");
+  var NS = "http://www.w3.org/2000/svg";
+  var W = 760, H = 340, ML = 74, MR = 108, MT = 18, MB = 46;
+  var X0 = ML, X1 = W - MR, Y0 = MT, Y1 = H - MB;
+  var MEN_MIN = 32, MEN_MAX = 70;
+  var COST_MIN = 120000;
+  var COST_MAX = Math.ceil(model(MEN_MIN).total / 10000) * 10000;
+
+  function sx(men) { return X0 + (men - MEN_MIN) / (MEN_MAX - MEN_MIN) * (X1 - X0); }
+  function sy(c)   { return Y1 - (c - COST_MIN) / (COST_MAX - COST_MIN) * (Y1 - Y0); }
+
+  function el(name, attrs, text) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) { n.setAttribute(k, attrs[k]); }
+    if (text !== undefined) { n.textContent = text; }
+    return n;
+  }
+
+  var MONO = '"IBM Plex Mono", ui-monospace, monospace';
+
+  function drawChart(men) {
+    while (chart.childNodes.length > 1) { chart.removeChild(chart.lastChild); }
+    var g = el("g", {});
+
+    for (var c = COST_MIN; c <= COST_MAX + 1; c += 10000) {
+      var y = sy(c);
+      g.appendChild(el("line", { x1: X0, y1: y, x2: X1, y2: y, stroke: "var(--rule)", "stroke-width": 1, fill: "none" }));
+      g.appendChild(el("text", {
+        x: X0 - 10, y: y + 4, "text-anchor": "end",
+        "font-family": MONO, "font-size": 11, fill: "var(--ink-soft)"
+      }, "₱" + (c / 1000) + "k"));
+    }
+
+    [32, 40, 50, 54, 60, 70].forEach(function (m) {
+      var x = sx(m);
+      g.appendChild(el("line", { x1: x, y1: Y1, x2: x, y2: Y1 + 5, stroke: "var(--rule-hard)", "stroke-width": 1 }));
+      g.appendChild(el("text", {
+        x: x, y: Y1 + 20, "text-anchor": "middle",
+        "font-family": MONO, "font-size": 11, fill: "var(--ink-soft)"
+      }, m));
+    });
+    g.appendChild(el("text", {
+      x: (X0 + X1) / 2, y: H - 8, "text-anchor": "middle",
+      "font-family": MONO, "font-size": 11, "letter-spacing": "0.1em", fill: "var(--ink-soft)"
+    }, "CREW SIZE (MEN)"));
+
+    g.appendChild(el("line", { x1: X0, y1: Y0, x2: X0, y2: Y1, stroke: "var(--rule-hard)", "stroke-width": 1 }));
+    g.appendChild(el("line", { x1: X0, y1: Y1, x2: X1, y2: Y1, stroke: "var(--rule-hard)", "stroke-width": 1 }));
+
+    var pts = [];
+    for (var m = MEN_MIN; m <= MEN_MAX; m += 0.5) { pts.push(sx(m) + "," + sy(model(m).total)); }
+    g.appendChild(el("polyline", {
+      points: pts.join(" "), fill: "none", stroke: "var(--accent)", "stroke-width": 2.5,
+      "stroke-linejoin": "round", "stroke-linecap": "round"
+    }));
+
+    var yl = sy(WORK * WAGE);
+    g.appendChild(el("line", { x1: X0, y1: yl, x2: X1, y2: yl, stroke: "var(--teal)", "stroke-width": 2, "stroke-dasharray": "5 4" }));
+    g.appendChild(el("text", { x: X1 + 8, y: yl - 10, "font-family": MONO, "font-size": 11, fill: "var(--teal)" }, "labor ₱128k"));
+    g.appendChild(el("text", { x: X1 + 8, y: yl + 6, "font-family": MONO, "font-size": 11, fill: "var(--teal)" }, "(flat)"));
+
+    var x54 = sx(54);
+    g.appendChild(el("line", { x1: x54, y1: Y0, x2: x54, y2: Y1, stroke: "var(--ink-soft)", "stroke-width": 1, "stroke-dasharray": "2 4" }));
+    g.appendChild(el("text", { x: x54 + 6, y: Y0 + 12, "font-family": MONO, "font-size": 10.5, fill: "var(--ink-soft)" }, "54 men = on time"));
+
+    [40, 50].forEach(function (m) {
+      var r = model(m);
+      g.appendChild(el("circle", { cx: sx(m), cy: sy(r.total), r: 4, fill: "var(--surface)", stroke: "var(--accent)", "stroke-width": 2 }));
+      g.appendChild(el("text", {
+        x: sx(m), y: sy(r.total) - 13, "text-anchor": "middle",
+        "font-family": MONO, "font-size": 10.5, fill: "var(--ink-mut)"
+      }, m + " men"));
+    });
+
+    var cur = model(men);
+    g.appendChild(el("circle", { cx: sx(men), cy: sy(cur.total), r: 6.5, fill: "var(--accent)", stroke: "var(--surface)", "stroke-width": 2 }));
+    chart.appendChild(g);
+  }
+
+  function drawCrew() {
+    var men = +crew.value, r = model(men);
+    var d1 = function (x) { return Math.round(x * 10) / 10; };
+    document.getElementById("crewOut").textContent = men + " men";
+    document.getElementById("roDays").textContent  = d1(r.t) + " d";
+    document.getElementById("roLate").textContent  = r.late === 0 ? "none" : d1(r.late) + " d";
+    document.getElementById("roLateBox").className = "ro " + (r.late === 0 ? "hi" : "warn");
+    document.getElementById("roLabor").textContent = peso(r.labor);
+    document.getElementById("roDmg").textContent   = peso(Math.round(r.dmg));
+    document.getElementById("roTotal").textContent = peso(Math.round(r.total));
+
+    var base = model(40).total, save = base - r.total;
+    var timing = r.late === 0
+      ? "<b>finishes within the 30-day contract</b>"
+      : "<i>misses the deadline by " + d1(r.late) + " days</i>";
+    var v = document.getElementById("crewVerdict");
+    if (men === 40) {
+      v.innerHTML = "Baseline: 40 men, 40 days, " + timing + ". Total " + peso(base) + ".";
+    } else {
+      v.innerHTML = men + " men &rarr; " + d1(r.t) + " days, " + timing + ". Total " +
+        peso(Math.round(r.total)) + " &mdash; " +
+        (save > 0 ? "<b>saves " + peso(Math.round(save)) + "</b>"
+          : save < 0 ? "<i>costs " + peso(Math.round(-save)) + " more</i>" : "level") +
+        " against the 40-man baseline.";
+    }
+    drawChart(men);
+  }
+
+  crew.addEventListener("input", drawCrew);
+  document.getElementById("crewReset").addEventListener("click", function () { crew.value = 50; drawCrew(); });
+  drawCrew();
+
+  /* ---------------- Problem 13: basis toggle ---------------- */
+  var MILL = {
+    glass:   { cost: 15000, litres: 120000 },
+    ceramic: { cost: 24000, litres: 144000 }
+  };
+  var PROFIT_PER_L = 15;
+  var basis = "cost";
+  var bCost = document.getElementById("basisCost");
+  var bProfit = document.getElementById("basisProfit");
+
+  function drawMill() {
+    var g = MILL.glass, c = MILL.ceramic, gv, cv, fmt, cerWins, verdict;
+
+    if (basis === "cost") {
+      gv = g.cost / g.litres;
+      cv = c.cost / c.litres;
+      fmt = function (x) { return "₱ " + x.toFixed(4) + " /L"; };
+      cerWins = cv < gv;
+      verdict = "Media cost per litre: glass <b>" + fmt(gv) + "</b> beats ceramic <i>" + fmt(cv) +
+        "</i> by " + (((cv / gv) - 1) * 100).toFixed(0) + "%. On this basis you keep the glass beads &mdash; " +
+        "but output is <i>not equal</i>, so this is the wrong basis.";
+    } else {
+      gv = g.litres * PROFIT_PER_L - g.cost;
+      cv = c.litres * PROFIT_PER_L - c.cost;
+      fmt = function (x) { return peso(Math.round(x)); };
+      cerWins = cv > gv;
+      verdict = "Profit over 6 months: ceramic <b>" + fmt(cv) + "</b> beats glass <i>" + fmt(gv) +
+        "</i> by <b>" + peso(Math.round(cv - gv)) + "</b>. The 24,000 extra litres are worth ₱ 360,000; " +
+        "the extra media costs ₱ 9,000. <b>Recommend the change.</b>";
+    }
+
+    var max = Math.max(gv, cv);
+    document.getElementById("barGlass").style.width = (gv / max * 100) + "%";
+    document.getElementById("barCer").style.width   = (cv / max * 100) + "%";
+    document.getElementById("valGlass").textContent = fmt(gv);
+    document.getElementById("valCer").textContent   = fmt(cv);
+    document.getElementById("rowGlass").className = "bar-row " + (cerWins ? "lose" : "win");
+    document.getElementById("rowCer").className   = "bar-row " + (cerWins ? "win" : "lose");
+    document.getElementById("millVerdict").innerHTML = verdict;
+
+    bCost.setAttribute("aria-pressed", basis === "cost");
+    bProfit.setAttribute("aria-pressed", basis === "profit");
+  }
+
+  bCost.addEventListener("click", function () { basis = "cost"; drawMill(); });
+  bProfit.addEventListener("click", function () { basis = "profit"; drawMill(); });
+  drawMill();
+})();
+</script>
