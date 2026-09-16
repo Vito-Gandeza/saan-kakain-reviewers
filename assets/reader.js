@@ -160,7 +160,9 @@
       var el = doc.getElementById(id);
       if (!el) return;
       el.classList.remove('rv-rise');
-      el.scrollIntoView({ behavior: smooth && !reduced ? 'smooth' : 'auto', block: 'start' });
+      // 'auto' defers to the page's scroll-behavior, which is smooth here —
+      // and a smooth jump gets cancelled by MathJax's reflow on load.
+      el.scrollIntoView({ behavior: smooth && !reduced ? 'smooth' : 'instant', block: 'start' });
     }
     if (location.hash) {
       [120, 600, 1500, 3000].forEach(function (t) {
