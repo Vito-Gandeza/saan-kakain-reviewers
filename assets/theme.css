@@ -98,8 +98,17 @@
 
 body { background: var(--rv-paper); color: var(--rv-ink); }
 
-/* The page's own table of contents is replaced by the shared reader chrome. */
+/* The page's own table of contents is replaced by the shared reader chrome.
+   Two pages reserve a 230px grid column for that rail, so hiding it alone
+   would leave the article laid out inside the narrow column. Collapse the
+   grid to a single full-width track as well. */
 nav.rail, nav.toc { display: none !important; }
+
+.shell { grid-template-columns: minmax(0, 1fr) !important; gap: 0 !important; }
+:where(div, main, section, body):has(> nav.rail) {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+}
 
 /* ============================================================
    Reader chrome
