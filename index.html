@@ -1,183 +1,236 @@
 <!doctype html>
 <html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Reviewers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <style>
   :root {
-    --ground: #EEF1F6;
-    --surface: #FFFFFF;
-    --ink: #141A29;
-    --ink-soft: #4E586E;
-    --ink-faint: #7C879C;
-    --rule: #CFD7E4;
-    --accent: #3B4CC0;
-    --shadow: 0 1px 2px rgba(20,26,41,.06), 0 8px 24px -16px rgba(20,26,41,.35);
-    --f-display: "IBM Plex Serif", Georgia, "Times New Roman", serif;
-    --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-    --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground: #0E1220;
-      --surface: #161C2E;
-      --ink: #E7EBF4;
-      --ink-soft: #A8B2C7;
-      --ink-faint: #7A8499;
-      --rule: #2A3350;
-      --accent: #8C9BF5;
-      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --ground: #0E1220;
-    --surface: #161C2E;
-    --ink: #E7EBF4;
-    --ink-soft: #A8B2C7;
-    --ink-faint: #7A8499;
-    --rule: #2A3350;
-    --accent: #8C9BF5;
-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    --paper:     #0D1319;
+    --surface:   #151D25;
+    --surface-2: #1B242D;
+    --ink:       #E2E9EF;
+    --ink-2:     #A6B4C0;
+    --ink-3:     #7B8A97;
+    --rule:      #2A3742;
+    --rule-2:    #222E38;
+    --copper:    #E2924F;
+    --copper-soft:#33241A;
+    --teal:      #4CBBC4;
+    --blue:      #8FAEE8;
+    --disp: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
     color-scheme: dark;
   }
 
+  * { box-sizing: border-box; }
+
   body {
     margin: 0;
-    background: var(--ground);
+    background: var(--paper);
     color: var(--ink);
-    font-family: var(--f-body);
-    font-size: clamp(15px, 1.3vw, 17px);
+    font-family: var(--body);
+    font-size: clamp(15px, 1.2vw, 16.5px);
     line-height: 1.6;
-    padding-inline: 20px;
-    padding-block: clamp(48px, 9vh, 96px) 64px;
+    padding-inline: 22px;
+    padding-block: clamp(64px, 14vh, 128px) 72px;
+    -webkit-font-smoothing: antialiased;
   }
-  main { max-width: 860px; margin: 0 auto; }
+
+  .aura {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(58vw 48vh at 14% 6%,  color-mix(in srgb, var(--teal) 14%, transparent), transparent 70%),
+      radial-gradient(50vw 44vh at 86% 26%, color-mix(in srgb, var(--copper) 12%, transparent), transparent 70%),
+      radial-gradient(72vw 58vh at 50% 106%, color-mix(in srgb, var(--blue) 10%, transparent), transparent 72%);
+    opacity: .55;
+  }
+
+  main { max-width: 760px; margin: 0 auto; }
 
   .eyebrow {
-    font-family: var(--f-mono);
-    font-size: .72rem;
-    letter-spacing: .14em;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .16em;
     text-transform: uppercase;
-    color: var(--ink-faint);
-    margin: 0 0 12px;
+    color: var(--ink-3);
+    margin: 0 0 16px;
   }
   h1 {
-    font-family: var(--f-display);
+    font-family: var(--disp);
     font-weight: 600;
-    font-size: clamp(2rem, 5.5vw, 3rem);
-    line-height: 1.1;
-    letter-spacing: -.02em;
-    margin: 0 0 14px;
+    font-size: clamp(2.4rem, 8vw, 4rem);
+    line-height: 1;
+    letter-spacing: -.03em;
+    margin: 0 0 18px;
   }
   .lede {
-    color: var(--ink-soft);
-    max-width: 58ch;
-    margin: 0 0 44px;
+    color: var(--ink-2);
+    max-width: 50ch;
+    margin: 0 0 12px;
   }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
+  .hint {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .04em;
+    color: var(--ink-3);
+    margin: 0 0 46px;
   }
-
-  .card {
-    display: block;
-    background: var(--surface);
+  .hint kbd {
     border: 1px solid var(--rule);
-    border-radius: 14px;
-    padding: 22px 22px 20px;
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: var(--ink-2);
+  }
+
+  .list { border-top: 1px solid var(--rule-2); }
+
+  a.row {
+    display: grid;
+    grid-template-columns: 108px 1fr auto;
+    gap: 6px 20px;
+    align-items: baseline;
+    padding: 22px 14px 22px 10px;
+    border-bottom: 1px solid var(--rule-2);
     text-decoration: none;
     color: inherit;
-    box-shadow: var(--shadow);
-    transition: transform .15s ease, border-color .15s ease;
+    position: relative;
+    transition: background .22s ease, padding-left .22s ease;
   }
-  a.card:hover { transform: translateY(-2px); border-color: var(--accent); }
-  a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  a.row::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--copper);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform .28s cubic-bezier(.2,.8,.3,1);
+  }
+  a.row:hover, a.row:focus-visible {
+    background: var(--surface);
+    padding-left: 18px;
+    outline: none;
+  }
+  a.row:hover::before, a.row:focus-visible::before { transform: scaleY(1); }
 
   .code {
-    font-family: var(--f-mono);
-    font-size: .72rem;
-    letter-spacing: .1em;
-    color: var(--accent);
-    display: block;
-    margin-bottom: 10px;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .12em;
+    color: var(--ink-3);
+    transition: color .22s ease;
   }
-  .card h2 {
-    font-family: var(--f-display);
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: -.01em;
-    margin: 0 0 8px;
-  }
-  .card p { margin: 0; color: var(--ink-soft); font-size: .92rem; }
-  .meta {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid var(--rule);
-    font-family: var(--f-mono);
-    font-size: .7rem;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-  }
+  a.row:hover .code, a.row:focus-visible .code { color: var(--copper); }
 
-  .card.pending { opacity: .62; }
-  .card.pending .code { color: var(--ink-faint); }
+  .row h2 {
+    font-family: var(--disp);
+    font-weight: 600;
+    font-size: 1.18rem;
+    letter-spacing: -.012em;
+    margin: 0 0 5px;
+    color: var(--ink);
+  }
+  .row p {
+    margin: 0;
+    color: var(--ink-2);
+    font-size: .94rem;
+    max-width: 52ch;
+  }
+  .meta {
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
 
   footer {
-    margin-top: 52px;
-    padding-top: 18px;
-    border-top: 1px solid var(--rule);
-    font-size: .85rem;
-    color: var(--ink-faint);
+    margin-top: 44px;
+    font-size: .84rem;
+    color: var(--ink-3);
   }
-  footer a { color: var(--ink-soft); }
+  footer a { color: var(--ink-2); }
+  footer a:hover { color: var(--copper); }
+
+  @media (max-width: 620px) {
+    a.row { grid-template-columns: 1fr; gap: 8px; }
+    .meta { margin-top: 2px; }
+  }
+
+  /* entrance */
+  .fx { opacity: 0; transform: translateY(12px); animation: rise .7s cubic-bezier(.2,.75,.3,1) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  .d1 { animation-delay: .05s } .d2 { animation-delay: .12s } .d3 { animation-delay: .19s }
+  .d4 { animation-delay: .26s } .d5 { animation-delay: .33s } .d6 { animation-delay: .40s }
+  .d7 { animation-delay: .47s } .d8 { animation-delay: .54s }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fx { opacity: 1; transform: none; animation: none; }
+    a.row, a.row::before, .code { transition: none; }
+  }
 </style>
+</head>
+<body>
+<div class="aura"></div>
 
 <main>
-  <p class="eyebrow">DLSU &middot; Term 1, AY 2026&ndash;27</p>
-  <h1>Reviewers</h1>
-  <p class="lede">Long-form study notes, one page per topic. Worked problems, formula sheets, and the failure modes worth knowing before the exam.</p>
+  <p class="eyebrow fx d1">DLSU &middot; Term 1, AY 2026&ndash;27</p>
+  <h1 class="fx d2">Reviewers</h1>
+  <p class="lede fx d3">Long-form study notes, one page per course. Worked problems, formula sheets, and the failure modes worth knowing before the exam.</p>
+  <p class="hint fx d3">Inside any reviewer, press <kbd>C</kbd> for contents</p>
 
-  <div class="grid">
+  <div class="list">
 
-    <a class="card" href="ecnomic/">
+    <a class="row fx d4" href="ecnomic/">
       <span class="code">ECNOMIC</span>
-      <h2>Selection in the Present Economy</h2>
-      <p>Cost vocabulary, the three governing rules, seven recurring problem patterns, and every problem in the set worked end to end.</p>
-      <p class="meta">12 sections &middot; full solutions</p>
+      <span>
+        <h2>Selection in the Present Economy</h2>
+        <p>Cost vocabulary, three governing rules, seven recurring problem patterns, and every problem in the set worked end to end.</p>
+      </span>
+      <span class="meta">12 sections</span>
     </a>
 
-    <a class="card" href="nummets/">
+    <a class="row fx d5" href="nummets/">
       <span class="code">NUMMETS</span>
-      <h2>The Error Budget</h2>
-      <p>Significant figures, precision versus accuracy, sources of error, stopping criteria, and Taylor series with bounded remainders.</p>
-      <p class="meta">12 sections &middot; full solutions</p>
+      <span>
+        <h2>The Error Budget</h2>
+        <p>Significant figures, precision versus accuracy, sources of error, stopping criteria, and Taylor series with bounded remainders.</p>
+      </span>
+      <span class="meta">12 sections</span>
     </a>
 
-    <a class="card" href="digdacm/">
+    <a class="row fx d6" href="digdacm/">
       <span class="code">DIGDACM</span>
-      <h2>Field Manual</h2>
-      <p>Signals in time and frequency, bandwidth and bit rate, filters, and the three impairments across copper, fiber, and unguided media.</p>
-      <p class="meta">12 sections &middot; problem playbook</p>
+      <span>
+        <h2>Field Manual</h2>
+        <p>Signals in time and frequency, bandwidth and bit rate, filters, and the three impairments across copper, fiber, and unguided media.</p>
+      </span>
+      <span class="meta">12 sections</span>
     </a>
 
-    <a class="card" href="lbycpa3/">
+    <a class="row fx d7" href="lbycpa3/">
       <span class="code">LBYCPA3</span>
-      <h2>The Bench Notebook</h2>
-      <p>Register-level ATmega328P and ESP32 across six lab activities, plus the engineer&rsquo;s notebook discipline the rubric actually grades.</p>
-      <p class="meta">14 sections &middot; bug museum</p>
+      <span>
+        <h2>The Bench Notebook</h2>
+        <p>Register-level ATmega328P and ESP32 across six lab activities, plus the engineer&rsquo;s notebook discipline the rubric actually grades.</p>
+      </span>
+      <span class="meta">14 sections</span>
     </a>
 
   </div>
 
-  <footer>
+  <footer class="fx d8">
     Source on <a href="https://github.com/Vito-Gandeza/saan-kakain-reviewers">GitHub</a>. Written with Claude; verify against your own course material before relying on it.
   </footer>
 </main>
+</body>
+</html>

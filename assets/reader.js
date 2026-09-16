@@ -1,0 +1,196 @@
+/* Shared reader chrome for every reviewer page.
+   Builds a fixed bar, a searchable contents panel, scroll progress,
+   scroll-spy, and on-enter section reveals from the page's own <section id> + <h2>. */
+(function () {
+  var doc = document;
+  doc.documentElement.dataset.theme = 'dark';
+
+  var reduced = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function ready(fn) {
+    if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+
+  ready(function () {
+    var aura = doc.createElement('div');
+    aura.className = 'rv-aura';
+    doc.body.appendChild(aura);
+
+    var secs = [].slice.call(doc.querySelectorAll('section[id]'))
+      .filter(function (s) { return s.querySelector('h2'); });
+
+    if (!secs.length) return;   // landing page: ambient field only
+
+    function label(sec) {
+      var h = sec.querySelector('h2');
+      var t = (h.textContent || '').replace(/\s+/g, ' ').trim();
+      // strip a leading section number the page prints inside the heading
+      return t.replace(/^\d{1,2}[.—–-]\s*/, '');
+    }
+
+    /* ---------- bar ---------- */
+    var bar = doc.createElement('div');
+    bar.className = 'rv-bar';
+    bar.innerHTML =
+      '<div class="rv-bar-in">' +
+        '<a class="rv-home" href="../">← Reviewers</a>' +
+        '<span class="rv-here"><b></b> <span></span></span>' +
+        '<button class="rv-open" type="button" aria-expanded="false">' +
+          'Contents <kbd>C</kbd></button>' +
+      '</div>' +
+      '<div class="rv-prog"><i></i></div>';
+    doc.body.appendChild(bar);
+
+    var hereWrap = bar.querySelector('.rv-here');
+    var hereNum = hereWrap.querySelector('b');
+    var hereTxt = hereWrap.querySelector('span');
+    var progress = bar.querySelector('.rv-prog i');
+    var openBtn = bar.querySelector('.rv-open');
+
+    /* ---------- panel ---------- */
+    var scrim = doc.createElement('div');
+    scrim.className = 'rv-scrim';
+    doc.body.appendChild(scrim);
+
+    var panel = doc.createElement('nav');
+    panel.className = 'rv-panel';
+    panel.setAttribute('aria-label', 'Contents');
+    panel.innerHTML =
+      '<div class="rv-panel-head">' +
+        '<p class="k">Contents</p>' +
+        '<input class="rv-find" type="search" placeholder="Filter sections…" ' +
+          'autocomplete="off" spellcheck="false">' +
+      '</div>' +
+      '<ul class="rv-list"></ul>' +
+      '<p class="rv-empty" hidden>No section matches.</p>';
+    doc.body.appendChild(panel);
+
+    var list = panel.querySelector('.rv-list');
+    var find = panel.querySelector('.rv-find');
+    var empty = panel.querySelector('.rv-empty');
+    var links = [];
+
+    secs.forEach(function (sec, i) {
+      var n = String(i + 1).padStart(2, '0');
+      var li = doc.createElement('li');
+      var a = doc.createElement('a');
+      a.href = '#' + sec.id;
+      a.innerHTML = '<span class="n">' + n + '</span><span class="t"></span>';
+      a.querySelector('.t').textContent = label(sec);
+      li.appendChild(a);
+      list.appendChild(li);
+      links.push(a);
+      a.addEventListener('click', function () { close(); });
+    });
+
+    function open() {
+      scrim.classList.add('on');
+      panel.classList.add('on');
+      openBtn.setAttribute('aria-expanded', 'true');
+      setTimeout(function () { find.focus(); }, 60);
+    }
+    function close() {
+      scrim.classList.remove('on');
+      panel.classList.remove('on');
+      openBtn.setAttribute('aria-expanded', 'false');
+    }
+    function toggle() {
+      panel.classList.contains('on') ? close() : open();
+    }
+
+    openBtn.addEventListener('click', toggle);
+    scrim.addEventListener('click', close);
+
+    doc.addEventListener('keydown', function (e) {
+      var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) ||
+        e.target.isContentEditable;
+      if (e.key === 'Escape') { close(); return; }
+      if (typing) return;
+      if (e.key === 'c' || e.key === 'C') { e.preventDefault(); toggle(); }
+      if (e.key === '/') { e.preventDefault(); open(); }
+    });
+
+    find.addEventListener('input', function () {
+      var q = find.value.trim().toLowerCase();
+      var hits = 0;
+      links.forEach(function (a) {
+        var match = !q || a.textContent.toLowerCase().indexOf(q) > -1;
+        a.parentNode.classList.toggle('hide', !match);
+        if (match) hits++;
+      });
+      empty.hidden = hits > 0;
+    });
+
+    /* ---------- scroll state ---------- */
+    var topBtn = doc.createElement('button');
+    topBtn.className = 'rv-top';
+    topBtn.type = 'button';
+    topBtn.setAttribute('aria-label', 'Back to top');
+    topBtn.textContent = '↑';
+    topBtn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    });
+    doc.body.appendChild(topBtn);
+
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        var h = doc.documentElement.scrollHeight - window.innerHeight;
+        var p = h > 0 ? Math.min(1, Math.max(0, window.scrollY / h)) : 0;
+        progress.style.width = (p * 100).toFixed(2) + '%';
+        doc.documentElement.style.setProperty('--rv-scroll', p.toFixed(3));
+        topBtn.classList.toggle('on', window.scrollY > window.innerHeight * 0.6);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ---------- scroll spy ---------- */
+    var current = -1;
+    function setCurrent(i) {
+      if (i === current || i < 0) return;
+      current = i;
+      links.forEach(function (a, k) { a.classList.toggle('on', k === i); });
+      hereNum.textContent = String(i + 1).padStart(2, '0');
+      hereTxt.textContent = label(secs[i]);
+      hereWrap.classList.add('on');
+    }
+
+    var spy = new IntersectionObserver(function () {
+      var best = -1, bestTop = Infinity;
+      secs.forEach(function (s, i) {
+        var r = s.getBoundingClientRect();
+        if (r.bottom > 80 && r.top < window.innerHeight * 0.55) {
+          if (r.top < bestTop) { bestTop = r.top; best = i; }
+        }
+      });
+      if (best > -1) setCurrent(best);
+    }, { rootMargin: '-60px 0px -45% 0px', threshold: [0, 0.01, 0.25, 0.5] });
+    secs.forEach(function (s) { spy.observe(s); });
+
+    /* ---------- reveal ---------- */
+    if (!reduced) {
+      secs.forEach(function (s) { s.classList.add('rv-rise'); });
+      var rise = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            rise.unobserve(e.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.04 });
+      secs.forEach(function (s) { rise.observe(s); });
+      // never leave the opening screen hidden
+      setTimeout(function () {
+        secs.forEach(function (s) {
+          if (s.getBoundingClientRect().top < window.innerHeight) s.classList.add('in');
+        });
+      }, 40);
+    }
+  });
+})();
