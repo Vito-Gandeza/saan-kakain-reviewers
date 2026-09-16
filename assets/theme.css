@@ -110,6 +110,20 @@ nav.rail, nav.toc { display: none !important; }
   gap: 0 !important;
 }
 
+/* Balance the measure. Each page sized its container for a sidebar that is
+   now gone, which left a ~600px prose column pinned to the left of a
+   1080–1180px box. Narrow every page to one centred column instead. */
+:root { --rv-page: 880px; }
+.shell,
+.wrap,
+.mast-inner,
+header.mast,
+main,
+section[id] {
+  max-width: var(--rv-page) !important;
+  margin-inline: auto !important;
+}
+
 /* ============================================================
    Reader chrome
    ============================================================ */
