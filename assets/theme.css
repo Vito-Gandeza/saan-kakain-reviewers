@@ -208,6 +208,26 @@ table, .calc, .math-block, .n, .num, td, th {
   font-variant-numeric: tabular-nums;
 }
 
+/* a label sitting above a ledger belongs to it — tie the two together */
+.plabel {
+  position: relative;
+  padding-left: 15px;
+  color: var(--rv-ink-3) !important;
+  margin-bottom: 9px !important;
+}
+.plabel::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .58em;
+  width: 8px; height: 1px;
+  background: var(--rv-copper);
+}
+
+/* every panel in the system shares one corner radius */
+.pans, .pwarn, .key, .note, .card, .box, .wp, .panel, .steps, .recur {
+  border-radius: 10px;
+}
+
 /* ============================================================
    Reader chrome
    ============================================================ */
