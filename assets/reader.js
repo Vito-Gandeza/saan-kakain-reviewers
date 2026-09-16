@@ -181,19 +181,29 @@
     if (!reduced) {
       secs.forEach(function (s) { s.classList.add('rv-rise'); });
 
+      // Reveal, then drop the classes so no long section keeps a
+      // composited layer alive on a 30,000px page.
+      function settle(s) {
+        setTimeout(function () { s.classList.remove('rv-rise', 'in'); }, 700);
+      }
+      function reveal(s) {
+        if (s.classList.contains('in')) return;
+        s.classList.add('in');
+        settle(s);
+      }
       function revealVisible() {
         var vh = window.innerHeight;
         secs.forEach(function (s) {
           if (s.classList.contains('in')) return;
           var r = s.getBoundingClientRect();
-          if (r.top < vh * 0.94 && r.bottom > 0) s.classList.add('in');
+          if (r.top < vh * 0.94 && r.bottom > 0) reveal(s);
         });
       }
 
       var rise = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) {
-            e.target.classList.add('in');
+            reveal(e.target);
             rise.unobserve(e.target);
           }
         });
@@ -205,7 +215,7 @@
       revealVisible();
 
       setTimeout(function () {
-        secs.forEach(function (s) { s.classList.add('in'); });
+        secs.forEach(function (s) { s.classList.remove('rv-rise', 'in'); });
       }, 4000);
     }
   });

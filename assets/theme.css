@@ -315,7 +315,6 @@ html { scroll-behavior: smooth; }
   opacity: 0;
   transform: translateY(14px);
   transition: opacity .55s cubic-bezier(.2,.7,.3,1), transform .55s cubic-bezier(.2,.7,.3,1);
-  will-change: opacity, transform;
 }
 .rv-rise.in { opacity: 1; transform: none; }
 
