@@ -191,6 +191,21 @@ section[id] {
   margin: 0 0 18px !important;
   overflow-x: auto;
   scrollbar-width: thin;
+  scrollbar-color: var(--rv-rule-hard) transparent;
+}
+.math-block::-webkit-scrollbar { height: 8px; }
+.math-block::-webkit-scrollbar-thumb { background: var(--rv-rule-hard); border-radius: 99px; }
+.math-block::-webkit-scrollbar-track { background: transparent; }
+
+/* Ledgers and equations may use a little more width than the prose, which
+   keeps most of them off the horizontal scrollbar entirely. */
+@media (min-width: 1100px) {
+  .calc, .math-block { margin-inline: -34px !important; }
+}
+
+/* figures for money and measurements line up column-wise */
+table, .calc, .math-block, .n, .num, td, th {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ============================================================
@@ -257,7 +272,13 @@ section[id] {
   gap: 7px;
   transition: border-color .18s ease, color .18s ease, background .18s ease;
 }
-.rv-open:hover { color: var(--rv-copper); border-color: var(--rv-copper); background: var(--rv-copper-soft); }
+/* one page paints every button in its background colour; the chrome is
+   not that page's button and must stay legible */
+.rv-bar .rv-open,
+.rv-panel .rv-find,
+.rv-side .rv-find { color: var(--rv-ink-2) !important; background: transparent !important; }
+.rv-panel .rv-find, .rv-side .rv-find { background: var(--rv-inset) !important; }
+.rv-bar .rv-open:hover { color: var(--rv-copper) !important; border-color: var(--rv-copper); background: var(--rv-copper-soft) !important; }
 .rv-open kbd {
   font-family: var(--rv-mono);
   font-size: .62rem;

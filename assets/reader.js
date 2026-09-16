@@ -100,7 +100,10 @@
         li.appendChild(a);
         g.list.appendChild(li);
         g.links.push(a);
-        a.addEventListener('click', function () { close(); });
+        a.addEventListener('click', function () {
+          sec.classList.remove('rv-rise');   // never jump to a faded section
+          close();
+        });
       });
     });
 
@@ -145,6 +148,29 @@
         g.empty.hidden = hits > 0;
       });
     });
+
+    /* ---------- deep links ----------
+       MathJax typesets after load and shifts everything below it, so a
+       #hash landing lands in the wrong place (usually back at the top).
+       Re-aim at the target once the page has settled, and reveal it so it
+       is never scrolled to while still faded out. */
+    function goToHash(smooth) {
+      var id = (location.hash || '').slice(1);
+      if (!id) return;
+      var el = doc.getElementById(id);
+      if (!el) return;
+      el.classList.remove('rv-rise');
+      el.scrollIntoView({ behavior: smooth && !reduced ? 'smooth' : 'auto', block: 'start' });
+    }
+    if (location.hash) {
+      [120, 600, 1500, 3000].forEach(function (t) {
+        setTimeout(function () { goToHash(false); }, t);
+      });
+      if (window.MathJax && MathJax.startup && MathJax.startup.promise) {
+        MathJax.startup.promise.then(function () { setTimeout(goToHash, 60); });
+      }
+    }
+    window.addEventListener('hashchange', function () { goToHash(true); });
 
     /* ---------- scroll state ---------- */
     var topBtn = doc.createElement('button');
