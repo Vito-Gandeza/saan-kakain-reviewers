@@ -163,35 +163,17 @@ section[id] {
 
 .calc {
   position: relative;
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, var(--rv-surface) 92%, var(--rv-copper) 8%) 0 42px,
-      var(--rv-inset) 42px) !important;
+  background: var(--rv-inset) !important;
   border: 1px solid var(--rv-rule) !important;
   border-left: 2px solid var(--rv-copper) !important;
   border-radius: 10px !important;
-  padding: 34px 20px 18px !important;
+  padding: 16px 20px !important;
   margin: 0 0 20px !important;
   font-size: 12px !important;
   line-height: 1.95 !important;
   box-shadow: var(--rv-shadow);
   scrollbar-width: thin;
   scrollbar-color: var(--rv-rule-hard) transparent;
-}
-.calc::before {
-  content: "WORKING";
-  position: absolute;
-  top: 11px; left: 20px;
-  font-family: var(--rv-mono);
-  font-size: 9.5px;
-  letter-spacing: .18em;
-  color: var(--rv-ink-3);
-}
-.calc::after {
-  content: "";
-  position: absolute;
-  top: 41px; left: 0; right: 0;
-  border-top: 1px solid var(--rv-rule-2);
 }
 .calc::-webkit-scrollbar { height: 8px; }
 .calc::-webkit-scrollbar-thumb {
