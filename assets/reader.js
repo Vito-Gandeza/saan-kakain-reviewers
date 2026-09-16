@@ -173,9 +173,23 @@
     }, { rootMargin: '-60px 0px -45% 0px', threshold: [0, 0.01, 0.25, 0.5] });
     secs.forEach(function (s) { spy.observe(s); });
 
-    /* ---------- reveal ---------- */
+    /* ---------- reveal ----------
+       Sections here are often many times taller than the viewport, so an
+       intersectionRatio threshold can never be met. Trigger on visibility
+       alone, and keep a scroll-driven fallback plus a hard failsafe so a
+       section can never be left invisible. */
     if (!reduced) {
       secs.forEach(function (s) { s.classList.add('rv-rise'); });
+
+      function revealVisible() {
+        var vh = window.innerHeight;
+        secs.forEach(function (s) {
+          if (s.classList.contains('in')) return;
+          var r = s.getBoundingClientRect();
+          if (r.top < vh * 0.94 && r.bottom > 0) s.classList.add('in');
+        });
+      }
+
       var rise = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) {
@@ -183,14 +197,16 @@
             rise.unobserve(e.target);
           }
         });
-      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.04 });
+      }, { rootMargin: '0px 0px -6% 0px', threshold: 0 });
       secs.forEach(function (s) { rise.observe(s); });
-      // never leave the opening screen hidden
+
+      window.addEventListener('scroll', revealVisible, { passive: true });
+      window.addEventListener('resize', revealVisible, { passive: true });
+      revealVisible();
+
       setTimeout(function () {
-        secs.forEach(function (s) {
-          if (s.getBoundingClientRect().top < window.innerHeight) s.classList.add('in');
-        });
-      }, 40);
+        secs.forEach(function (s) { s.classList.add('in'); });
+      }, 4000);
     }
   });
 })();
